@@ -329,12 +329,14 @@ void AWeaponBase::Fire()
                 AccuracyMultiplier = WeaponData.AccuracyDebuff;
             }
             
+            float WeaponPitchVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponPitchVariation;
+            float WeaponYawVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponYawVariation;
             TraceStartRotation.Pitch += FMath::FRandRange(
-                -((WeaponData.WeaponPitchVariation + WeaponPitchModifier) * AccuracyMultiplier),
-                (WeaponData.WeaponPitchVariation + WeaponPitchModifier) * AccuracyMultiplier);
+                -((WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier),
+                (WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier);
             TraceStartRotation.Yaw += FMath::FRandRange(
-                -((WeaponData.WeaponYawVariation + WeaponYawModifier) * AccuracyMultiplier),
-                (WeaponData.WeaponYawVariation + WeaponYawModifier) * AccuracyMultiplier);
+                -((WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier),
+                (WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier);
             TraceDirection = TraceStartRotation.Vector();
             TraceEnd = TraceStart + (TraceDirection * (WeaponData.bIsShotgun
                                                            ? WeaponData.ShotgunRange
