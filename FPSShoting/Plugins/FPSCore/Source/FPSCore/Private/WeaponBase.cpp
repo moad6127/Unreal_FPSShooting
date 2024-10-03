@@ -497,6 +497,18 @@ void AWeaponBase::Fire()
             {
                 UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponData.DefaultHitEffect, Hit.ImpactPoint,
                                                                Hit.ImpactNormal.Rotation());
+
+                //DefaultDecalDecal
+                if (WeaponData.DecalMaterial)
+                {
+                    FRotator RandomDecalRotation = Hit.ImpactNormal.Rotation();
+                    RandomDecalRotation.Roll = FMath::FRandRange(-180.0f, 180.0f);
+
+                    UGameplayStatics::SpawnDecalAttached(WeaponData.DecalMaterial, FVector(1.0f, WeaponData.DecalSize, WeaponData.DecalSize),
+                        Hit.Component.Get(), Hit.BoneName,
+                        Hit.ImpactPoint, RandomDecalRotation, EAttachLocation::KeepWorldPosition,
+                        WeaponData.LifeSpan);
+                }
             }
         }
 

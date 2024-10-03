@@ -644,6 +644,17 @@ struct FStaticWeaponData : public FTableRowBase
 	/** A display image associated with this weapon which can be used for UI */
 	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
 	UTexture2D* WeaponIcon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Decal")
+	UMaterial* DecalMaterial;
+
+	/** quad size (width & height) */
+	UPROPERTY(EditDefaultsOnly, Category = "Decal")
+	float DecalSize;
+
+	/** lifespan */
+	UPROPERTY(EditDefaultsOnly, Category = "Decal")
+	float LifeSpan;
 };
 
 UCLASS()
