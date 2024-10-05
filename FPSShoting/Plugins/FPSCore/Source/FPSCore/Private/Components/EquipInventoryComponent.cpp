@@ -5,19 +5,13 @@
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
 void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-}
-
-void UEquipInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
 

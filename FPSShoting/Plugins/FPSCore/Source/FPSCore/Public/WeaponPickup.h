@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InteractionActor.h"
 #include "WeaponBase.h"
+#include "Items/ItemBase.h"
 #include "WeaponPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -13,7 +14,7 @@ class AWeaponBase;
 class AFPSCharacter;
 
 UCLASS()
-class FPSCORE_API AWeaponPickup : public AInteractionBase
+class FPSCORE_API AWeaponPickup : public AItemBase
 {
 	GENERATED_BODY()
 

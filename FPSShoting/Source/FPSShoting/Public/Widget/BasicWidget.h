@@ -13,5 +13,18 @@ UCLASS()
 class FPSSHOTING_API UBasicWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	//~ Function
+	UFUNCTION(BlueprintCallable)
+	void SetWidgetController(UObject* InWidgetController);
+	//~ Function
+
+	//~ Value
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UObject> WidgetController;
+	//~ Value
+
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void WidgetControllerSet();
 };

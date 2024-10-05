@@ -2,4 +2,10 @@
 
 
 #include "Widget/BasicWidget.h"
+#include "Widget/BasicWidgetController.h"
 
+void UBasicWidget::SetWidgetController(UObject* InWidgetController)
+{
+	WidgetController = InWidgetController;
+	WidgetControllerSet();
+}
