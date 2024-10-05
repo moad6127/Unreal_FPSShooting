@@ -239,6 +239,11 @@ protected:
 	 *  Handles crouch input and decides what action to perform based on the character's current state
 	 */
 	void ToggleCrouch();
+
+	/*
+	* If Crouch state, release Crouch state
+	*/
+	void Jump();
 	
 	/** Transitions the character out of the crouched state
 	 *	@param bToSprint Whether to transition into a sprint state

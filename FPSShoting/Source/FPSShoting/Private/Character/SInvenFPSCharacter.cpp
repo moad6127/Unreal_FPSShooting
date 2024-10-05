@@ -2,6 +2,8 @@
 
 
 #include "Character/SInvenFPSCharacter.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "HUD/FPSHUD.h"
 #include "Components/EquipInventoryComponent.h"
 
@@ -21,6 +23,15 @@ void ASInvenFPSCharacter::BeginPlay()
 		{
 			HUD->InitHUD(PlayerController, SInventoryComponent);
 		}
+	}
+}
+
+void ASInvenFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		PlayerEnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Completed, this, &ASInvenFPSCharacter::ShowInventory);
 	}
 }
 

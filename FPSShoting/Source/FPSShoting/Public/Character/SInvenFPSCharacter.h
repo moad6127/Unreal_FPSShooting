@@ -24,6 +24,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	void ShowInventory();
 
 	UPROPERTY()
@@ -31,4 +33,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UEquipInventoryComponent* SInventoryComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
+	UInputAction* InventoryAction;
 };

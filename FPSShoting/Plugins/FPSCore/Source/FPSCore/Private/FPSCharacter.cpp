@@ -172,6 +172,18 @@ void AFPSCharacter::ToggleCrouch()
     }
 }
 
+void AFPSCharacter::Jump()
+{
+    if (MovementState == EMovementState::State_Crouch)
+    {
+        ToggleCrouch();
+        return;
+    }
+    bPressedJump = true;
+    JumpKeyHoldTime = 0.0f;
+}
+
+
 void AFPSCharacter::ReleaseCrouch()
 {
     bHoldingCrouch = false;
