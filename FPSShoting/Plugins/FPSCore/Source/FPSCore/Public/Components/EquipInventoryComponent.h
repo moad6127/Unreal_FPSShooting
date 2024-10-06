@@ -9,6 +9,9 @@
 struct FTile;
 class UItemObject;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
 {
@@ -17,16 +20,46 @@ class FPSCORE_API UEquipInventoryComponent : public UActorComponent
 public:	
 	UEquipInventoryComponent();
 
+	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
+	FInventoryChanged InventoryChanged;
+
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }
 
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TMap<EEquipmentSlotType, UItemObject*> GetEquipmentItems() const { return EquipmentItems; }
+
+	/*
+	* Item을 추가시키기 위한 함수
+	*/
+	bool TryAddItem(UItemObject* InItem);
+
+
+	bool IsRoomAvailable(UItemObject* InItem, FIntPoint InLocation);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
+
+	/*
+	* 아이템이 들어왔을때 InventoryGrid에 1을 넣어서 공간 채우기
+	*/
+	void PlaceItem(UItemObject* InItem, FIntPoint InLocation);
+
+	/*
+	* 인벤토리Grid초기화
+	*/ 
+	UFUNCTION(BlueprintCallable, Category = "InventoryInit")
+	void InitializeInventory();
+
+	/*
+	* 아이템의 BottomRight가 인벤토리 공간 범위를 넘어가는지 확인하기
+	*/
+	bool IsPositionValid(FIntPoint InLocation);
+
+	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
 	int32 Columns = 5;
 

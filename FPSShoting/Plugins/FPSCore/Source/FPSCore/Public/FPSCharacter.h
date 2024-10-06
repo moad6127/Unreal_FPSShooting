@@ -21,6 +21,7 @@ class UAnimMontage;
 class UCurveFloat;
 class UBlendSpace;
 class UInventoryComponent;
+class UEquipInventoryComponent;
 
 /** Movement state enumerator holding all possible movement states */
 UENUM(BlueprintType)
@@ -161,6 +162,8 @@ public:
 
 	/** Returns the Inventory Component */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
+
+	UEquipInventoryComponent* GetEquipInventoryComponent() const { return SInventoryComponent; }
 
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
@@ -504,6 +507,9 @@ protected:
 	/** A reference to the player's Inventory Component */ 
 	UPROPERTY()
 	UInventoryComponent* InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UEquipInventoryComponent* SInventoryComponent;
 
 #pragma endregion 
 

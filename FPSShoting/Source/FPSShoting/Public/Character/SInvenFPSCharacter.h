@@ -10,7 +10,6 @@
  * 
  */
 class AFPSHUD;
-class UEquipInventoryComponent;
 
 UCLASS()
 class FPSSHOTING_API ASInvenFPSCharacter : public AFPSCharacter
@@ -30,9 +29,6 @@ protected:
 
 	UPROPERTY()
 	AFPSHUD* HUD;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
-	UEquipInventoryComponent* SInventoryComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* InventoryAction;

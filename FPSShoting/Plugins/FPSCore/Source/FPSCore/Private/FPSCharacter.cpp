@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
+#include "Components/EquipInventoryComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
@@ -49,6 +50,9 @@ AFPSCharacter::AFPSCharacter()
     {
         CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
     }
+
+    SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
+
 }
 
 // Called when the game starts or when spawned

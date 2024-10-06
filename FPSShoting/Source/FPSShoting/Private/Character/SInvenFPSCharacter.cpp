@@ -5,11 +5,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "HUD/FPSHUD.h"
-#include "Components/EquipInventoryComponent.h"
+
 
 ASInvenFPSCharacter::ASInvenFPSCharacter()
 {
-	SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
 }
 
 void ASInvenFPSCharacter::BeginPlay()

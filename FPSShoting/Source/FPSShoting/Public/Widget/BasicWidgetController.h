@@ -10,6 +10,7 @@
  * 
  */
 class UEquipInventoryComponent;
+class UItemObject;
 
 USTRUCT(BlueprintType)
 struct FWidgetControllerParams
@@ -17,7 +18,7 @@ struct FWidgetControllerParams
 	GENERATED_BODY()
 
 
-		FWidgetControllerParams() {}
+	FWidgetControllerParams() {}
 	FWidgetControllerParams(APlayerController* PC, UEquipInventoryComponent* InvenComp)
 		:PlayerController(PC), EquipInventoryComponent(InvenComp) {}
 
@@ -45,7 +46,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetEquipInventoryComponent() { return EquipInventoryComponent; }
 
+	UFUNCTION(BlueprintCallable)
+	bool TryAddItem(UItemObject* InItem);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsRoomAvailable(UItemObject* Payload, FIntPoint Location);
 protected:
 	/*
 	* 인벤토리의 셀 하나당의 크기
