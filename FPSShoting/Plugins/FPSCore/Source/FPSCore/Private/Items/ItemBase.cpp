@@ -29,6 +29,13 @@ void AItemBase::Interact()
 	}
 }
 
+void AItemBase::InitializeDrop(UItemObject* ItemToDrop)
+{
+	ItemObject = ItemToDrop;
+
+	MeshComp->SetStaticMesh(ItemToDrop->Asset.Mesh);
+}
+
 void AItemBase::BeginPlay()
 {
 	Super::BeginPlay();

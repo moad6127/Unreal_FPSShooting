@@ -31,3 +31,52 @@ bool UBasicWidgetController::IsRoomAvailable(UItemObject* Payload, FIntPoint Loc
 	}
 	return false;
 }
+
+bool UBasicWidgetController::RemoveItem(UItemObject* InItem)
+{
+	if (GetEquipInventoryComponent()&& GetEquipInventoryComponent()->RemoveItems(InItem))
+	{
+		return true;
+	}
+	return false;
+}
+
+void UBasicWidgetController::DropItem(UItemObject* ItemToDrop)
+{
+	if (GetEquipInventoryComponent())
+	{
+		GetEquipInventoryComponent()->DropItem(ItemToDrop);
+	}
+}
+
+bool UBasicWidgetController::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
+{
+	if (GetEquipInventoryComponent())
+	{
+		if (GetEquipInventoryComponent()->ReplaceItem(ItemToReplace, InLocation))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void UBasicWidgetController::RotateItem(UItemObject* ItemToRotate)
+{
+	if (GetEquipInventoryComponent())
+	{
+		GetEquipInventoryComponent()->RotateItem(ItemToRotate);
+	}
+}
+
+void UBasicWidgetController::MousePositionInTile(const FVector2D MousePosition, bool& Right, bool& Down)
+{
+	Right = false;
+	Down = false;
+
+	float MousePositionX = MousePosition.X;
+	float MousePositionY = MousePosition.Y;
+
+	Right = fmod(MousePositionX, TileSize) > (TileSize / 2);
+	Down = fmod(MousePositionY, TileSize) > (TileSize / 2);
+}

@@ -3,6 +3,7 @@
 
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
+#include "Items/ItemBase.h"
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
@@ -32,6 +33,64 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 		}
 	}
 	return false;
+}
+
+bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
+{
+	if (!IsValid(InItem))
+	{
+		return false;
+	}
+	if (InventoryItems.Contains(InItem))
+	{
+		//TODO : 만약 Stackable아이템이면 아이템 수에서 -1하기
+		InventoryItems.Remove(InItem);
+		RemovePlaceItem(InItem);
+		InventoryChanged.Broadcast();
+		return true;
+	}
+	return false;
+}
+
+void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
+{
+	// SpawnParasm를 생성한후 설정해주기
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = GetOwner();
+	SpawnParams.bNoFail = true;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	//위치를 정해주기 위치는 현재 Component를 가지고 있는 Actor앞의 50정도 위치
+	const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
+	const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
+
+	AItemBase* DropItem = GetWorld()->SpawnActor<AItemBase>(AItemBase::StaticClass(), SpawnTransform, SpawnParams);
+
+	//Drop아이템에 대해서 Initialize해주기
+	DropItem->InitializeDrop(ItemToDrop);
+}
+
+bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
+{
+	if (!IsValid(ItemToReplace))
+	{
+		return false;
+	}
+	if (IsRoomAvailable(ItemToReplace, InLocation))
+	{
+		PlaceItem(ItemToReplace, InLocation);
+		ItemToReplace->SetItemItemLocation(InLocation);
+		InventoryItems.Add(ItemToReplace);
+		InventoryChanged.Broadcast();
+		return true;
+	}
+	return false;
+}
+
+void UEquipInventoryComponent::RotateItem(UItemObject* ItemToRotate)
+{
+	ItemToRotate->Rotate();
+	InventoryChanged.Broadcast();
 }
 
 bool UEquipInventoryComponent::IsRoomAvailable(UItemObject* InItem, FIntPoint InLocation)
@@ -81,6 +140,18 @@ void UEquipInventoryComponent::PlaceItem(UItemObject* InItem, FIntPoint InLocati
 		for (int32 j = InLocation.X; j < InLocation.X + InItem->GetSizeX(); j++)
 		{
 			InventoryGrid[GetIndex(j, i)] = true;
+		}
+	}
+}
+
+void UEquipInventoryComponent::RemovePlaceItem(UItemObject* InItem)
+{
+	FIntPoint InLocation = InItem->GetItemItemLocation();
+	for (int32 i = InLocation.Y; i < InLocation.Y + InItem->GetSizeY(); i++)
+	{
+		for (int32 j = InLocation.X; j < InLocation.X + InItem->GetSizeX(); j++)
+		{
+			InventoryGrid[GetIndex(j, i)] = false;
 		}
 	}
 }

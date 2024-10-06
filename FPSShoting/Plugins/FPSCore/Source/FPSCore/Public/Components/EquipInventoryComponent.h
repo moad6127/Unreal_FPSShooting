@@ -34,8 +34,31 @@ public:
 	*/
 	bool TryAddItem(UItemObject* InItem);
 
+	/*
+	* 아이템을 인벤토리에서 제거하는 함수
+	*/
+	bool RemoveItems(UItemObject* InItem);
 
+	/*
+	* 아이템을 Drop할때 사용되는 함수
+	*/
+	void DropItem(UItemObject* ItemToDrop);
+
+	/*	
+	* 아이템을 인벤토리의 다른 공간으로 이동시키는 함수
+	*/
+	bool ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation);
+
+	/*
+	*  아이템을 회전시키는 함수
+	*/
+	void RotateItem(UItemObject* ItemToRotate);
+
+	/*
+	* 인벤토리에 아이템을 넣을때 넣을수 있는 공간이 존재 하는지 확인하는 함수
+	*/
 	bool IsRoomAvailable(UItemObject* InItem, FIntPoint InLocation);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -46,6 +69,12 @@ private:
 	* 아이템이 들어왔을때 InventoryGrid에 1을 넣어서 공간 채우기
 	*/
 	void PlaceItem(UItemObject* InItem, FIntPoint InLocation);
+
+	/*
+	* 아이템을 제거할때 InventoryGrid공간을 아이템 공간만큼 초기화 시키기
+	*/
+	void RemovePlaceItem(UItemObject* InItem);
+
 
 	/*
 	* 인벤토리Grid초기화

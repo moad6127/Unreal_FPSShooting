@@ -26,6 +26,8 @@ public:
 	void UpdateInteractionPopupText(const FText NewInteractionText) { InteractionText = NewInteractionText; }
 
 	virtual void Interact() override;
+
+	void InitializeDrop(UItemObject* ItemToDrop);
 protected:
 	virtual void BeginPlay() override;
 
