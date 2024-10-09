@@ -10,7 +10,7 @@ struct FTile;
 class UItemObject;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
 	FInventoryChanged InventoryChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
+	FInventorySizeChanged InventorySizeChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }
@@ -58,6 +61,15 @@ public:
 	* 인벤토리에 아이템을 넣을때 넣을수 있는 공간이 존재 하는지 확인하는 함수
 	*/
 	bool IsRoomAvailable(UItemObject* InItem, FIntPoint InLocation);
+
+	/*
+	* 아이템 장착 함수
+	*/
+	void EquipItem(UItemObject* InItem);
+	/*
+	* 아이템 장착 해제 함수
+	*/
+	void UnEquipItem(UItemObject* InItem);
 
 protected:
 	// Called when the game starts

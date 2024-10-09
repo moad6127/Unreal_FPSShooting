@@ -69,6 +69,22 @@ void UBasicWidgetController::RotateItem(UItemObject* ItemToRotate)
 	}
 }
 
+void UBasicWidgetController::EquipItem(UItemObject* InItem)
+{
+	if (GetEquipInventoryComponent())
+	{
+		GetEquipInventoryComponent()->EquipItem(InItem);
+	}
+}
+
+void UBasicWidgetController::UnEquipItem(UItemObject* ItemToUnEquip)
+{
+	if (GetEquipInventoryComponent())
+	{
+		GetEquipInventoryComponent()->UnEquipItem(ItemToUnEquip);
+	}
+}
+
 void UBasicWidgetController::MousePositionInTile(const FVector2D MousePosition, bool& Right, bool& Down)
 {
 	Right = false;

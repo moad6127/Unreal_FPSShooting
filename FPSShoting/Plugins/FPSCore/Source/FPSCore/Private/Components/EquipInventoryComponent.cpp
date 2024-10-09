@@ -127,6 +127,48 @@ bool UEquipInventoryComponent::IsRoomAvailable(UItemObject* InItem, FIntPoint In
 	return true;
 }
 
+void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
+{
+	EEquipmentSlotType ItemSlot = InItem->SlotType;
+	/*
+	* 만약 이미 장착된 아이템이 존재하면 
+	* 기존의 장착된 아이템을 뺀후 현재 아이템을 장착한다.
+	*/
+	if (EquipmentItems.Contains(ItemSlot))
+	{
+		UItemObject* PrevItem = EquipmentItems[ItemSlot];
+		UnEquipItem(PrevItem);
+	}
+	EquipmentItems.Add({ ItemSlot,InItem });
+	if (InItem->ItemNumbericData.bExpandableSize)
+	{
+		Rows += InItem->ItemNumbericData.ExpandableInventorySize;
+		InventorySizeChanged.Broadcast();
+	}
+}
+
+void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
+{
+	EEquipmentSlotType SlotType = InItem->SlotType;
+	if (!EquipmentItems.Contains(SlotType))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not have item in EquipmentItems!!"));
+		return;
+	}
+	// Equip창에 Slot을 구분하기위해 Weapon은 1과 2로 나누었다.
+	if (SlotType == EEquipmentSlotType::EEST_Weapon1 || SlotType == EEquipmentSlotType::EEST_Weapon2)
+	{
+		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
+	}
+	// 제거하는것은 들어온것의 SlotType을 제거한다
+	EquipmentItems.Remove(SlotType);
+	if (InItem->ItemNumbericData.bExpandableSize)
+	{
+		Rows -= InItem->ItemNumbericData.ExpandableInventorySize;
+		InventorySizeChanged.Broadcast();
+	}
+}
+
 void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
