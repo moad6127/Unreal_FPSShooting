@@ -34,22 +34,22 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UDataTable> ItemDataTable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	FName DesiredItemID;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	//int32 ItemQuantity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	int32 ItemSizeX;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemBase")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	int32 ItemSizeY;
 
 private:
