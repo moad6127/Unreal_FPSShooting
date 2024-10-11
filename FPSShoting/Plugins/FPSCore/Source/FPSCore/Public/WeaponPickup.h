@@ -57,21 +57,10 @@ private:
 	/** Called every time a variable is changed or the actor is moved in the editor */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	/** Weapon to spawn when picked up */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AWeaponBase> WeaponReference;
-
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
 	UPROPERTY()
 	FRuntimeWeaponData DataStruct;
 
-	/** Data table reference for weapon (used to see if the weapon has attachments) */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* WeaponDataTable;
-
-	/** Data table reference for attachments */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* AttachmentsDataTable;
 
 	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */
 	/** reset to default) */

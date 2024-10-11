@@ -13,6 +13,7 @@
 class USphereComponent;
 class UItemObject;
 class UDataTable;
+class AWeaponBase;
 
 UCLASS()
 class FPSCORE_API AItemBase : public AInteractionBase
@@ -28,14 +29,29 @@ public:
 	virtual void Interact() override;
 
 	void InitializeDrop(UItemObject* ItemToDrop);
+
+	void InitializeItem(const TSubclassOf<UItemObject> BaseItem);
+
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data Table")
+	UPROPERTY(BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
+
+	/** Weapon to spawn when picked up */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeaponBase> WeaponReference;
+
+	/** Data table reference for weapon (used to see if the weapon has attachments) */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* WeaponDataTable;
+
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UDataTable> ItemDataTable;
@@ -53,5 +69,4 @@ protected:
 	int32 ItemSizeY;
 
 private:
-	void InitializeItem(const TSubclassOf<UItemObject> BaseItem);
 };

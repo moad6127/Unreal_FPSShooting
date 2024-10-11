@@ -79,6 +79,8 @@ public:
 	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup,
 						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
 
+	void DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition);
+
 	/** Returns the number of weapon slots */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetNumberOfWeaponSlots() const { return NumberOfWeaponSlots; }

@@ -11,6 +11,7 @@ class UItemObject;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemEquipChanged, EEquipmentSlotType, EquipSlot);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
 	FInventorySizeChanged InventorySizeChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
+	FItemEquipChanged ItemEquipChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }

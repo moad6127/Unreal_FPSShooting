@@ -14,6 +14,7 @@
 #include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "Items/ItemObject.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -182,32 +183,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     {
         if (bSpawnPickup)
         {
-            // Calculating the location where to spawn the new weapon in front of the player
-        	FVector TraceStart = FVector::ZeroVector;
-        	FRotator TraceStartRotation = FRotator::ZeroRotator;
-        	
-        	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
-        	{
-        		TraceStart = FPSCharacter->GetCameraComponent()->GetComponentLocation();
-        		TraceStartRotation = FPSCharacter->GetCameraComponent()->GetComponentRotation();
-        	}
-            const FVector TraceDirection = TraceStartRotation.Vector();
-            const FVector TraceEnd = TraceStart + TraceDirection * WeaponSpawnDistance;
-
-            // Spawning the new pickup
-            AWeaponPickup* NewPickup = GetWorld()->SpawnActor<AWeaponPickup>(CurrentWeapon->GetStaticWeaponData()->PickupReference, TraceEnd, FRotator::ZeroRotator, SpawnParameters);
-            if (bStatic)
-            {
-                NewPickup->GetMainMesh()->SetSimulatePhysics(false);
-                NewPickup->SetActorTransform(PickupTransform);
-            }
-            // Applying the current weapon data to the pickup
-            NewPickup->SetStatic(bStatic);
-            NewPickup->SetRuntimeSpawned(true);
-            NewPickup->SetWeaponReference(EquippedWeapons[InventoryPosition]->GetClass());
-            NewPickup->SetCacheDataStruct(EquippedWeapons[InventoryPosition]->GetRuntimeWeaponData());
-            NewPickup->SpawnAttachmentMesh();
-            EquippedWeapons[InventoryPosition]->Destroy();
+			DropWeapon(SpawnParameters, bStatic, PickupTransform, InventoryPosition);
         }
     }
     // Spawns the new weapon and sets the player as it's owner
@@ -222,6 +198,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     	}
         SpawnedWeapon->SetRuntimeWeaponData(DataStruct);
         SpawnedWeapon->SpawnAttachments();
+		
         EquippedWeapons.Add(InventoryPosition, SpawnedWeapon);
 
 		// Disabling the currently equipped weapon, if it exists
@@ -252,6 +229,37 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             }
         }
     }
+}
+
+void UInventoryComponent::DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition)
+{
+	// Calculating the location where to spawn the new weapon in front of the player
+	FVector TraceStart = FVector::ZeroVector;
+	FRotator TraceStartRotation = FRotator::ZeroRotator;
+
+	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	{
+		TraceStart = FPSCharacter->GetCameraComponent()->GetComponentLocation();
+		TraceStartRotation = FPSCharacter->GetCameraComponent()->GetComponentRotation();
+	}
+	const FVector TraceDirection = TraceStartRotation.Vector();
+	const FVector TraceEnd = TraceStart + TraceDirection * WeaponSpawnDistance;
+
+	// Spawning the new pickup
+	AWeaponPickup* NewPickup = GetWorld()->SpawnActor<AWeaponPickup>(CurrentWeapon->GetStaticWeaponData()->PickupReference, TraceEnd, FRotator::ZeroRotator, SpawnParameters);
+	if (bStatic)
+	{
+		NewPickup->GetMainMesh()->SetSimulatePhysics(false);
+		NewPickup->SetActorTransform(PickupTransform);
+	}
+	// Applying the current weapon data to the pickup
+	NewPickup->SetStatic(bStatic);
+	NewPickup->SetRuntimeSpawned(true);
+	NewPickup->SetWeaponReference(EquippedWeapons[InventoryPosition]->GetClass());
+	NewPickup->SetCacheDataStruct(EquippedWeapons[InventoryPosition]->GetRuntimeWeaponData());
+	NewPickup->SpawnAttachmentMesh();
+	//NewPickup->InitializeItem(UItemObject::StaticClass());
+	EquippedWeapons[InventoryPosition]->Destroy();
 }
 
 FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const

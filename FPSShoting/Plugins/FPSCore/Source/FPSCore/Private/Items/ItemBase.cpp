@@ -32,7 +32,6 @@ void AItemBase::Interact()
 void AItemBase::InitializeDrop(UItemObject* ItemToDrop)
 {
 	ItemObject = ItemToDrop;
-
 	MeshComp->SetStaticMesh(ItemToDrop->Asset.Mesh);
 }
 
@@ -54,6 +53,8 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
 		ItemObject->Asset = ItemData->Asset;
 		ItemObject->ItemName = ItemData->ItemName;
+		ItemObject->WeaponReference = WeaponReference;
+		ItemObject->WeaponDataTable = WeaponDataTable;
 		ItemObject->SetItemSizeX(ItemSizeX);
 		ItemObject->SetItemSizeY(ItemSizeY);
 

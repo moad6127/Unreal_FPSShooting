@@ -23,6 +23,7 @@ class USoundCue;
 class UPhysicalMaterial;
 class UDataTable;
 class AWeaponPickup;
+class UItemObject;
 
 /** Enumerator holding the 4 types of ammunition that weapons can use (used as part of the FSingleWeaponParams struct)
  * and to keep track of the total ammo the player has (ammoMap) */

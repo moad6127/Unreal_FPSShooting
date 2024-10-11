@@ -134,12 +134,18 @@ void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
 	* 만약 이미 장착된 아이템이 존재하면 
 	* 기존의 장착된 아이템을 뺀후 현재 아이템을 장착한다.
 	*/
+	if (ItemSlot == EEquipmentSlotType::EEST_Weapon)
+	{
+		EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1) ? ItemSlot = EEquipmentSlotType::EEST_Weapon2 : ItemSlot = EEquipmentSlotType::EEST_Weapon1;
+	}
+	InItem->SlotType = ItemSlot;
 	if (EquipmentItems.Contains(ItemSlot))
 	{
 		UItemObject* PrevItem = EquipmentItems[ItemSlot];
 		UnEquipItem(PrevItem);
 	}
 	EquipmentItems.Add({ ItemSlot,InItem });
+	ItemEquipChanged.Broadcast(ItemSlot);
 	if (InItem->ItemNumbericData.bExpandableSize)
 	{
 		Rows += InItem->ItemNumbericData.ExpandableInventorySize;
@@ -162,6 +168,7 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다
 	EquipmentItems.Remove(SlotType);
+	ItemEquipChanged.Broadcast(SlotType);
 	if (InItem->ItemNumbericData.bExpandableSize)
 	{
 		Rows -= InItem->ItemNumbericData.ExpandableInventorySize;

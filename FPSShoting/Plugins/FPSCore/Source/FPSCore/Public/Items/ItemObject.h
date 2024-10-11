@@ -10,6 +10,8 @@
 /**
  * 
  */
+class AWeaponBase;
+
 UCLASS(BlueprintType, Blueprintable)
 class FPSCORE_API UItemObject : public UObject
 {
@@ -46,6 +48,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FText ItemName;
+
+	/** Weapon to spawn when picked up */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeaponBase> WeaponReference;
+
+	/** Data table reference for weapon (used to see if the weapon has attachments) */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* WeaponDataTable;
+
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
 
 #pragma region FUNCTIONS
 	UItemObject();

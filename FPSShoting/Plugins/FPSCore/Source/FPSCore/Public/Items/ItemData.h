@@ -37,6 +37,9 @@ struct FItemNumericData
 
 	UPROPERTY(EditAnywhere)
 	bool bExpandableSize;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsWeapon;
 };
 
 USTRUCT()
