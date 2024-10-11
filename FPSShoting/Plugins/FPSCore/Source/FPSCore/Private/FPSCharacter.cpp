@@ -52,7 +52,7 @@ AFPSCharacter::AFPSCharacter()
     }
 
     SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
-
+    InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
 }
 
 // Called when the game starts or when spawned

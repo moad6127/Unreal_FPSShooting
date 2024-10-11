@@ -81,6 +81,8 @@ public:
 
 	void DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition);
 
+	void RemoveEquipItems(int index);
+
 	/** Returns the number of weapon slots */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetNumberOfWeaponSlots() const { return NumberOfWeaponSlots; }
@@ -246,7 +248,7 @@ private:
 	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Equipment")
 	TMap<int, AWeaponBase*> EquippedWeapons;
 
 	/** The player's currently equipped weapon */

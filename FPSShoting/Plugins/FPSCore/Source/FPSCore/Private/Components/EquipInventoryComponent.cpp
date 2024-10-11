@@ -4,6 +4,8 @@
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
 #include "Items/ItemBase.h"
+#include "FPSCharacter.h"
+#include "Components/InventoryComponent.h"
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
@@ -162,8 +164,18 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		return;
 	}
 	// Equip창에 Slot을 구분하기위해 Weapon은 1과 2로 나누었다.
+
 	if (SlotType == EEquipmentSlotType::EEST_Weapon1 || SlotType == EEquipmentSlotType::EEST_Weapon2)
 	{
+		int index{};
+		if (SlotType == EEquipmentSlotType::EEST_Weapon2)
+		{
+			index = 1;
+		}
+		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+		{
+			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
+		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다

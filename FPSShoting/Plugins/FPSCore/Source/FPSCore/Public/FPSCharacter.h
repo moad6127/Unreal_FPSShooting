@@ -505,8 +505,8 @@ protected:
 	FTimerHandle SlideStop;
 
 	/** A reference to the player's Inventory Component */ 
-	UPROPERTY()
-	UInventoryComponent* InventoryComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UEquipInventoryComponent* SInventoryComponent;

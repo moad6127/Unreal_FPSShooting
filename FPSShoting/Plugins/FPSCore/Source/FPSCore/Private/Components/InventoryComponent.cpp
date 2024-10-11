@@ -258,8 +258,17 @@ void UInventoryComponent::DropWeapon(FActorSpawnParameters& SpawnParameters, con
 	NewPickup->SetWeaponReference(EquippedWeapons[InventoryPosition]->GetClass());
 	NewPickup->SetCacheDataStruct(EquippedWeapons[InventoryPosition]->GetRuntimeWeaponData());
 	NewPickup->SpawnAttachmentMesh();
-	//NewPickup->InitializeItem(UItemObject::StaticClass());
+	
 	EquippedWeapons[InventoryPosition]->Destroy();
+}
+
+void UInventoryComponent::RemoveEquipItems(int index)
+{
+	if (EquippedWeapons.Contains(index))
+	{
+		EquippedWeapons[index]->Destroy();
+		EquippedWeapons.Remove(index);
+	}
 }
 
 FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
