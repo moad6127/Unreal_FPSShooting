@@ -255,7 +255,9 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		}
 		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 		{
+			InItem->DataStruct = *FPSCharacter->GetInventoryComponent()->GetWeaponByID(index)->GetRuntimeWeaponData();
 			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
+			
 		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
 		UE_LOG(LogTemp, Warning, TEXT("NowAmmo : %d"), InItem->DataStruct.ClipSize);

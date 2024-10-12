@@ -58,7 +58,7 @@ public:
 	UDataTable* WeaponDataTable;
 
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FRuntimeWeaponData DataStruct;
 
 
