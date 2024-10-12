@@ -131,29 +131,110 @@ bool UEquipInventoryComponent::IsRoomAvailable(UItemObject* InItem, FIntPoint In
 
 void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
 {
+
+	HandleEquip(InItem);
+
 	EEquipmentSlotType ItemSlot = InItem->SlotType;
 	/*
 	* 만약 이미 장착된 아이템이 존재하면 
 	* 기존의 장착된 아이템을 뺀후 현재 아이템을 장착한다.
 	*/
-	if (ItemSlot == EEquipmentSlotType::EEST_Weapon)
-	{
-		EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1) ? ItemSlot = EEquipmentSlotType::EEST_Weapon2 : ItemSlot = EEquipmentSlotType::EEST_Weapon1;
-	}
-	InItem->SlotType = ItemSlot;
-	if (EquipmentItems.Contains(ItemSlot))
-	{
-		UItemObject* PrevItem = EquipmentItems[ItemSlot];
-		UnEquipItem(PrevItem);
-	}
-	EquipmentItems.Add({ ItemSlot,InItem });
-	ItemEquipChanged.Broadcast(ItemSlot);
+
+	//Backpack && Chest
 	if (InItem->ItemNumbericData.bExpandableSize)
 	{
 		Rows += InItem->ItemNumbericData.ExpandableInventorySize;
 		InventorySizeChanged.Broadcast();
 	}
 }
+
+void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
+{
+	EEquipmentSlotType ItemSlot = InItem->SlotType;
+	AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
+	if (FPSCharacter == nullptr)
+	{
+		return;
+	}
+	switch (ItemSlot)
+	{
+	case EEquipmentSlotType::EEST_Head:
+		if (EquipmentItems.Contains(ItemSlot))
+		{
+			UItemObject* PrevItem = EquipmentItems[ItemSlot];
+			UnEquipItem(PrevItem);
+		}
+		break;
+	case EEquipmentSlotType::EEST_Chest:
+		if (EquipmentItems.Contains(ItemSlot))
+		{
+			UItemObject* PrevItem = EquipmentItems[ItemSlot];
+			UnEquipItem(PrevItem);
+		}
+		break;
+	case EEquipmentSlotType::EEST_Backpack:
+		if (EquipmentItems.Contains(ItemSlot))
+		{
+			UItemObject* PrevItem = EquipmentItems[ItemSlot];
+			UnEquipItem(PrevItem);
+		}
+		break;
+	case EEquipmentSlotType::EEST_Weapon:
+		// Weapon1에 무기가 장착되어있으면
+	{
+		int InventorySlot = FPSCharacter->GetInventoryComponent()->GetCurrentWeaponSlot();
+		bool bSwapingWeapon{};
+		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1))
+		{
+			//Weapon2에도 무기가 장착되어 있으면
+			if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon2))
+			{
+				//현재 무기의 index를 구해서 그곳으로slot을 정한다.
+				// Index가 0일경우 weapon1 1일경우 weapon2로 만든다.
+				bSwapingWeapon = true;
+				if (InventorySlot == 0)
+				{
+					ItemSlot = EEquipmentSlotType::EEST_Weapon1;
+				}
+				else
+				{
+					ItemSlot = EEquipmentSlotType::EEST_Weapon2;
+				}
+			}
+			else
+			{
+				//weapon1에 장착되어 있지만 2에는 장착이 안됨
+				ItemSlot = EEquipmentSlotType::EEST_Weapon2;
+				InventorySlot = 1;
+			}
+		}
+		else
+		{
+			//아무것도 장착되어 있지 않을때
+			ItemSlot = EEquipmentSlotType::EEST_Weapon1;
+		}
+		InItem->SlotType = ItemSlot;
+
+		const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
+		const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
+		
+		// UPDATEITEM
+		FPSCharacter->GetInventoryComponent()->UpdateWeapon(
+			InItem->WeaponReference,
+			InventorySlot,
+			bSwapingWeapon,
+			true,
+			SpawnTransform,
+			InItem->DataStruct);
+	}
+		break;
+	default:
+		break;
+	}
+	EquipmentItems.Add({ ItemSlot,InItem });
+	ItemEquipChanged.Broadcast(ItemSlot);
+}
+
 
 void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 {
@@ -177,6 +258,7 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
 		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
+		UE_LOG(LogTemp, Warning, TEXT("NowAmmo : %d"), InItem->DataStruct.ClipSize);
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다
 	EquipmentItems.Remove(SlotType);
@@ -227,4 +309,5 @@ bool UEquipInventoryComponent::IsPositionValid(FIntPoint InLocation)
 	// 아이템을 넣을때 해당 위치가 올바른지 확인
 	return InLocation.X >= 0 && InLocation.X <= Columns && InLocation.Y >= 0 && InLocation.Y <= Rows;
 }
+
 

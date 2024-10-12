@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "FPSCharacter.h"
 #include "WeaponBase.h"
+#include "Items/ItemObject.h"
 #include "Components/InventoryComponent.h"
 #include "Components/EquipInventoryComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -152,9 +153,10 @@ void AWeaponPickup::Interact()
 				break;
 			}
 		}
-
+		InitializeItem(UItemObject::StaticClass());
 		// Spawning the new weapon in the player's inventory component
-		PlayerCharacter->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
+		
+		//PlayerCharacter->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
 		PlayerCharacter->GetEquipInventoryComponent()->EquipItem(ItemObject);
 		// Destroying the pickup
 		Destroy();

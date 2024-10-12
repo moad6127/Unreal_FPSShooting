@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponBase.h"
 #include "InteractionBase.h"
 #include "ItemBase.generated.h"
 
@@ -13,7 +14,6 @@
 class USphereComponent;
 class UItemObject;
 class UDataTable;
-class AWeaponBase;
 
 UCLASS()
 class FPSCORE_API AItemBase : public AInteractionBase
@@ -49,9 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTable;
 
-	/** Data table reference for attachments */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* AttachmentsDataTable;
+	/** Local weapon data struct to keep track of ammo amounts and weapon health */
+	UPROPERTY()
+	FRuntimeWeaponData DataStruct;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UDataTable> ItemDataTable;
@@ -69,4 +69,6 @@ protected:
 	int32 ItemSizeY;
 
 private:
+
+	void HandleInteract();
 };

@@ -29,6 +29,10 @@ void AItemBase::Interact()
 	}
 }
 
+void AItemBase::HandleInteract()
+{
+}
+
 void AItemBase::InitializeDrop(UItemObject* ItemToDrop)
 {
 	ItemObject = ItemToDrop;
@@ -40,6 +44,7 @@ void AItemBase::BeginPlay()
 	Super::BeginPlay();
 	InitializeItem(UItemObject::StaticClass());
 }
+
 
 void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 {
@@ -55,6 +60,7 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->ItemName = ItemData->ItemName;
 		ItemObject->WeaponReference = WeaponReference;
 		ItemObject->WeaponDataTable = WeaponDataTable;
+		ItemObject->DataStruct = DataStruct;
 		ItemObject->SetItemSizeX(ItemSizeX);
 		ItemObject->SetItemSizeY(ItemSizeY);
 

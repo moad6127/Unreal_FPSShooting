@@ -103,6 +103,8 @@ private:
 	*/
 	bool IsPositionValid(FIntPoint InLocation);
 
+	void HandleEquip(UItemObject* InItem);
+
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))

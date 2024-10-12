@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "InteractionActor.h"
-#include "WeaponBase.h"
 #include "Items/ItemBase.h"
 #include "WeaponPickup.generated.h"
 
@@ -57,9 +56,6 @@ private:
 	/** Called every time a variable is changed or the actor is moved in the editor */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	/** Local weapon data struct to keep track of ammo amounts and weapon health */
-	UPROPERTY()
-	FRuntimeWeaponData DataStruct;
 
 
 	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */
@@ -81,6 +77,10 @@ private:
 	virtual void BeginPlay() override;
 
 	/** Meshes for Attachments */
+
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
 
 	UPROPERTY()
 	UStaticMeshComponent* BarrelAttachment;

@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "ItemData.h"
+#include "WeaponBase.h"
 #include "ItemObject.generated.h"
 
 /**
  * 
  */
-class AWeaponBase;
 
 UCLASS(BlueprintType, Blueprintable)
 class FPSCORE_API UItemObject : public UObject
@@ -57,9 +57,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTable;
 
-	/** Data table reference for attachments */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* AttachmentsDataTable;
+	/** Local weapon data struct to keep track of ammo amounts and weapon health */
+	UPROPERTY()
+	FRuntimeWeaponData DataStruct;
+
 
 #pragma region FUNCTIONS
 	UItemObject();
