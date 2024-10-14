@@ -48,8 +48,6 @@ void AWeaponPickup::BeginPlay()
 	{
 		MeshComp->SetSimulatePhysics(true);
 	}
-
-	InteractionText = WeaponName;
 }
 
 // Updating the appearance of the pickup in the editor
@@ -106,6 +104,7 @@ void AWeaponPickup::SpawnAttachmentMesh()
 						else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
 						{
 							SightsAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+							SightsAttachment->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachmentData->AttachSocketName);
 						}
 						else if (AttachmentData->AttachmentType == EAttachmentType::Stock)
 						{

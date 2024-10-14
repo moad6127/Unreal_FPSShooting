@@ -175,6 +175,7 @@ void AWeaponBase::SpawnAttachments()
                 else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
                 {
                     SightsAttachment->SetSkeletalMesh(AttachmentData->AttachmentMesh);
+                    SightsAttachment->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachmentData->AttachSocketName);
                     VerticalCameraOffset = AttachmentData->VerticalCameraOffset;
                     WeaponData.bAimingFOV = AttachmentData->bAimingFOV;
                     WeaponData.AimingFOVChange = AttachmentData->AimingFOVChange;

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InteractionBase.h"
 #include "WeaponBase.h"
+#include "Items/ItemBase.h"
 #include "AmmoPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -41,7 +42,7 @@ struct FAmmoTypeData
 };
 
 UCLASS()
-class FPSCORE_API AAmmoPickup : public AInteractionBase
+class FPSCORE_API AAmmoPickup : public AItemBase
 {
 	GENERATED_BODY()
 

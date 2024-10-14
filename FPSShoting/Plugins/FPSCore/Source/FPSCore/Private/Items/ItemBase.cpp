@@ -37,6 +37,7 @@ void AItemBase::InitializeDrop(UItemObject* ItemToDrop)
 {
 	ItemObject = ItemToDrop;
 	MeshComp->SetStaticMesh(ItemToDrop->Asset.Mesh);
+	InteractionText = ItemObject->ItemName;
 }
 
 void AItemBase::BeginPlay()
@@ -68,6 +69,7 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		{
 			MeshComp->SetStaticMesh(ItemData->Asset.Mesh);
 		}
+		InteractionText = ItemObject->ItemName;
 	}
 	else
 	{

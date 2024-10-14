@@ -433,7 +433,7 @@ protected:
 	bool bRestrictingSprint = false;
 	
 	/** Whether we should display a crosshair or not */
-	bool bShowCrosshair;
+	bool bShowCrosshair = true;
 	
 	/** Whether the player is actually aiming down sights */
 	bool bIsAiming;

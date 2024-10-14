@@ -88,7 +88,7 @@ private:
 	UPROPERTY()
 	UStaticMeshComponent* MagazineAttachment;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* SightsAttachment;
 	
 	UPROPERTY()

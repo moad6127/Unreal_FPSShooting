@@ -67,7 +67,6 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 	const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
 
 	AItemBase* DropItem = GetWorld()->SpawnActor<AItemBase>(AItemBase::StaticClass(), SpawnTransform, SpawnParams);
-
 	//Drop아이템에 대해서 Initialize해주기
 	DropItem->InitializeDrop(ItemToDrop);
 }

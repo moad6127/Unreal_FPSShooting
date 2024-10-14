@@ -299,11 +299,13 @@ void AFPSCharacter::StopSlide()
 void AFPSCharacter::StartAds()
 {
     bWantsToAim = true;
+    SetCrosshairVisibility(false);
 }
 
 void AFPSCharacter::StopAds()
 {
     bWantsToAim = false;
+    SetCrosshairVisibility(true);
 }
 
 void AFPSCharacter::CheckVault()
@@ -726,6 +728,14 @@ void AFPSCharacter::Tick(const float DeltaTime)
                     GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
                 }
                 GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
+            }
+        }
+        if (const AFPSCharacterController* PlayerController = Cast<AFPSCharacterController>(GetController()))
+        {
+            for (auto e : PlayerController->AmmoMap)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(e.Value));
+
             }
         }
         

@@ -137,6 +137,9 @@ struct FAttachmentData : public FTableRowBase
 	/** The type of attachment */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
 	EAttachmentType AttachmentType;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
+	FName AttachSocketName;
 
 	/** Attachments that are incompatible with the given attachment */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
@@ -776,7 +779,7 @@ protected:
 	USkeletalMeshComponent* MagazineAttachment;
 
 	/** The skeletal mesh used to hold the current sights attachment */
-	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* SightsAttachment;
 
 	/** The skeletal mesh used to hold the current stock attachment */
