@@ -602,6 +602,7 @@ void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
     }
 }
 
+
 // Called every frame
 void AFPSCharacter::Tick(const float DeltaTime)
 {

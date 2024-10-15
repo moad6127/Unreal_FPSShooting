@@ -27,6 +27,12 @@ protected:
 
 	void ShowInventory();
 
+	/* Crosshair Texture Set */
+	void SetHUDCrosshair(float DeltaTime);
+
+	/** Called every frame */
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY()
 	AFPSHUD* HUD;
 

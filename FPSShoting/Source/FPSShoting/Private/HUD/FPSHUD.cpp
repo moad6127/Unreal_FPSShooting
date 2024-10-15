@@ -51,6 +51,41 @@ void AFPSHUD::ShowInventory()
     }
 }
 
+void AFPSHUD::DrawHUD()
+{
+    Super::DrawHUD();
+    if (!HUDPackage.bDrawCrosshair)
+    {
+        return;
+    }
+    FVector2D ViewportSize;
+    if (GEngine)
+    {
+        GEngine->GameViewport->GetViewportSize(ViewportSize);
+        const FVector2D ViewportCenter(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+        if (HUDPackage.CrosshairCenter)
+        {
+            DrawCrosshair(HUDPackage.CrosshairCenter, ViewportCenter);
+        }
+        if (HUDPackage.CrosshairTop)
+        {
+            DrawCrosshair(HUDPackage.CrosshairTop, ViewportCenter);
+        }
+        if (HUDPackage.CrosshairBottom)
+        {
+            DrawCrosshair(HUDPackage.CrosshairBottom, ViewportCenter);
+        }
+        if (HUDPackage.CrosshairLeft)
+        {
+            DrawCrosshair(HUDPackage.CrosshairLeft, ViewportCenter);
+        }
+        if (HUDPackage.CrosshairRight)
+        {
+            DrawCrosshair(HUDPackage.CrosshairRight, ViewportCenter);
+        }
+    }
+}
+
 void AFPSHUD::DisplayInventory()
 {
     if (InventoryWidget)
@@ -73,4 +108,27 @@ void AFPSHUD::HideInventory()
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(false);
     }
+}
+
+void AFPSHUD::DrawCrosshair(UTexture2D* CrosshairTexture, FVector2D ViewportCenter)
+{
+    const float TextureWidth = CrosshairTexture->GetSizeX();
+    const float TextureHeight = CrosshairTexture->GetSizeY();
+    const FVector2D TextureDrawPoint(
+        ViewportCenter.X - (TextureWidth / 2.f),
+        ViewportCenter.Y - (TextureHeight / 2.f)
+    );
+
+    DrawTexture(
+        CrosshairTexture,
+        TextureDrawPoint.X,
+        TextureDrawPoint.Y,
+        TextureWidth,
+        TextureHeight,
+        0.f,
+        0.f,
+        1.f,
+        1.f,
+        FLinearColor::White
+    );
 }

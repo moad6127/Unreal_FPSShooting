@@ -332,6 +332,7 @@ void AWeaponBase::Fire()
             
             float WeaponPitchVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponPitchVariation;
             float WeaponYawVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponYawVariation;
+
             TraceStartRotation.Pitch += FMath::FRandRange(
                 -((WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier),
                 (WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier);

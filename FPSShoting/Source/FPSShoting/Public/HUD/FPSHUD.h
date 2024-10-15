@@ -14,6 +14,19 @@ struct FWidgetControllerParams;
 class UEquipInventoryComponent;
 class UBasicWidgetController;
 
+USTRUCT(BlueprintType)
+struct FHUDPackage
+{
+	GENERATED_BODY()
+public:
+	bool bDrawCrosshair;
+	class UTexture2D* CrosshairCenter;
+	UTexture2D* CrosshairLeft;
+	UTexture2D* CrosshairRight;
+	UTexture2D* CrosshairTop;
+	UTexture2D* CrosshairBottom;
+};
+
 UCLASS()
 class FPSSHOTING_API AFPSHUD : public AHUD
 {
@@ -24,6 +37,8 @@ public:
 	void InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventoryComponent);
 
 	void ShowInventory();
+	virtual void DrawHUD() override;
+	void SetHUDPackage(const FHUDPackage& InHUDPackage) { HUDPackage = InHUDPackage; }
 protected:
 
 	TObjectPtr<UBasicWidget> InventoryWidget;
@@ -41,8 +56,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBasicWidget>InteractWidgetClass;
 
+	FHUDPackage HUDPackage;
+
 	bool bIsInventoryVisible;
 
 	void DisplayInventory();
 	void HideInventory();
+
+	void DrawCrosshair(UTexture2D* CrosshairTexture, FVector2D ViewportCenter);
 };

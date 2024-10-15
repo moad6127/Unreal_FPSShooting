@@ -304,9 +304,11 @@ protected:
 
 	/** Ends ADS */
 	void StopAds();
-		
+	
+
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
+
 
 #pragma endregion 
 

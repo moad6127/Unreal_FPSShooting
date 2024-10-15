@@ -649,6 +649,21 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
 	UTexture2D* WeaponIcon;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* CrosshairCenter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* CrosshairTop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* CrosshairLeft;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* CrosshairDown;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* CrosshairRight;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Decal")
 	UMaterial* DecalMaterial;
 
