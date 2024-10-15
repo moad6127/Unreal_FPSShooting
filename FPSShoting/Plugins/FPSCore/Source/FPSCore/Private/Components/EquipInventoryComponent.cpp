@@ -4,8 +4,10 @@
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
 #include "Items/ItemBase.h"
+#include "Items/ItemData.h"
 #include "FPSCharacter.h"
 #include "Components/InventoryComponent.h"
+#include "FPSCharacterController.h"
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
@@ -26,6 +28,16 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 			FIntPoint Location(j, i);
 			if (IsRoomAvailable(InItem, Location))
 			{
+				/*
+				* 반환값이 true일경우 Equip창에 아이템이 장착되는 상황
+				* 반환값이 false일경우 Equip창에 이미 장착된 아이템이 존재해서
+				* 인벤토리로 들어가야 하는 상황.
+				*/
+				if (!HandleAddItem(InItem))
+				{
+					return true;
+				}
+
 				PlaceItem(InItem, Location);
 				InItem->SetItemItemLocation(Location);
 				InventoryItems.Add(InItem);
@@ -35,6 +47,33 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 		}
 	}
 	return false;
+}
+
+bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
+{
+	EEquipmentSlotType ItemType = InItem->SlotType;
+
+	switch (ItemType)
+	{
+	case EEquipmentSlotType::EEST_Head:
+	case EEquipmentSlotType::EEST_Chest:
+	case EEquipmentSlotType::EEST_Backpack:
+		if (!EquipmentItems.Contains(ItemType))
+		{
+			EquipItem(InItem);
+			return false;
+		}
+		break;
+	case EEquipmentSlotType::EEST_Weapon:
+
+		//TODO : weapon창에 weapon이 있을경우 인벤토리 창으로 넣기
+		// 없을 경우 아이템 장착
+		break;
+	case EEquipmentSlotType::EEST_Ammo:
+		AmmoAdd(InItem);
+		break;
+	}
+	return true;
 }
 
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
@@ -181,7 +220,7 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	case EEquipmentSlotType::EEST_Weapon:
 		// Weapon1에 무기가 장착되어있으면
 	{
-		int InventorySlot = FPSCharacter->GetInventoryComponent()->GetCurrentWeaponSlot();
+		int InventorySlot{};
 		bool bSwapingWeapon{};
 		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1))
 		{
@@ -217,14 +256,26 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 		const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
 		const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
 		
-		// UPDATEITEM
-		FPSCharacter->GetInventoryComponent()->UpdateWeapon(
-			InItem->WeaponReference,
-			InventorySlot,
-			bSwapingWeapon,
-			true,
-			SpawnTransform,
-			InItem->DataStruct);
+
+
+	 /*UPDATEITEM*/
+		if (bSwapingWeapon)
+		{
+			InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
+			TryAddItem(InItem);
+			return;
+		}
+		else
+		{
+			FPSCharacter->GetInventoryComponent()->UpdateWeapon(
+				InItem->WeaponReference,
+				InventorySlot,
+				bSwapingWeapon,
+				true,
+				SpawnTransform,
+				InItem->DataStruct);
+		}
+
 	}
 		break;
 	default:
@@ -232,6 +283,15 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	}
 	EquipmentItems.Add({ ItemSlot,InItem });
 	ItemEquipChanged.Broadcast(ItemSlot);
+}
+
+void UEquipInventoryComponent::AmmoAdd(UItemObject* InItem)
+{
+	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(GetOwner());
+	EAmmoType AmmoType = InItem->AmmoType;
+
+	CharacterController->AmmoMap[AmmoType] += InItem->ItemQuantity;
+	
 }
 
 
@@ -310,5 +370,7 @@ bool UEquipInventoryComponent::IsPositionValid(FIntPoint InLocation)
 	// 아이템을 넣을때 해당 위치가 올바른지 확인
 	return InLocation.X >= 0 && InLocation.X <= Columns && InLocation.Y >= 0 && InLocation.Y <= Rows;
 }
+
+
 
 

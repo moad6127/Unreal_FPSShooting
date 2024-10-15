@@ -73,6 +73,15 @@ void AWeaponPickup::SpawnAttachmentMesh()
 	{
 		if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
 		{
+			// Applying default values if the weapon doesn't use attachments
+			if (!bRuntimeSpawned)
+			{
+				DataStruct.AmmoType = WeaponData->AmmoToUse;
+				DataStruct.ClipCapacity = WeaponData->ClipCapacity;
+				DataStruct.ClipSize = WeaponData->ClipSize;
+				DataStruct.WeaponHealth = 100.0f;
+			}
+
 			// Spawning attachments if the weapon has them and the attachments table exists
 			if (WeaponData->bHasAttachments && AttachmentsDataTable)
 			{
@@ -115,17 +124,6 @@ void AWeaponPickup::SpawnAttachmentMesh()
 							GripAttachment->SetStaticMesh(AttachmentData->PickupMesh);
 						}
 					}
-				}
-			}
-			else
-			{
-				// Applying default values if the weapon doesn't use attachments
-				if (!bRuntimeSpawned)
-				{
-					DataStruct.AmmoType = WeaponData->AmmoToUse;
-					DataStruct.ClipCapacity = WeaponData->ClipCapacity;
-					DataStruct.ClipSize = WeaponData->ClipSize;
-					DataStruct.WeaponHealth = 100.0f;
 				}
 			}
 		}

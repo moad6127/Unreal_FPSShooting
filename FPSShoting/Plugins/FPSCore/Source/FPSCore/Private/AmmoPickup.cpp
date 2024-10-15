@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/EquipInventoryComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
@@ -64,7 +65,10 @@ void AAmmoPickup::Interact()
 		}
 
 		// Adding ammo to our character's ammo map
-		CharacterController->AmmoMap[AmmoType] += AmmoData[AmmoType].AmmoCounts[AmmoAmount];
+		//CharacterController->AmmoMap[AmmoType] += AmmoData[AmmoType].AmmoCounts[AmmoAmount];
+
+		PlayerCharacter->GetEquipInventoryComponent()->TryAddItem(ItemObject);
+		
 
 		// Debug print of the ammo after pickup
 		if (bDrawDebug)
@@ -80,7 +84,10 @@ void AAmmoPickup::Interact()
 		if (!bInfinite)
 		{
 			SetEmptyMesh();
+			Destroy();
 		}
+
+
 	}
 }
 
