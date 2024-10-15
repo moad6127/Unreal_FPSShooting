@@ -6,18 +6,6 @@
 #include "Engine/DataTable.h"
 #include "ItemData.generated.h"
 
-/** Enumerator holding the 4 types of ammunition that weapons can use (used as part of the FSingleWeaponParams struct)
- * and to keep track of the total ammo the player has (ammoMap) */
-UENUM(BlueprintType)
-enum class EAmmoType : uint8
-{
-	None		 UMETA(DisplayName = "None"),
-	Pistol       UMETA(DisplayName = "Pistol Ammo"),
-	Rifle        UMETA(DisplayName = "Rifle Ammo"),
-	Shotgun      UMETA(DisplayName = "Shotgun Ammo"),
-	Special		 UMETA(DisplayName = "Special Ammo"),
-};
-
 USTRUCT(BlueprintType)
 struct FLine
 {
@@ -37,8 +25,6 @@ struct FItemNumericData
 
 	UPROPERTY(EditAnywhere)
 	int32 MaxStackSize;
-
-
 
 	UPROPERTY(EditAnywhere)
 	int32 ExpandableInventorySize;
@@ -79,7 +65,6 @@ enum class EEquipmentSlotType : uint8
 	EEST_Chest UMETA(DisplayName = "Chest"),
 	EEST_Backpack UMETA(DisplayName = "Backpack"),
 	EEST_Weapon UMETA(DisplayName = "Weapon"),
-	EEST_Ammo UMETA(DisplayName = "Ammo"),
 	EEST_Weapon1 UMETA(DisplayName = "Weapon1"),
 	EEST_Weapon2 UMETA(DisplayName = "Weapon2"),
 
@@ -103,9 +88,6 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemAssetData Asset;
-
-	UPROPERTY(EditAnywhere, Category = "Item Data")
-	int32 ItemQuantity;
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FText ItemName;

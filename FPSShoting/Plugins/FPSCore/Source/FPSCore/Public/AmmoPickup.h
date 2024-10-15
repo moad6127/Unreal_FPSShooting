@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "InteractionBase.h"
-//#include "WeaponBase.h"
+#include "WeaponBase.h"
 #include "Items/ItemBase.h"
-#include "Items/ItemData.h"
 #include "AmmoPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -77,6 +76,10 @@ private:
 	/** The amount of ammo (low/medium/high that this instance should have */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")
 	EAmmoAmount AmmoAmount;
+
+	/** The type of ammo that this instance should have */
+	UPROPERTY(EditInstanceOnly, Category = "Properties")
+	EAmmoType AmmoType;
 
 	/** Whether this is an infinite ammo box or not */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")

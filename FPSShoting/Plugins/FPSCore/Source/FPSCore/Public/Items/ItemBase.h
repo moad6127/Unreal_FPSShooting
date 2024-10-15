@@ -41,12 +41,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
 
-	/*
-	* WeaponData
-	*/
-
 	/** Weapon to spawn when picked up */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data Table")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<AWeaponBase> WeaponReference;
 
 	/** Data table reference for weapon (used to see if the weapon has attachments) */
@@ -57,25 +53,14 @@ protected:
 	UPROPERTY()
 	FRuntimeWeaponData DataStruct;
 
-	/*
-	* Ammo Data
-	*/
-
-	/** The type of ammo that this instance should have */
-	UPROPERTY(EditAnywhere, Category = "Ammo Data Table")
-	EAmmoType AmmoType;
-
-	/*
-	* Base Item Data
-	*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UDataTable> ItemDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	FName DesiredItemID;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
-	int32 ItemQuantity;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
+	//int32 ItemQuantity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	int32 ItemSizeX;

@@ -24,9 +24,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	FName ID;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
-	int32 ItemQuantity;
-
 	/*
 	* EquipmentSlotType
 	*/
@@ -52,9 +49,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FText ItemName;
 
-	/*
-	* Weapon Data
-	*/
 	/** Weapon to spawn when picked up */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<AWeaponBase> WeaponReference;
@@ -66,15 +60,6 @@ public:
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
 	UPROPERTY(BlueprintReadOnly)
 	FRuntimeWeaponData DataStruct;
-
-	/*
-	* Ammo Data
-	*/
-
-	/** The type of ammo that this instance should have */
-	UPROPERTY(EditInstanceOnly, Category = "Properties")
-	EAmmoType AmmoType;
-
 
 
 #pragma region FUNCTIONS
