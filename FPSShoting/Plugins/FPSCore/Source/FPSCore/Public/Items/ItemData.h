@@ -18,7 +18,7 @@ struct FLine
 	FVector2D End = FVector2D();
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FItemNumericData
 {
 	GENERATED_BODY()
@@ -30,6 +30,9 @@ struct FItemNumericData
 	int32 ExpandableInventorySize;
 
 	UPROPERTY(EditAnywhere)
+	int32 ItemQuantity;
+
+	UPROPERTY(EditAnywhere)
 	bool bIsStackable;
 
 	UPROPERTY(EditAnywhere)
@@ -37,12 +40,20 @@ struct FItemNumericData
 
 	UPROPERTY(EditAnywhere)
 	bool bExpandableSize;
-
-	UPROPERTY(EditAnywhere)
-	bool bIsWeapon;
 };
 
-USTRUCT()
+/** Enumerator holding the 4 types of ammunition that weapons can use (used as part of the FSingleWeaponParams struct)
+ * and to keep track of the total ammo the player has (ammoMap) */
+UENUM(BlueprintType)
+enum class EAmmoType : uint8
+{
+	Pistol       UMETA(DisplayName = "Pistol Ammo"),
+	Rifle        UMETA(DisplayName = "Rifle Ammo"),
+	Shotgun      UMETA(DisplayName = "Shotgun Ammo"),
+	Special		 UMETA(DisplayName = "Special Ammo"),
+};
+
+USTRUCT(BlueprintType)
 struct FItemAssetData
 {
 	GENERATED_BODY()
@@ -57,6 +68,31 @@ struct FItemAssetData
 	UStaticMesh* Mesh;
 };
 
+USTRUCT(BlueprintType)
+struct FWeaponData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	bool bIsWeapon;
+
+	/** Weapon to spawn when picked up */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (EditCondition = "bIsWeapon == true"))
+	TSubclassOf<class AWeaponBase> WeaponReference;
+
+	/** Data table reference for weapon (used to see if the weapon has attachments) */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table", meta = (EditCondition = "bIsWeapon == true"))
+	UDataTable* WeaponDataTable;
+
+	/*
+	* AmmoData
+	*/
+
+	/** The type of ammo that this instance should have */
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Properties")
+	EAmmoType AmmoType;
+};
+
 UENUM(BlueprintType)
 enum class EEquipmentSlotType : uint8
 {
@@ -64,6 +100,7 @@ enum class EEquipmentSlotType : uint8
 	EEST_Head UMETA(DisplayName = "Head"),
 	EEST_Chest UMETA(DisplayName = "Chest"),
 	EEST_Backpack UMETA(DisplayName = "Backpack"),
+	EEST_Ammo UMETA(DisplayName = "Ammo"),
 	EEST_Weapon UMETA(DisplayName = "Weapon"),
 	EEST_Weapon1 UMETA(DisplayName = "Weapon1"),
 	EEST_Weapon2 UMETA(DisplayName = "Weapon2"),
@@ -72,7 +109,7 @@ enum class EEquipmentSlotType : uint8
 
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FItemData : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -91,5 +128,8 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FText ItemName;
+
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	FWeaponData WeaponData;
 };
 

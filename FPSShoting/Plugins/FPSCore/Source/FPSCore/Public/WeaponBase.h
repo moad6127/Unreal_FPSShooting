@@ -6,6 +6,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/DataTable.h"
+#include "Items/ItemData.h"
 #include "GameFramework/Actor.h"
 #include "Engine/HitResult.h"
 #include "WeaponBase.generated.h"
@@ -25,16 +26,7 @@ class UDataTable;
 class AWeaponPickup;
 class UItemObject;
 
-/** Enumerator holding the 4 types of ammunition that weapons can use (used as part of the FSingleWeaponParams struct)
- * and to keep track of the total ammo the player has (ammoMap) */
-UENUM(BlueprintType)
-enum class EAmmoType : uint8
-{
-	Pistol       UMETA(DisplayName = "Pistol Ammo"),
-	Rifle        UMETA(DisplayName = "Rifle Ammo"),
-	Shotgun      UMETA(DisplayName = "Shotgun Ammo"),
-	Special		 UMETA(DisplayName = "Special Ammo"),
-};
+
 
 /** Enumerator holding all the possible typed of attachment */
 UENUM()

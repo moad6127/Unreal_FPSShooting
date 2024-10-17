@@ -59,8 +59,7 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
 		ItemObject->Asset = ItemData->Asset;
 		ItemObject->ItemName = ItemData->ItemName;
-		ItemObject->WeaponReference = WeaponReference;
-		ItemObject->WeaponDataTable = WeaponDataTable;
+		ItemObject->WeaponData = ItemData->WeaponData;
 		ItemObject->DataStruct = DataStruct;
 		ItemObject->SetItemSizeX(ItemSizeX);
 		ItemObject->SetItemSizeY(ItemSizeY);

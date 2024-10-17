@@ -104,6 +104,11 @@ private:
 	bool IsPositionValid(FIntPoint InLocation);
 
 	void HandleEquip(UItemObject* InItem);
+	bool HandleAddItem(UItemObject* InItem);
+
+	void AddAmmo(UItemObject* InItem);
+	void RemoveAmmo(UItemObject* InItem);
+
 
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 

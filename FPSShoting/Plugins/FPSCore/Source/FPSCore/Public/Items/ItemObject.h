@@ -33,33 +33,30 @@ public:
 	/*
 	* NumbericData : StackSize, ExpandableSize(more InventorySize plus), bRotate ...
 	*/
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemNumericData ItemNumbericData;
 
 	/*
 	*  Mesh, ItemIcon ..
 	*/
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemAssetData Asset;
 
 	/*
 	* Item Name(Use Widget Text)
 	*/
 
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FText ItemName;
 
-	/** Weapon to spawn when picked up */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AWeaponBase> WeaponReference;
-
-	/** Data table reference for weapon (used to see if the weapon has attachments) */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* WeaponDataTable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	FWeaponData WeaponData;
 
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
 	UPROPERTY(BlueprintReadOnly)
 	FRuntimeWeaponData DataStruct;
+
+
 
 
 #pragma region FUNCTIONS
