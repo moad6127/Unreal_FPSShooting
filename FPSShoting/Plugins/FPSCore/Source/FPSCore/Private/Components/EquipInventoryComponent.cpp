@@ -64,6 +64,11 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		AddAmmo(InItem);
 		break;
 	case EEquipmentSlotType::EEST_Weapon:
+		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1)
+			&& EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon2))
+		{
+			break;
+		}
 		EquipItem(InItem);
 		return true;
 		break;
@@ -262,11 +267,7 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 			//아무것도 장착되어 있지 않을때
 			ItemSlot = EEquipmentSlotType::EEST_Weapon1;
 		}
-		InItem->SlotType = ItemSlot;
 
-		const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
-		const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
-		
 		if (bSwapingWeapon)
 		{
 			TryAddItem(InItem);
@@ -274,6 +275,10 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 		else
 		{
 			// UPDATEITEM
+			InItem->SlotType = ItemSlot;
+			const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
+			const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
+
 			FPSCharacter->GetInventoryComponent()->UpdateWeapon(
 				InItem->WeaponData.WeaponReference,
 				InventorySlot,
@@ -329,6 +334,12 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		Rows -= InItem->ItemNumbericData.ExpandableInventorySize;
 		InventorySizeChanged.Broadcast();
 	}
+}
+
+void UEquipInventoryComponent::ConsumeItem(UItemObject* InItem, int32 ConsumeAmount)
+{
+	InItem->ItemQuantity -= ConsumeAmount;
+	InventoryChanged.Broadcast();
 }
 
 void UEquipInventoryComponent::BeginPlay()

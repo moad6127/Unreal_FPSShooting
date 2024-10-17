@@ -56,6 +56,7 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		//TODO : ItemValueSet
 		ItemObject->ID = ItemData->ID;
 		ItemObject->SlotType = ItemData->SlotType;
+		ItemObject->ItemQuantity = ItemQuantity;
 		ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
 		ItemObject->Asset = ItemData->Asset;
 		ItemObject->ItemName = ItemData->ItemName;

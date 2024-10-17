@@ -196,8 +196,10 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     	{
     		SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
     	}
+		
         SpawnedWeapon->SetRuntimeWeaponData(DataStruct);
         SpawnedWeapon->SpawnAttachments();
+		
 		
         EquippedWeapons.Add(InventoryPosition, SpawnedWeapon);
 

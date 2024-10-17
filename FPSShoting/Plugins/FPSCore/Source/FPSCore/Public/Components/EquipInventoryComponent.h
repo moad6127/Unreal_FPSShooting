@@ -75,6 +75,8 @@ public:
 	*/
 	void UnEquipItem(UItemObject* InItem);
 
+	void ConsumeItem(UItemObject* InItem, int32 ConsumeAmount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

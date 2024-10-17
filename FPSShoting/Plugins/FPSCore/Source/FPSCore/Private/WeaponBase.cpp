@@ -17,6 +17,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Engine/World.h"
+#include "Components/EquipInventoryComponent.h"
+#include "Items/ItemObject.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -719,12 +721,45 @@ void AWeaponBase::UpdateAmmo()
         GeneralWeaponData.ClipSize = GeneralWeaponData.ClipCapacity + Value;
         // Finally, we remove temp (and an extra bullet, if one is chambered) from the player's ammunition store
         CharacterController->AmmoMap[GeneralWeaponData.AmmoType] -= (Temp + Value);
+
+        /*
+        * Inventory에 있는 Ammo의 수를 줄인다.
+        */
+        int RemoveInventory = (Temp + Value);
+        while (RemoveInventory)
+        {
+            for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
+            {
+                if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
+                    Item->WeaponData.AmmoType == GeneralWeaponData.AmmoType)
+                {
+                    if (Item->ItemQuantity >= RemoveInventory)
+                    {
+                        PlayerCharacter->GetEquipInventoryComponent()->ConsumeItem(Item, RemoveInventory);
+                        RemoveInventory = 0;
+                    }
+                    else
+                    {
+                        PlayerCharacter->GetEquipInventoryComponent()->RemoveItems(Item);
+                        RemoveInventory -= Item->ItemQuantity;
+                    }
+                }
+            }
+        }
     }
     // If we don't, add the remaining ammunition to the clip, and set the remaining ammunition to 0
     else
     {
         GeneralWeaponData.ClipSize = GeneralWeaponData.ClipSize + CharacterController->AmmoMap[GeneralWeaponData.AmmoType];
         CharacterController->AmmoMap[GeneralWeaponData.AmmoType] = 0;
+        for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
+        {
+            if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
+                Item->WeaponData.AmmoType == GeneralWeaponData.AmmoType)
+            {
+                PlayerCharacter->GetEquipInventoryComponent()->RemoveItems(Item);
+            }
+        }
     }
 
     // Print debug strings

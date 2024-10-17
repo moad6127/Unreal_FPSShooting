@@ -153,7 +153,7 @@ void AWeaponPickup::Interact()
 		// Spawning the new weapon in the player's inventory component
 		
 		//PlayerCharacter->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
-		PlayerCharacter->GetEquipInventoryComponent()->EquipItem(ItemObject);
+		PlayerCharacter->GetEquipInventoryComponent()->TryAddItem(ItemObject);
 		// Destroying the pickup
 		Destroy();
 	}

@@ -24,6 +24,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	FName ID;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
+	int32 ItemQuantity;
+
 	/*
 	* EquipmentSlotType
 	*/
@@ -99,6 +102,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
 	int32 SizeY;
+
 
 	/*
 	* Inventory Item Location (X , Y) Position
