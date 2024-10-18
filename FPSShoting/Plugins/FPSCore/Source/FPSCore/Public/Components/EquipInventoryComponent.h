@@ -77,6 +77,8 @@ public:
 
 	void ConsumeItem(UItemObject* InItem, int32 ConsumeAmount);
 
+	void SplitItem(UItemObject* InItem);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

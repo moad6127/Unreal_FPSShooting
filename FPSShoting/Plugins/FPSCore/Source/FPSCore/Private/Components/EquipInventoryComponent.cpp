@@ -61,7 +61,12 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		}
 		break;
 	case EEquipmentSlotType::EEST_Ammo:
-		AddAmmo(InItem);
+		if (!InItem->bIsCopy)
+		{
+			AddAmmo(InItem);
+		}
+		InItem->ResetItemFlags();
+
 		break;
 	case EEquipmentSlotType::EEST_Weapon:
 		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1)
@@ -124,6 +129,10 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 	AItemBase* DropItem = GetWorld()->SpawnActor<AItemBase>(AItemBase::StaticClass(), SpawnTransform, SpawnParams);
 	//Drop아이템에 대해서 Initialize해주기
 	DropItem->InitializeDrop(ItemToDrop);
+	if (ItemToDrop->SlotType == EEquipmentSlotType::EEST_Ammo)
+	{
+		RemoveAmmo(ItemToDrop);
+	}
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
@@ -338,9 +347,37 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 
 void UEquipInventoryComponent::ConsumeItem(UItemObject* InItem, int32 ConsumeAmount)
 {
-	InItem->ItemQuantity -= ConsumeAmount;
-	InventoryChanged.Broadcast();
+	if (InItem->ItemNumbericData.bIsStackable)
+	{
+		int32 RemoveAmount = FMath::Min(ConsumeAmount, InItem->ItemQuantity);
+		InItem->ItemQuantity -= RemoveAmount;
+		InventoryChanged.Broadcast();
+	}
 }
+
+void UEquipInventoryComponent::SplitItem(UItemObject* InItem)
+{
+	if (InItem->ItemNumbericData.bIsStackable)
+	{
+		int32 SplitAmount = InItem->ItemQuantity / 2;
+		if (SplitAmount)
+		{
+			UItemObject* NewItem;
+			NewItem = InItem->CreateItemCopy();
+
+			NewItem->ItemQuantity = SplitAmount;
+			ConsumeItem(InItem, SplitAmount);
+
+
+			if (!TryAddItem(NewItem))
+			{
+				DropItem(NewItem);
+			}
+		}
+	}
+
+}
+
 
 void UEquipInventoryComponent::BeginPlay()
 {

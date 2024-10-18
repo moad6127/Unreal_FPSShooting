@@ -71,8 +71,4 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		}
 		InteractionText = ItemObject->ItemName;
 	}
-	else
-	{
-		return;
-	}
 }

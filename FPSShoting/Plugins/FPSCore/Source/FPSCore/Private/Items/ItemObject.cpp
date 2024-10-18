@@ -12,14 +12,23 @@ UItemObject* UItemObject::CreateItemCopy()
 	UItemObject* ItemCopy = NewObject<UItemObject>(StaticClass());
 	ItemCopy->ID = ID;
 	ItemCopy->SlotType = SlotType;
+	ItemCopy->ItemQuantity = ItemQuantity;
 	ItemCopy->ItemNumbericData = ItemNumbericData;
 	ItemCopy->Asset = Asset;
 	ItemCopy->ItemName = ItemName;
+	ItemCopy->WeaponData = WeaponData;
+	ItemCopy->DataStruct = DataStruct;
 	ItemCopy->SetItemSizeX(SizeX);
 	ItemCopy->SetItemSizeY(SizeY);
 	ItemCopy->SetItemItemLocation(ItemLocation);
+	ItemCopy->bIsCopy = true;
 
 	return ItemCopy;
+}
+
+void UItemObject::ResetItemFlags()
+{
+	bIsCopy = false;
 }
 
 void UItemObject::SetItemItemLocation(FIntPoint InItemLocation)

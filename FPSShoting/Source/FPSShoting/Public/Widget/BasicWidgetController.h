@@ -71,6 +71,9 @@ public:
 	void UnEquipItem(UItemObject* ItemToUnEquip);
 
 	UFUNCTION(BlueprintCallable)
+	void SplitItem(UItemObject* SplitToItem);
+
+	UFUNCTION(BlueprintCallable)
 	void MousePositionInTile(const FVector2D MousePosition, bool& Right, bool& Down);
 protected:
 	/*

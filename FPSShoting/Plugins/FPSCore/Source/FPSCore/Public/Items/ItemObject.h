@@ -59,6 +59,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FRuntimeWeaponData DataStruct;
 
+	bool bIsCopy = false;
 
 
 
@@ -66,6 +67,8 @@ public:
 	UItemObject();
 
 	UItemObject* CreateItemCopy();
+
+	void ResetItemFlags();
 
 	FIntPoint GetItemItemLocation() const { return ItemLocation; }
 	int32 GetSizeX() const { return SizeX; }

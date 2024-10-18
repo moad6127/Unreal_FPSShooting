@@ -85,6 +85,14 @@ void UBasicWidgetController::UnEquipItem(UItemObject* ItemToUnEquip)
 	}
 }
 
+void UBasicWidgetController::SplitItem(UItemObject* SplitToItem)
+{
+	if (GetEquipInventoryComponent())
+	{
+		GetEquipInventoryComponent()->SplitItem(SplitToItem);
+	}
+}
+
 void UBasicWidgetController::MousePositionInTile(const FVector2D MousePosition, bool& Right, bool& Down)
 {
 	Right = false;
