@@ -61,6 +61,8 @@ public:
 
 	bool bIsCopy = false;
 
+	bool InInventorys = false;
+
 
 
 #pragma region FUNCTIONS
@@ -87,13 +89,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetItemIcon();
-#pragma endregion
-protected:
 
 	bool operator==(const FName& OtherID) const
 	{
 		return ID == OtherID;
 	}
+#pragma endregion
+protected:
+
+
 
 private:
 

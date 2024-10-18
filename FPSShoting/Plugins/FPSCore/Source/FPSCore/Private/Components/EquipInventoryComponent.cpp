@@ -33,6 +33,8 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 				}
 				PlaceItem(InItem, Location);
 				InItem->SetItemItemLocation(Location);
+				InItem->InInventorys = true;
+				InItem->bIsCopy = false;
 				InventoryItems.Add(InItem);
 				InventoryChanged.Broadcast();
 				return true;
@@ -44,6 +46,7 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 
 bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 {
+	bool Flag = false;
 	EEquipmentSlotType SlotType = InItem->SlotType;
 	switch (SlotType)
 	{
@@ -57,16 +60,14 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		if (!EquipmentItems.Contains(SlotType))
 		{
 			EquipItem(InItem);
-			return true;
+			Flag = true;
 		}
 		break;
 	case EEquipmentSlotType::EEST_Ammo:
-		if (!InItem->bIsCopy)
+		if (!InItem->bIsCopy && !InItem->InInventorys)
 		{
 			AddAmmo(InItem);
 		}
-		InItem->ResetItemFlags();
-
 		break;
 	case EEquipmentSlotType::EEST_Weapon:
 		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1)
@@ -75,8 +76,38 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 			break;
 		}
 		EquipItem(InItem);
-		return true;
+		Flag = true;
 		break;
+	}
+	if (InItem->ItemNumbericData.bIsStackable && !InItem->bIsCopy)
+	{
+		/*
+		* 만약 MaxStack을 넘기지 않을경우 인벤토리창에 추가하지 않도록 만든다.
+		*/
+		Flag = HandleStackableItem(InItem);
+	}
+	return Flag;
+}
+
+bool UEquipInventoryComponent::HandleStackableItem(UItemObject* InItem)
+{
+	int32 InItemAmount = InItem->ItemQuantity;
+	for (auto e : InventoryItems)
+	{
+		if (e->ID == InItem->ID)
+		{
+			int32 AddAmount = AddItemAmount(e, InItem->ItemQuantity);
+			// 모든 개수가 기존의 아이템에 들어간다.
+			if (AddAmount == InItem->ItemQuantity)
+			{
+				return true;
+			}
+			else
+			{
+				InItem->ItemQuantity -= AddAmount;
+				continue;
+			}
+		}
 	}
 	return false;
 }
@@ -86,7 +117,7 @@ void UEquipInventoryComponent::AddAmmo(UItemObject* InItem)
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
-	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] += InItem->ItemNumbericData.ItemQuantity;
+	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] += InItem->ItemQuantity;
 }
 
 void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
@@ -94,7 +125,7 @@ void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
-	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemNumbericData.ItemQuantity;
+	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemQuantity;
 }
 
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
@@ -105,7 +136,6 @@ bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 	}
 	if (InventoryItems.Contains(InItem))
 	{
-		//TODO : 만약 Stackable아이템이면 아이템 수에서 -1하기
 		InventoryItems.Remove(InItem);
 		RemovePlaceItem(InItem);
 		InventoryChanged.Broadcast();
@@ -128,11 +158,13 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 
 	AItemBase* DropItem = GetWorld()->SpawnActor<AItemBase>(AItemBase::StaticClass(), SpawnTransform, SpawnParams);
 	//Drop아이템에 대해서 Initialize해주기
+	ItemToDrop->ResetItemFlags();
 	DropItem->InitializeDrop(ItemToDrop);
 	if (ItemToDrop->SlotType == EEquipmentSlotType::EEST_Ammo)
 	{
 		RemoveAmmo(ItemToDrop);
 	}
+
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
@@ -353,6 +385,22 @@ void UEquipInventoryComponent::ConsumeItem(UItemObject* InItem, int32 ConsumeAmo
 		InItem->ItemQuantity -= RemoveAmount;
 		InventoryChanged.Broadcast();
 	}
+}
+
+int32 UEquipInventoryComponent::AddItemAmount(UItemObject* InItem, int32 AddAmount)
+{	
+	int32 NeedMaxQuantity = InItem->ItemNumbericData.MaxStackSize - InItem->ItemQuantity;
+	if (NeedMaxQuantity >= AddAmount)
+	{
+		InItem->ItemQuantity += AddAmount;
+		return AddAmount;
+	}
+	else
+	{
+		InItem->ItemQuantity = InItem->ItemNumbericData.MaxStackSize;
+		return NeedMaxQuantity;
+	}
+	return 0;
 }
 
 void UEquipInventoryComponent::SplitItem(UItemObject* InItem)

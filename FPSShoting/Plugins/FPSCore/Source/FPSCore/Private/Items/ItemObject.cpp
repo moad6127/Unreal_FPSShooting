@@ -29,6 +29,7 @@ UItemObject* UItemObject::CreateItemCopy()
 void UItemObject::ResetItemFlags()
 {
 	bIsCopy = false;
+	InInventorys = false;
 }
 
 void UItemObject::SetItemItemLocation(FIntPoint InItemLocation)

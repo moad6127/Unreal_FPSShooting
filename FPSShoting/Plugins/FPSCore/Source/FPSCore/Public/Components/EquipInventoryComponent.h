@@ -75,8 +75,18 @@ public:
 	*/
 	void UnEquipItem(UItemObject* InItem);
 
+	/*
+	* 아이템을 소비/제거 하는 함수
+	*/
 	void ConsumeItem(UItemObject* InItem, int32 ConsumeAmount);
 
+	/*
+	* Stackable아이템에 아이템을 더하는 함수
+	*/
+	int32 AddItemAmount(UItemObject* InItem, int32 AddAmount);
+	/*
+	* 아이템을 half로 나누는 함수
+	*/
 	void SplitItem(UItemObject* InItem);
 
 protected:
@@ -109,9 +119,15 @@ private:
 
 	void HandleEquip(UItemObject* InItem);
 	bool HandleAddItem(UItemObject* InItem);
+	bool HandleStackableItem(UItemObject* InItem);
 
+	/*
+	* 총알을 획득하거나 버릴 경우 Ammo의 Amount를 제거한다.
+	*/
 	void AddAmmo(UItemObject* InItem);
 	void RemoveAmmo(UItemObject* InItem);
+
+
 
 
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
