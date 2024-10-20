@@ -30,9 +30,13 @@ public:
 
 	void InitializeDrop(UItemObject* ItemToDrop);
 
-	void InitializeItem(const TSubclassOf<UItemObject> BaseItem);
+	void InitializeItemObject(const TSubclassOf<UItemObject> BaseItem);
+
+	/** Swt whether this pickup was spawned at runtime  */
+	void SetRuntimeSpawned(const bool bNewRuntimeSpawned) { bRuntimeSpawned = bNewRuntimeSpawned; }
 
 protected:
+	void Init();
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
@@ -41,7 +45,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
 
-
+	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */
+	/** reset to default) */
+	bool bRuntimeSpawned;
 	/*
 	* 
 	* Weapon Data
@@ -54,6 +60,15 @@ protected:
 	/** Data table reference for weapon (used to see if the weapon has attachments) */
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTable;
+
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
+
+	/** The array of attachments to spawn (usually inherited, can be set by instance) */
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Data")
+	TArray<FName> AttachmentArrayOverride;
+
 
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
 	UPROPERTY()

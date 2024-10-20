@@ -149,7 +149,7 @@ void AWeaponPickup::Interact()
 				break;
 			}
 		}
-		InitializeItem(UItemObject::StaticClass());
+		ItemObject->DataStruct = DataStruct;
 		// Spawning the new weapon in the player's inventory component
 		
 		//PlayerCharacter->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);

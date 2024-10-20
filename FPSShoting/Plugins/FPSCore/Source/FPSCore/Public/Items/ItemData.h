@@ -84,6 +84,18 @@ struct FWeaponData
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table", meta = (EditCondition = "bIsWeapon == true"))
 	UDataTable* WeaponDataTable;
 
+
+	/*
+	* AttachmentData
+	*/
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
+
+	/** The array of attachments to spawn (usually inherited, can be set by instance) */
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Data")
+	TArray<FName> AttachmentArrayOverride;
+
 	/*
 	* AmmoData
 	*/

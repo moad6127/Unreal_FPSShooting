@@ -26,8 +26,6 @@ public:
 	/** Set the static setting of the given pickup (whether it should simulate physics or not */
 	void SetStatic(const bool bNewStatic) { bStatic = bNewStatic; }
 
-	/** Swt whether this pickup was spawned at runtime  */
-	void SetRuntimeSpawned(const bool bNewRuntimeSpawned) { bRuntimeSpawned = bNewRuntimeSpawned; }
 
 	/** Set the weapon class that this pickup corresponds to */
 	void SetWeaponReference(const TSubclassOf<AWeaponBase> NewWeaponReference) { WeaponReference = NewWeaponReference; }
@@ -42,9 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon Pickup")
 	void SpawnAttachmentMesh();
 	
-	/** The array of attachments to spawn (usually inherited, can be set by instance) */
-	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Data")
-	TArray<FName> AttachmentArrayOverride;
+
 
 private:	
 	/** Sets default values for this actor's properties */
@@ -58,9 +54,7 @@ private:
 
 
 
-	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */
-	/** reset to default) */
-	bool bRuntimeSpawned;
+
 
 	/** Whether to run physics simulations or not */
 	UPROPERTY(EditInstanceOnly, Category = "Weapon")
@@ -78,9 +72,7 @@ private:
 
 	/** Meshes for Attachments */
 
-	/** Data table reference for attachments */
-	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	UDataTable* AttachmentsDataTable;
+
 
 	UPROPERTY()
 	UStaticMeshComponent* BarrelAttachment;

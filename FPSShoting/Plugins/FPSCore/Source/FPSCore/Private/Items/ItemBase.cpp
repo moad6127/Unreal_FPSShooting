@@ -40,14 +40,16 @@ void AItemBase::InitializeDrop(UItemObject* ItemToDrop)
 	InteractionText = ItemObject->ItemName;
 }
 
+
 void AItemBase::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeItem(UItemObject::StaticClass());
+	InitializeItemObject(UItemObject::StaticClass());
+	Init();
 }
 
 
-void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
+void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 {
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
@@ -61,7 +63,6 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->Asset = ItemData->Asset;
 		ItemObject->ItemName = ItemData->ItemName;
 		ItemObject->WeaponData = ItemData->WeaponData;
-		ItemObject->DataStruct = DataStruct;
 		ItemObject->SetItemSizeX(ItemSizeX);
 		ItemObject->SetItemSizeY(ItemSizeY);
 
@@ -72,3 +73,29 @@ void AItemBase::InitializeItem(const TSubclassOf<UItemObject> BaseItem)
 		InteractionText = ItemObject->ItemName;
 	}
 }
+
+void AItemBase::Init()
+{
+	if (ItemObject->WeaponData.bIsWeapon && ItemObject->WeaponData.WeaponReference)
+	{
+		WeaponReference = ItemObject->WeaponData.WeaponReference;
+		WeaponDataTable = ItemObject->WeaponData.WeaponDataTable;
+		AttachmentsDataTable = ItemObject->WeaponData.AttachmentsDataTable;
+		AttachmentArrayOverride = ItemObject->WeaponData.AttachmentArrayOverride;
+
+		const AWeaponBase* WeaponBaseReference = WeaponReference.GetDefaultObject();
+		if (const FStaticWeaponData* StaticWeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
+		{
+			if (!bRuntimeSpawned)
+			{
+				DataStruct.AmmoType = StaticWeaponData->AmmoToUse;
+				DataStruct.ClipCapacity = StaticWeaponData->ClipCapacity;
+				DataStruct.ClipSize = StaticWeaponData->ClipSize;
+				DataStruct.WeaponAttachments = AttachmentArrayOverride;
+				DataStruct.WeaponHealth = 100.0f;
+			}
+		}
+		ItemObject->DataStruct = DataStruct;
+	}
+}
+

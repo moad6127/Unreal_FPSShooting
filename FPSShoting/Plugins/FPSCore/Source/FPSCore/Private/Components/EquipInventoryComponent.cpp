@@ -70,11 +70,13 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		}
 		break;
 	case EEquipmentSlotType::EEST_Weapon:
+
 		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1)
 			&& EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon2))
 		{
 			break;
 		}
+
 		EquipItem(InItem);
 		Flag = true;
 		break;
