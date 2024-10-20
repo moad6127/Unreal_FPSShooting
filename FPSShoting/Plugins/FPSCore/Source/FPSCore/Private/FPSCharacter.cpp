@@ -42,8 +42,13 @@ AFPSCharacter::AFPSCharacter()
     // Spawning the FPS hands mesh component and attaching it to the spring arm component
     HandsMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
     HandsMeshComp->CastShadow = false;
+    HandsMeshComp->bOnlyOwnerSee = true;
+    HandsMeshComp->bOwnerNoSee = false;
     HandsMeshComp->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
     
+    GetMesh()->bOwnerNoSee = true;
+    GetMesh()->bOnlyOwnerSee = false;
+
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
     if (HandsMeshComp)

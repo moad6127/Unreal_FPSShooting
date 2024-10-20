@@ -385,6 +385,7 @@ void AWeaponBase::Fire()
 
             //Sets the default values for our trace query
             QueryParams.AddIgnoredActor(this);
+            QueryParams.AddIgnoredActor(GetOwner());
             QueryParams.bTraceComplex = true;
             QueryParams.bReturnPhysicalMaterial = true;
 
