@@ -180,6 +180,9 @@ public:
 	/** A global system that handles updates to the movement state and changes relevant values accordingly
 	*	@param NewMovementState The new movement state of the player
 	*/
+	UFUNCTION(Server, Reliable)
+	void ServerSetMovementState(EMovementState NewMovementState);
+
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void SetMovementState(EMovementState NewMovementState);
 
@@ -270,6 +273,9 @@ protected:
 	/** Stopping to sprint */
 	void StopSprint();
 
+	/* Sprint를 하려 할때 앞으로만 가능하도록 만들기*/
+	bool IsMovingForward() const;
+
 	/** Starting to slide */
 	void StartSlide();
 
@@ -317,6 +323,7 @@ protected:
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
 
+	void ShowDebugMovementState(const float DeltaTime);
 
 #pragma endregion 
 

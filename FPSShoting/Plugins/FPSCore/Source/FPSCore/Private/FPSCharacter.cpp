@@ -129,6 +129,13 @@ void AFPSCharacter::Move(const FInputActionValue& Value)
         AddMovementInput(GetActorForwardVector(), Value[1]);
         AddMovementInput(GetActorRightVector(), Value[0]);
     }
+    if (MovementState == EMovementState::State_Sprint)
+    {
+        if (!IsMovingForward())
+        {
+            StopSprint();
+        }
+    }
 }
 
 void AFPSCharacter::Look(const FInputActionValue& Value)
@@ -234,6 +241,10 @@ void AFPSCharacter::StartSprint()
     {
         return;
     }
+    if (!IsMovingForward())
+    {
+        return;
+    }
     bPerformedSlide = false;
     SetMovementState(EMovementState::State_Sprint);
     if (InventoryComponent)
@@ -264,6 +275,19 @@ void AFPSCharacter::StopSprint()
             InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
         }
     }
+}
+
+bool AFPSCharacter::IsMovingForward() const
+{
+    if (!GetCharacterMovement()->Velocity.IsNearlyZero())
+    {
+        FVector ForwardVector = GetActorForwardVector();
+        FVector NormalizedVeclocity = GetCharacterMovement()->Velocity.GetSafeNormal();
+        float DotProduct = FVector::DotProduct(ForwardVector, NormalizedVeclocity);
+
+        return DotProduct > 0.7071f;
+    }
+    return false;
 }
 
 void AFPSCharacter::StartSlide()
@@ -567,28 +591,20 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
 void AFPSCharacter::OnRep_MovementState()
 {
     SetMovementState(MovementState);
-    switch (MovementState)
-    {
-    case EMovementState::State_Walk:
-        break;
-    case EMovementState::State_Sprint:
-        break;
-    case EMovementState::State_Crouch:
-        break;
-    case EMovementState::State_Slide:
-        break;
-    case EMovementState::State_Vault:
-        break;
-    case EMovementState::State_Mantle:
-        break;
-    default:
-        break;
-    }
+}
+
+void AFPSCharacter::ServerSetMovementState_Implementation(EMovementState NewMovementState)
+{
+    SetMovementState(NewMovementState);
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state
 void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
 {
+    if (!HasAuthority())
+    {
+        ServerSetMovementState(NewMovementState);
+    }
     // Clearing sprinting and crouching flags
     bIsSprinting = false;
     bIsCrouching = false;
@@ -789,6 +805,33 @@ void AFPSCharacter::Tick(const float DeltaTime)
         }
         
         GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));
+        ShowDebugMovementState(DeltaTime);
+    }
+}
+
+void AFPSCharacter::ShowDebugMovementState(const float DeltaTime)
+{
+    switch (MovementState)
+    {
+    case EMovementState::State_Walk:
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("WalkState")));
+        break;
+    case EMovementState::State_Sprint:
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SprintState")));
+        break;
+    case EMovementState::State_Crouch:
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("CrouchState")));
+        break;
+    case EMovementState::State_Slide:
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SlidState")));
+        break;
+    case EMovementState::State_Vault:
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("State")));
+        break;
+    case EMovementState::State_Mantle:
+        break;
+    default:
+        break;
     }
 }
 
