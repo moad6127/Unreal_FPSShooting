@@ -27,6 +27,7 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/World.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -563,6 +564,28 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     VaultTimeline.PlayFromStart();
 }
 
+void AFPSCharacter::OnRep_MovementState()
+{
+    SetMovementState(MovementState);
+    switch (MovementState)
+    {
+    case EMovementState::State_Walk:
+        break;
+    case EMovementState::State_Sprint:
+        break;
+    case EMovementState::State_Crouch:
+        break;
+    case EMovementState::State_Slide:
+        break;
+    case EMovementState::State_Vault:
+        break;
+    case EMovementState::State_Mantle:
+        break;
+    default:
+        break;
+    }
+}
+
 // Function that determines the player's maximum speed and other related variables based on movement state
 void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
 {
@@ -605,6 +628,26 @@ void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
     {
         bIsSprinting = true;
     }
+}
+
+FRotator AFPSCharacter::GetAimOffsets() const
+{
+    const FVector AimDirWS = GetBaseAimRotation().Vector();
+    const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
+    const FRotator AimRotLS = AimDirLS.Rotation();
+
+    return AimRotLS;
+}
+
+void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(AFPSCharacter,MovementState);
+}
+
+void AFPSCharacter::OnRep_ReplicatedMovement()
+{
+    Super::OnRep_ReplicatedMovement();
 }
 
 

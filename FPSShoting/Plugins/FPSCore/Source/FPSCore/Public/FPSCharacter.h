@@ -119,6 +119,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	EMovementState GetMovementState() const { return MovementState; }
 
+	UFUNCTION()
+	void OnRep_MovementState();
+
 	/** Returns the character's hands mesh */
 	USkeletalMeshComponent* GetHandsMesh() const { return HandsMeshComp; }
 
@@ -183,6 +186,11 @@ public:
 	/** Returns the character's movement data map */
 	FMovementVariables GetMovementData(const EMovementState QueryMovementState) { return MovementDataMap[QueryMovementState]; }
 	
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	FRotator GetAimOffsets() const;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_ReplicatedMovement() override;
 protected:
 
 	/** The character's FPS camera component */
@@ -403,7 +411,7 @@ protected:
 #pragma region INTERNAL_VARIABLES
 	
 	/** Enumerator holding the 5 possible movement states defined by EMovementState */
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing = OnRep_MovementState)
     EMovementState MovementState;
 	
 	/** The timeline for vaulting (generated from the curve) */
