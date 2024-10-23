@@ -162,6 +162,7 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
 void AFPSCharacter::ToggleCrouch()
 {
     bHoldingCrouch = true;
+
     if (GetCharacterMovement()->IsMovingOnGround())
     {
         if (MovementState == EMovementState::State_Crouch)
