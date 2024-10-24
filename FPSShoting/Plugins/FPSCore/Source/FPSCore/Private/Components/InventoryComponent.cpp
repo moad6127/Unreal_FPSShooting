@@ -195,7 +195,8 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
     	{
     		SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-    	}
+			SpawnedWeapon->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		}
 		
         SpawnedWeapon->SetRuntimeWeaponData(DataStruct);
         SpawnedWeapon->SpawnAttachments();

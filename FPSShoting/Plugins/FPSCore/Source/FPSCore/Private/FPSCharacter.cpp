@@ -49,7 +49,6 @@ AFPSCharacter::AFPSCharacter()
     
     GetMesh()->bOwnerNoSee = true;
     GetMesh()->bOnlyOwnerSee = false;
-
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
     if (HandsMeshComp)
@@ -58,7 +57,9 @@ AFPSCharacter::AFPSCharacter()
     }
 
     SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
+    SInventoryComponent->SetIsReplicated(true);
     InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+    InventoryComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
