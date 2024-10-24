@@ -25,6 +25,7 @@ class UPhysicalMaterial;
 class UDataTable;
 class AWeaponPickup;
 class UItemObject;
+class AFPSCharacter;
 
 
 
@@ -757,6 +758,11 @@ public:
 	{
 		return MeshComp;
 	}
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	USkeletalMeshComponent* GetTPPMeshComp() const
+	{
+		return MeshCompTPP;
+	}
 
 	/** Returns the vertical camera offset for this weapon instance */
 	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
@@ -776,6 +782,10 @@ protected:
 	/** The main skeletal mesh - holds the weapon model */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
+
+	/** The main skeletal mesh - holds the weapon model */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* MeshCompTPP;
 
 	/** The skeletal mesh used to hold the current barrel attachment */
 	UPROPERTY(BlueprintReadOnly, Category = "Components")

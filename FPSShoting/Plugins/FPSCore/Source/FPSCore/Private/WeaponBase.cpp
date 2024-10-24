@@ -30,7 +30,10 @@ AWeaponBase::AWeaponBase()
     MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
     MeshComp->CastShadow = false;
     RootComponent = MeshComp;
-    
+
+    MeshCompTPP = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshCompTPP"));
+    MeshCompTPP->CastShadow = true;
+    MeshCompTPP->SetupAttachment(RootComponent);
     // Creating the skeletal meshes for our attachments and making sure that they do not cast shadows
 
     BarrelAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BarrelAttachment"));
