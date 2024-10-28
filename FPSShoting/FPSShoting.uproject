@@ -12,7 +12,8 @@
 				"Engine",
 				"FPSCore",
 				"UMG",
-				"CoreUObject"
+				"CoreUObject",
+				"AIModule"
 			]
 		}
 	],
