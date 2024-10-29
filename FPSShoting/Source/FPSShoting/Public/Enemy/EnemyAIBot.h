@@ -9,9 +9,24 @@
 /**
  * 
  */
+
+class AEnemyAIController;
+class UBehaviorTree;
+
 UCLASS()
 class FPSSHOTING_API AEnemyAIBot : public ASInvenFPSCharacter
 {
 	GENERATED_BODY()
-	
+
+public:	
+	AEnemyAIBot();
+	virtual void PossessedBy(AController* NewController) override;
+
+protected:
+
+	UPROPERTY(EditAnywhere, Category = Behavior)
+	TObjectPtr<UBehaviorTree> BotBehavior;
+
+	UPROPERTY()
+	TObjectPtr<AEnemyAIController> EnemyAIController;
 };

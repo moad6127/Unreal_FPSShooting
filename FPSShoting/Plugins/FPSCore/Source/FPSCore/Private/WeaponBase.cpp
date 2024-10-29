@@ -29,6 +29,8 @@ AWeaponBase::AWeaponBase()
     // Creating our weapon's skeletal mesh, telling it to not cast shadows and finally setting it as the root of the actor
     MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
     MeshComp->CastShadow = false;
+    MeshComp->bOwnerNoSee = false;
+    MeshComp->bOnlyOwnerSee = true;
     RootComponent = MeshComp;
 
     MeshCompTPP = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshCompTPP"));

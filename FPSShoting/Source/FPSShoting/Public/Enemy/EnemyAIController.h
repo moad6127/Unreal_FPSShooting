@@ -9,9 +9,20 @@
 /**
  * 
  */
+
+class UBlackboardComponent;
+class UBehaviorTreeComponent;
+
 UCLASS()
 class FPSSHOTING_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+public:
+	AEnemyAIController();
+
+protected:
+
+	UPROPERTY()
+	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
 };
