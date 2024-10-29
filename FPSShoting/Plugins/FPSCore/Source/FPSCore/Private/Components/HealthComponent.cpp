@@ -33,8 +33,11 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage,
 		return;
 	}
 
+
 	// Updating health, clamped between 0 and 100
 	Health = FMath::Clamp(Health - Damage, 0.0f, 100.0f);
+	UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
+	UE_LOG(LogTemp, Warning, TEXT("Healt : %f"), Health);
 
 	// Broadcasting our new health
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);

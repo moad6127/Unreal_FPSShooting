@@ -22,6 +22,7 @@ class UCurveFloat;
 class UBlendSpace;
 class UInventoryComponent;
 class UEquipInventoryComponent;
+class UHealthComponent;
 
 /** Movement state enumerator holding all possible movement states */
 UENUM(BlueprintType)
@@ -165,6 +166,8 @@ public:
 
 	/** Returns the Inventory Component */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
+
+	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
 	UEquipInventoryComponent* GetEquipInventoryComponent() const { return SInventoryComponent; }
 
@@ -524,6 +527,9 @@ protected:
 	/** A reference to the player's Inventory Component */ 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryComponent> InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UEquipInventoryComponent* SInventoryComponent;

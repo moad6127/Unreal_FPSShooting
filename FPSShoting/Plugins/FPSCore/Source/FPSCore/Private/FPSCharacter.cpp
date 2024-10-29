@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
+#include "Components/HealthComponent.h"
 #include "Components/EquipInventoryComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -60,6 +61,8 @@ AFPSCharacter::AFPSCharacter()
     SInventoryComponent->SetIsReplicated(true);
     InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
     InventoryComponent->SetIsReplicated(true);
+    HealthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
+    HealthComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
