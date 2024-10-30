@@ -671,6 +671,11 @@ void AFPSCharacter::OnRep_ReplicatedMovement()
     Super::OnRep_ReplicatedMovement();
 }
 
+void AFPSCharacter::Die()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Die!!!"));
+}
+
 
 // Called every frame
 void AFPSCharacter::Tick(const float DeltaTime)

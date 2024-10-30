@@ -3,6 +3,7 @@
 
 #include "Components/HealthComponent.h"
 #include "Engine/World.h"
+#include "FPSCharacter.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -38,7 +39,22 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage,
 	Health = FMath::Clamp(Health - Damage, 0.0f, 100.0f);
 	UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
 	UE_LOG(LogTemp, Warning, TEXT("Healt : %f"), Health);
-
+	
 	// Broadcasting our new health
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+
+	if (Health <= 0.f)
+	{
+		Die();
+	}
+
+}
+
+void UHealthComponent::Die()
+{
+	AFPSCharacter* OwnerCharcter = Cast<AFPSCharacter>(GetOwner());
+	if (OwnerCharcter)
+	{
+		OwnerCharcter->Die();
+	}
 }

@@ -197,6 +197,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_ReplicatedMovement() override;
+
+	void Die();
 protected:
 
 	/** The character's FPS camera component */
