@@ -334,13 +334,20 @@ void AFPSCharacter::StopSlide()
 void AFPSCharacter::StartAds()
 {
     bWantsToAim = true;
+    ServerADSSet(bWantsToAim);
     SetCrosshairVisibility(false);
 }
 
 void AFPSCharacter::StopAds()
 {
     bWantsToAim = false;
+    ServerADSSet(bWantsToAim);
     SetCrosshairVisibility(true);
+}
+
+void AFPSCharacter::ServerADSSet_Implementation(bool bADS)
+{
+    bWantsToAim = bADS;
 }
 
 void AFPSCharacter::CheckVault()
@@ -664,6 +671,7 @@ void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AFPSCharacter,MovementState);
+    DOREPLIFETIME(AFPSCharacter, bWantsToAim);
 }
 
 void AFPSCharacter::OnRep_ReplicatedMovement()
@@ -673,7 +681,26 @@ void AFPSCharacter::OnRep_ReplicatedMovement()
 
 void AFPSCharacter::Die()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Die!!!"));
+    MulticastHandleDeath();
+}
+
+void AFPSCharacter::MulticastHandleDeath_Implementation()
+{
+    GetMesh()->SetSimulatePhysics(true);
+    GetMesh()->SetEnableGravity(true);
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECollisionResponse::ECR_Block);
+
+    GetHandsMesh()->SetSimulatePhysics(true);
+    GetHandsMesh()->SetEnableGravity(true);
+    GetHandsMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    GetHandsMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECollisionResponse::ECR_Block);
+
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+    //TODO : 캐릭터가 죽으면 Equip과 Inventory에 있는 물품들을 Drop하는 Box를 생성하기
+    // 배틀 그라운드 처럼.
 }
 
 

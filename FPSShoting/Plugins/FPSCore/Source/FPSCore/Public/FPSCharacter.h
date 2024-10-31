@@ -199,6 +199,9 @@ public:
 	virtual void OnRep_ReplicatedMovement() override;
 
 	void Die();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHandleDeath();
 protected:
 
 	/** The character's FPS camera component */
@@ -323,6 +326,9 @@ protected:
 
 	/** Ends ADS */
 	void StopAds();
+
+	UFUNCTION(Server, Reliable)
+	void ServerADSSet(bool bADS);
 	
 
 	/** Called every frame */
@@ -444,6 +450,7 @@ protected:
 	FHitResult AngleHit;
 	
 	/** Whether the player is holding down the aim down sights button */
+	UPROPERTY(Replicated)
 	bool bWantsToAim;
 	
 	/** Whether the player is allowed to aim in the current state */
