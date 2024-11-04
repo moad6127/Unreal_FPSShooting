@@ -115,6 +115,10 @@ public:
 	/** Returns whether the player is currently aiming or not */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	bool IsPlayerAiming() const { return bIsAiming; }
+
+	// 만약 들고있는 무기가 있을경우 true아니면 false
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
+	bool IsPlayerEquippedWeapon() const;
 	
 	/** Returns the character's current movement state */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")

@@ -166,7 +166,6 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 	{
 		RemoveAmmo(ItemToDrop);
 	}
-
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)

@@ -76,7 +76,7 @@ void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 
 void AItemBase::Init()
 {
-	if (ItemObject->WeaponData.bIsWeapon && ItemObject->WeaponData.WeaponReference)
+	if (ItemObject && ItemObject->WeaponData.bIsWeapon && ItemObject->WeaponData.WeaponReference)
 	{
 		WeaponReference = ItemObject->WeaponData.WeaponReference;
 		WeaponDataTable = ItemObject->WeaponData.WeaponDataTable;

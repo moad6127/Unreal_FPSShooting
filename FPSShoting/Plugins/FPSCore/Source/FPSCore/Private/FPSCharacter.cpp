@@ -600,6 +600,18 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     VaultTimeline.PlayFromStart();
 }
 
+bool AFPSCharacter::IsPlayerEquippedWeapon() const
+{
+
+    if(!GetInventoryComponent()->GetEquippedWeapons().IsEmpty() &&
+        GetInventoryComponent()->GetWeaponByID(GetInventoryComponent()->GetCurrentWeaponSlot()))
+    {
+        return true;
+    }
+    return false;
+
+}
+
 void AFPSCharacter::OnRep_MovementState()
 {
     SetMovementState(MovementState);
