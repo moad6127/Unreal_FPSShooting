@@ -96,6 +96,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetMouseX() const { return MouseX; }
 
+
 	/** Update the base FOV
 	 * @param NewFOV The FOV to use as a new BaseFOV
 	 */
@@ -125,7 +126,7 @@ public:
 	EMovementState GetMovementState() const { return MovementState; }
 
 	UFUNCTION()
-	void OnRep_MovementState();
+	void OnRep_bCanAim();
 
 	/** Returns the character's hands mesh */
 	USkeletalMeshComponent* GetHandsMesh() const { return HandsMeshComp; }
@@ -193,12 +194,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void SetMovementState(EMovementState NewMovementState);
 
+	void UpdateMovementState(EMovementState NewMovementState);
+
 	/** Returns the character's movement data map */
 	FMovementVariables GetMovementData(const EMovementState QueryMovementState) { return MovementDataMap[QueryMovementState]; }
 	
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	FRotator GetAimOffsets() const;
 
+	virtual void PossessedBy(AController* NewController) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_ReplicatedMovement() override;
 
@@ -433,7 +437,7 @@ protected:
 #pragma region INTERNAL_VARIABLES
 	
 	/** Enumerator holding the 5 possible movement states defined by EMovementState */
-	UPROPERTY(ReplicatedUsing = OnRep_MovementState)
+	UPROPERTY(Replicated)
     EMovementState MovementState;
 	
 	/** The timeline for vaulting (generated from the curve) */
@@ -456,8 +460,9 @@ protected:
 	/** Whether the player is holding down the aim down sights button */
 	UPROPERTY(Replicated)
 	bool bWantsToAim;
-	
+
 	/** Whether the player is allowed to aim in the current state */
+	UPROPERTY(ReplicatedUsing = OnRep_bCanAim)
 	bool bCanAim = true;
 
 	/** Whether the player is holding down the sprint key */

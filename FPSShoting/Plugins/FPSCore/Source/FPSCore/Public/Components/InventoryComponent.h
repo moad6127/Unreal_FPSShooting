@@ -253,7 +253,7 @@ private:
 	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
-	UPROPERTY(Replicated,VisibleAnywhere, Category = "Equipment")
+	UPROPERTY(VisibleAnywhere, Category = "Equipment")
 	TMap<int, AWeaponBase*> EquippedWeapons;
 
 	/** The player's currently equipped weapon */

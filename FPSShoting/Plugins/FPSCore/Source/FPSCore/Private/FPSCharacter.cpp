@@ -333,21 +333,28 @@ void AFPSCharacter::StopSlide()
 
 void AFPSCharacter::StartAds()
 {
-    bWantsToAim = true;
-    ServerADSSet(bWantsToAim);
-    SetCrosshairVisibility(false);
+    ServerADSSet(true);
+    if (IsLocallyControlled())
+    {
+        bWantsToAim = true;
+        SetCrosshairVisibility(false);
+    }
 }
 
 void AFPSCharacter::StopAds()
 {
-    bWantsToAim = false;
-    ServerADSSet(bWantsToAim);
-    SetCrosshairVisibility(true);
+    ServerADSSet(false);
+    if (IsLocallyControlled())
+    {
+        bWantsToAim = false;
+        SetCrosshairVisibility(true);
+    }
 }
 
 void AFPSCharacter::ServerADSSet_Implementation(bool bADS)
 {
     bWantsToAim = bADS;
+    SetCrosshairVisibility(!bADS);
 }
 
 void AFPSCharacter::CheckVault()
@@ -612,29 +619,34 @@ bool AFPSCharacter::IsPlayerEquippedWeapon() const
 
 }
 
-void AFPSCharacter::OnRep_MovementState()
+
+void AFPSCharacter::OnRep_bCanAim()
 {
-    if (!HasAuthority())
-    {
-        SetMovementState(MovementState);
-    }
+    bCanAim = MovementDataMap[MovementState].bCanAim;
 }
+
 
 void AFPSCharacter::ServerSetMovementState_Implementation(EMovementState NewMovementState)
 {
-    if (!HasAuthority())
-    {
-        SetMovementState(NewMovementState);
-    }
+    UpdateMovementState(NewMovementState);
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state
 void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
 {
+    if (!IsLocallyControlled())
+    {
+        return;
+    }
     if (!HasAuthority())
     {
         ServerSetMovementState(NewMovementState);
     }
+    UpdateMovementState(NewMovementState);
+}
+
+void AFPSCharacter::UpdateMovementState(EMovementState NewMovementState)
+{
     // Clearing sprinting and crouching flags
     bIsSprinting = false;
     bIsCrouching = false;
@@ -654,11 +666,11 @@ void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
             }
         }
 
-        bCanAim = MovementDataMap[MovementState].bCanAim;
         GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
         GetCharacterMovement()->BrakingDecelerationWalking = MovementDataMap[MovementState].BreakingDecelerationWalking;
         GetCharacterMovement()->GroundFriction = MovementDataMap[MovementState].GroundFriction;
         GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[MovementState].MaxWalkSpeed;
+        bCanAim = MovementDataMap[MovementState].bCanAim;
     }
     else
     {
@@ -685,11 +697,17 @@ FRotator AFPSCharacter::GetAimOffsets() const
     return AimRotLS;
 }
 
+void AFPSCharacter::PossessedBy(AController* NewController)
+{
+    Super::PossessedBy(NewController);
+}
+
 void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AFPSCharacter,MovementState);
     DOREPLIFETIME(AFPSCharacter, bWantsToAim);
+    DOREPLIFETIME(AFPSCharacter, bCanAim);
 }
 
 void AFPSCharacter::OnRep_ReplicatedMovement()

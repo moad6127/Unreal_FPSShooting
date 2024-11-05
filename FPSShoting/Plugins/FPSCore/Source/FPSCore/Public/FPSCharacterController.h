@@ -15,7 +15,8 @@ class AFPSCharacterController : public APlayerController
 	GENERATED_BODY()
 	
 	public:
-	
+		
+	virtual void OnPossess(APawn* aPawn) override;
 	/** Stored ammo data for the player character */
     UPROPERTY(EditDefaultsOnly, Category = "Inventory")
     TMap<EAmmoType, int32> AmmoMap;

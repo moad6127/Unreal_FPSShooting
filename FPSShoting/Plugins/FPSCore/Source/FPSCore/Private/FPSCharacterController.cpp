@@ -2,3 +2,8 @@
 
 #include "FPSCharacterController.h"
 #include "Engine/World.h"
+
+void AFPSCharacterController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+}
