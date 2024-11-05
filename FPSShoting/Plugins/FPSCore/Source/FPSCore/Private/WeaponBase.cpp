@@ -59,6 +59,8 @@ AWeaponBase::AWeaponBase()
     GripAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GripAttachment"));
     GripAttachment->CastShadow = false;
     GripAttachment->SetupAttachment(RootComponent);
+
+    bReplicates = true;
 }
 
 

@@ -614,12 +614,18 @@ bool AFPSCharacter::IsPlayerEquippedWeapon() const
 
 void AFPSCharacter::OnRep_MovementState()
 {
-    SetMovementState(MovementState);
+    if (!HasAuthority())
+    {
+        SetMovementState(MovementState);
+    }
 }
 
 void AFPSCharacter::ServerSetMovementState_Implementation(EMovementState NewMovementState)
 {
-    SetMovementState(NewMovementState);
+    if (!HasAuthority())
+    {
+        SetMovementState(NewMovementState);
+    }
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state

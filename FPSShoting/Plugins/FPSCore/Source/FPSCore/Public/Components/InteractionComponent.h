@@ -47,6 +47,8 @@ public:
 	/** Called to bind functionality to input */
 	void SetupInputComponent(class UEnhancedInputComponent* PlayerInputComponent);
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	/** The input action for interacting with the world */
 	UPROPERTY()
 	UInputAction* InteractAction;
@@ -54,6 +56,12 @@ public:
 private:	
 	/** Interaction with the world using SInteractInterface */
 	void WorldInteract();
+
+	void InteractButtonPressed();
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract();
+
 
 	/** Displaying the indicator for interaction */
 	void InteractionIndicator();

@@ -68,6 +68,8 @@ public:
 	/** Called to bind functionality to input */
 	void SetupInputComponent(class UEnhancedInputComponent* PlayerInputComponent);
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	/** Equipping a new weapon
 	 * @param NewWeapon The new weapon which to spawn
 	 * @param InventoryPosition The position in the player's inventory in which to place the weapon
@@ -203,6 +205,9 @@ private:
 	void HandleUnequip();
 
 	void UnequipReturn();
+	
+	UFUNCTION()
+	void OnRep_CurrentWeapon();
 
 	/** Whether to print debug statements to the screen */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
@@ -248,11 +253,11 @@ private:
 	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
-	UPROPERTY(VisibleAnywhere, Category = "Equipment")
+	UPROPERTY(Replicated,VisibleAnywhere, Category = "Equipment")
 	TMap<int, AWeaponBase*> EquippedWeapons;
 
 	/** The player's currently equipped weapon */
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentWeapon)
 	AWeaponBase* CurrentWeapon;
 
 	FTimerHandle ReloadRetry;

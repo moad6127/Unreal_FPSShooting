@@ -50,11 +50,30 @@ void UInteractionComponent::WorldInteract()
             if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
             {
                 // Calling the Interact function within our hit actor via the interface
+                InteractionHit.GetActor()->SetOwner(GetOwner());
                 Cast<IInteractInterface>(InteractionHit.GetActor())->Interact();
             }
         }
     }
 }
+
+void UInteractionComponent::InteractButtonPressed()
+{
+    if (!GetOwner()->HasAuthority())
+    {
+        ServerInteract();
+    }
+    else
+    {
+        WorldInteract();
+    }
+}
+
+void UInteractionComponent::ServerInteract_Implementation()
+{
+    WorldInteract();
+}
+
 
 // Performing logic around the visibility of the interaction indicator - called every frame
 void UInteractionComponent::InteractionIndicator()
@@ -129,7 +148,12 @@ void UInteractionComponent::SetupInputComponent(UEnhancedInputComponent* PlayerI
     if (InteractAction)
     {            
         // Interacting with the world
-        PlayerInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &UInteractionComponent::WorldInteract);
+        PlayerInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &UInteractionComponent::InteractButtonPressed);
     }
+}
+
+void UInteractionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 

@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "Items/ItemObject.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -414,6 +415,32 @@ void UInventoryComponent::UnequipReturn()
 	SwapWeapon(TargetWeaponSlot);
 }
 
+void UInventoryComponent::OnRep_CurrentWeapon()
+{
+	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	{
+		//SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		//SpawnedWeapon->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		CurrentWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		CurrentWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+	}
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+		CurrentWeapon->SetActorHiddenInGame(false);
+		if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+		{
+			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			{
+				FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+				FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
+			}
+		}
+	}
+}
+
 void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInputComponent)
 {
 	if (FiringAction)
@@ -452,4 +479,12 @@ void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInp
 		// Playing the inspect animation
 		PlayerInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Started, this, &UInventoryComponent::Inspect);
 	}
+}
+
+void UInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UInventoryComponent, CurrentWeapon);
+	DOREPLIFETIME(UInventoryComponent, EquippedWeapons);
 }

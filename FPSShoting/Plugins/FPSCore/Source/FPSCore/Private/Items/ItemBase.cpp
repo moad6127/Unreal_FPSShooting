@@ -19,7 +19,7 @@ AItemBase::AItemBase()
 
 void AItemBase::Interact()
 {
-	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	if (PlayerCharacter->GetEquipInventoryComponent())
 	{
 		if (PlayerCharacter->GetEquipInventoryComponent()->TryAddItem(ItemObject))
