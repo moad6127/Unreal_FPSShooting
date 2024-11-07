@@ -16,7 +16,8 @@ ASInvenFPSCharacter::ASInvenFPSCharacter()
 void ASInvenFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
 		HUD = Cast<AFPSHUD>(PlayerController->GetHUD());

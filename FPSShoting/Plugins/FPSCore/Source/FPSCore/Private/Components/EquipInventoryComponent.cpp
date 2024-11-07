@@ -7,10 +7,26 @@
 #include "FPSCharacter.h"
 #include "Components/InventoryComponent.h"
 #include "FPSCharacterController.h"
+#include "Net/UnrealNetwork.h"
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UEquipInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UEquipInventoryComponent, InventoryItems);
+	DOREPLIFETIME(UEquipInventoryComponent, InventoryGrid);
+}
+
+bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool bWroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+	return bWroteSomething;
 }
 
 bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
@@ -128,6 +144,11 @@ void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
 	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
 	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemQuantity;
+}
+
+void UEquipInventoryComponent::OnRep_InventoryItems()
+{
+	//InventoryChanged.Broadcast();
 }
 
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)

@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TMap<EEquipmentSlotType, UItemObject*> GetEquipmentItems() const { return EquipmentItems; }
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags);
+
 	/*
 	* Item을 추가시키기 위한 함수
 	*/
@@ -127,8 +130,8 @@ private:
 	void AddAmmo(UItemObject* InItem);
 	void RemoveAmmo(UItemObject* InItem);
 
-
-
+	UFUNCTION()
+	void OnRep_InventoryItems();
 
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 
@@ -138,13 +141,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
 	int32 Rows = 5;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_InventoryItems, VisibleAnywhere, BlueprintReadOnly, Category = "Items", meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UItemObject>> InventoryItems;
 
 	UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
 	TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<bool> InventoryGrid;
-		
+	
 };

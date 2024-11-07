@@ -72,6 +72,7 @@ public:
 
 	void ResetItemFlags();
 
+	virtual bool IsSupportedForNetworking() const { return true; }
 	FIntPoint GetItemItemLocation() const { return ItemLocation; }
 	int32 GetSizeX() const { return SizeX; }
 	int32 GetSizeY() const { return SizeY; };
