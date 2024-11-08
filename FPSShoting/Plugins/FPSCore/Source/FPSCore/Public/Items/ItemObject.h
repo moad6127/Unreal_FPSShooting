@@ -21,42 +21,42 @@ public:
 	/*
 	* ItemObejct ID
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	FName ID;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data Table")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Data Table")
 	int32 ItemQuantity;
 
 	/*
 	* EquipmentSlotType
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	EEquipmentSlotType SlotType;
 
 	/*
 	* NumbericData : StackSize, ExpandableSize(more InventorySize plus), bRotate ...
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemNumericData ItemNumbericData;
 
 	/*
 	*  Mesh, ItemIcon ..
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemAssetData Asset;
 
 	/*
 	* Item Name(Use Widget Text)
 	*/
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FText ItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FWeaponData WeaponData;
 
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	FRuntimeWeaponData DataStruct;
 
 	bool bIsCopy = false;
@@ -73,6 +73,8 @@ public:
 	void ResetItemFlags();
 
 	virtual bool IsSupportedForNetworking() const { return true; }
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const;
+
 	FIntPoint GetItemItemLocation() const { return ItemLocation; }
 	int32 GetSizeX() const { return SizeX; }
 	int32 GetSizeY() const { return SizeY; };
@@ -105,16 +107,16 @@ private:
 	/*
 	* Inventory Size(X * Y)
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
 	int32 SizeX;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
 	int32 SizeY;
 
 
 	/*
 	* Inventory Item Location (X , Y) Position
 	*/
-	UPROPERTY(BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "ItemInfo", meta = (AllowPrivateAccess = "true"))
 	FIntPoint ItemLocation;
 };

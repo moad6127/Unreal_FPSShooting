@@ -34,6 +34,7 @@ public:
 
 	/** Swt whether this pickup was spawned at runtime  */
 	void SetRuntimeSpawned(const bool bNewRuntimeSpawned) { bRuntimeSpawned = bNewRuntimeSpawned; }
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const;
 
 protected:
 	void Init();
@@ -42,7 +43,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Data Table")
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
 
 	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */

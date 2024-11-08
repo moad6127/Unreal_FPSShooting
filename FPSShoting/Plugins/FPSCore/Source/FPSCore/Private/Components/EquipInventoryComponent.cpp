@@ -8,6 +8,7 @@
 #include "Components/InventoryComponent.h"
 #include "FPSCharacterController.h"
 #include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
 
 UEquipInventoryComponent::UEquipInventoryComponent()
 {
@@ -25,7 +26,10 @@ void UEquipInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
 {
 	bool bWroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
-
+	for (auto& Item : InventoryItems)
+	{
+		bWroteSomething |= Channel->ReplicateSubobject(Item, *Bunch, *RepFlags);
+	}
 	return bWroteSomething;
 }
 
@@ -148,7 +152,7 @@ void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
 
 void UEquipInventoryComponent::OnRep_InventoryItems()
 {
-	//InventoryChanged.Broadcast();
+	InventoryChanged.Broadcast();
 }
 
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)

@@ -74,6 +74,11 @@ void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 	}
 }
 
+void AItemBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 void AItemBase::Init()
 {
 	if (ItemObject && ItemObject->WeaponData.bIsWeapon && ItemObject->WeaponData.WeaponReference)

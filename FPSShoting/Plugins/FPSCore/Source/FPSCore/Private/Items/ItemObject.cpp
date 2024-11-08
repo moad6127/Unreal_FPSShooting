@@ -2,6 +2,7 @@
 
 
 #include "Items/ItemObject.h"
+#include "Net/UnrealNetwork.h"
 
 UItemObject::UItemObject()
 {
@@ -30,6 +31,23 @@ void UItemObject::ResetItemFlags()
 {
 	bIsCopy = false;
 	InInventorys = false;
+}
+
+void UItemObject::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UItemObject, ID);
+	DOREPLIFETIME(UItemObject, ItemQuantity);
+	DOREPLIFETIME(UItemObject, SlotType);
+	DOREPLIFETIME(UItemObject, ItemNumbericData);
+	DOREPLIFETIME(UItemObject, Asset);
+	DOREPLIFETIME(UItemObject, ItemName);
+	DOREPLIFETIME(UItemObject, WeaponData);
+	DOREPLIFETIME(UItemObject, DataStruct);
+	DOREPLIFETIME(UItemObject, SizeX);
+	DOREPLIFETIME(UItemObject, SizeY);
+	DOREPLIFETIME(UItemObject, ItemLocation);
 }
 
 void UItemObject::SetItemItemLocation(FIntPoint InItemLocation)
