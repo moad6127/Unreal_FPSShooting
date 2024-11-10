@@ -3,9 +3,12 @@
 
 #include "Chest/BaseChest.h"
 #include "Components/EquipInventoryComponent.h"
+#include "Widget/BasicWidgetController.h"
+
 
 ABaseChest::ABaseChest()
 {
+	bReplicates = true;
 	InteractionText = FText::FromName(FName("Chest"));
 	InventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>(TEXT("InventoryComp"));
 	InventoryComponent->SetIsReplicated(true);

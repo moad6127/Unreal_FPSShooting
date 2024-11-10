@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UBasicWidgetController* GetWidgetController(const FWidgetControllerParams& WCParams);
 
+	UFUNCTION(BlueprintCallable)
+	UBasicWidgetController* MakeWidgetController(const FWidgetControllerParams& WCParams);
+
 	void InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventoryComponent);
 
 	void ShowInventory();

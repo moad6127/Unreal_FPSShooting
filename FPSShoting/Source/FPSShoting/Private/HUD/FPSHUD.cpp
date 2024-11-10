@@ -15,6 +15,17 @@ UBasicWidgetController* AFPSHUD::GetWidgetController(const FWidgetControllerPara
     return WidgetController;
 }
 
+UBasicWidgetController* AFPSHUD::MakeWidgetController(const FWidgetControllerParams& WCParams)
+{
+    if (WidgetControllerClass)
+    {
+        UBasicWidgetController* NewWidgetController = NewObject<UBasicWidgetController>(this, WidgetControllerClass);
+        NewWidgetController->SetWidgetControllerParams(WCParams);
+        return NewWidgetController;
+    }
+    return nullptr;
+}
+
 void AFPSHUD::InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventoryComponent)
 {
 

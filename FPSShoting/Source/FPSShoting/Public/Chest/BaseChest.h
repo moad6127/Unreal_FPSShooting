@@ -11,7 +11,7 @@
  */
 
 class UEquipInventoryComponent;
-
+class UBasicWidgetController;
 UCLASS()
 class FPSSHOTING_API ABaseChest : public AInteractionBase
 {
