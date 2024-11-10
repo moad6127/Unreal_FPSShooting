@@ -2,10 +2,13 @@
 
 
 #include "Chest/BaseChest.h"
+#include "Components/EquipInventoryComponent.h"
 
 ABaseChest::ABaseChest()
 {
 	InteractionText = FText::FromName(FName("Chest"));
+	InventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>(TEXT("InventoryComp"));
+	InventoryComponent->SetIsReplicated(true);
 }
 
 void ABaseChest::Interact()

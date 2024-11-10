@@ -32,6 +32,7 @@ class FPSSHOTING_API AFPSHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
 	UBasicWidgetController* GetWidgetController(const FWidgetControllerParams& WCParams);
 
 	void InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventoryComponent);
