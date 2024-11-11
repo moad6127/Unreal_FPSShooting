@@ -137,9 +137,15 @@ bool UEquipInventoryComponent::HandleStackableItem(UItemObject* InItem)
 void UEquipInventoryComponent::AddAmmo(UItemObject* InItem)
 {
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+	if (PlayerCharacter)
+	{
+		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
-	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] += InItem->ItemQuantity;
+		if (CharacterController)
+		{
+			CharacterController->AmmoMap[InItem->WeaponData.AmmoType] += InItem->ItemQuantity;
+		}
+	}
 }
 
 void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
@@ -457,6 +463,36 @@ void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeInventory();
+	StarterItem();
+}
+
+void UEquipInventoryComponent::StarterItem()
+{
+	for (auto StartItem : StartItems)
+	{
+		if (StartItem.ItemDataTable && !StartItem.ItemName.IsNone())
+		{
+			const FItemData* ItemData = StartItem.ItemDataTable->FindRow<FItemData>(StartItem.ItemName, StartItem.ItemName.ToString());
+
+			UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
+
+			ItemObject->ID = ItemData->ID;
+			ItemObject->SlotType = ItemData->SlotType;
+			ItemObject->ItemQuantity = StartItem.ItemQuantity;
+			ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
+			ItemObject->Asset = ItemData->Asset;
+			ItemObject->ItemName = ItemData->ItemName;
+			ItemObject->WeaponData = ItemData->WeaponData;
+			ItemObject->SetItemSizeX(ItemData->SizeX);
+			ItemObject->SetItemSizeY(ItemData->SizeY);
+
+			if (!TryAddItem(ItemObject))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Can't Add Item : %s"), *ItemObject->ID.ToString());
+			}
+		}
+
+	}
 }
 
 void UEquipInventoryComponent::PlaceItem(UItemObject* InItem, FIntPoint InLocation)

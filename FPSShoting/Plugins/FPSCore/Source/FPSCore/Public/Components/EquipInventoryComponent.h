@@ -8,10 +8,26 @@
 
 struct FTile;
 class UItemObject;
+class UDataTable;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemEquipChanged, EEquipmentSlotType, EquipSlot);
+
+USTRUCT()
+struct FStarterItemData 
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Data Table")
+	FName ItemName;
+
+	UPROPERTY(EditAnywhere, Category = "Data Table")
+	UDataTable* ItemDataTable;
+
+	UPROPERTY(EditAnywhere, Category = "Data Table")
+	int32 ItemQuantity;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
@@ -96,6 +112,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void StarterItem();
 private:
 
 	/*
@@ -149,5 +166,8 @@ private:
 
 	UPROPERTY(Replicated)
 	TArray<bool> InventoryGrid;
+
+	UPROPERTY(EditAnywhere, Category = "Items")
+	TArray<FStarterItemData> StartItems;
 	
 };

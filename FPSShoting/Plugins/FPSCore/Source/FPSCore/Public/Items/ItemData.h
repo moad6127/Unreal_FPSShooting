@@ -143,5 +143,11 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FWeaponData WeaponData;
+
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	int32 SizeX;
+
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	int32 SizeY;
 };
 

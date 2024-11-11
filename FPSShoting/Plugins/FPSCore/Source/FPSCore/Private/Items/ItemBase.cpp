@@ -63,8 +63,8 @@ void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->Asset = ItemData->Asset;
 		ItemObject->ItemName = ItemData->ItemName;
 		ItemObject->WeaponData = ItemData->WeaponData;
-		ItemObject->SetItemSizeX(ItemSizeX);
-		ItemObject->SetItemSizeY(ItemSizeY);
+		ItemObject->SetItemSizeX(ItemData->SizeX);
+		ItemObject->SetItemSizeY(ItemData->SizeY);
 
 		if (ItemData->Asset.Mesh)
 		{
