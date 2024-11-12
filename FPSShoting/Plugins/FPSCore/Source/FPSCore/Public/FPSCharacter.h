@@ -22,7 +22,6 @@ class UCurveFloat;
 class UBlendSpace;
 class UInventoryComponent;
 class UEquipInventoryComponent;
-class UHealthComponent;
 
 /** Movement state enumerator holding all possible movement states */
 UENUM(BlueprintType)
@@ -172,7 +171,6 @@ public:
 	/** Returns the Inventory Component */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
-	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
 	UEquipInventoryComponent* GetEquipInventoryComponent() const { return SInventoryComponent; }
 
@@ -201,6 +199,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	FRotator GetAimOffsets() const;
+
+	UFUNCTION()
+	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+			AController* InstigatedBy, AActor* DamageCauser);
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -432,6 +434,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | FOV")
 	float SpeedFOVChange = 5.0f;
 
+	/** The starting health */
+	UPROPERTY(EditDefaultsOnly, Category = "Health Component")
+	float DefaultHealth = 100.0f;
+
+
+
 #pragma endregion 
 
 #pragma region INTERNAL_VARIABLES
@@ -535,6 +543,9 @@ protected:
 
 	/** A user-driven FOV offset. This will apply an additional offset to the base FOV, whatever that may be. */
 	float FOVOffset; 
+
+	/** The current active health */
+	float Health = 100.0f;
 	
 	/** The target location of a vault or mantle */
 	FTransform VaultTargetLocation;
@@ -546,8 +557,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryComponent> InventoryComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UHealthComponent> HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UEquipInventoryComponent* SInventoryComponent;

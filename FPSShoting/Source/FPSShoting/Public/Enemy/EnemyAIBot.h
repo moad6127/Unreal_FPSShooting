@@ -19,10 +19,17 @@ class FPSSHOTING_API AEnemyAIBot : public ASInvenFPSCharacter
 	GENERATED_BODY()
 
 public:	
+
+
 	AEnemyAIBot();
 	virtual void PossessedBy(AController* NewController) override;
 
+
 protected:
+	virtual void BeginPlay() override;
+
+	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+		AController* InstigatedBy, AActor* DamageCauser) override;
 
 	UPROPERTY(EditAnywhere, Category = Behavior)
 	TObjectPtr<UBehaviorTree> BotBehavior;

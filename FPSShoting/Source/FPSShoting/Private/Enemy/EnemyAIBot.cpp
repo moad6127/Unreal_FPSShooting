@@ -22,3 +22,18 @@ void AEnemyAIBot::PossessedBy(AController* NewController)
 	EnemyAIController->GetBlackboardComponent()->InitializeBlackboard(*BotBehavior->BlackboardAsset);
 	EnemyAIController->RunBehaviorTree(BotBehavior);
 }
+
+void AEnemyAIBot::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OnTakeAnyDamage.Clear();
+	OnTakeAnyDamage.AddDynamic(this, &AEnemyAIBot::HandleTakeAnyDamage);
+}
+
+void AEnemyAIBot::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	Super::HandleTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+
+
+}

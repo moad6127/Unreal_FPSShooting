@@ -61,8 +61,8 @@ AFPSCharacter::AFPSCharacter()
     SInventoryComponent->SetIsReplicated(true);
     InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
     InventoryComponent->SetIsReplicated(true);
-    HealthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
-    HealthComponent->SetIsReplicated(true);
+
+    Health = DefaultHealth;
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +95,8 @@ void AFPSCharacter::BeginPlay()
         InventoryComponent = InventoryComp;
         InventoryComponent->GetEquippedWeapons().Reserve(InventoryComponent->GetNumberOfWeaponSlots());
     }
+
+    OnTakeAnyDamage.AddDynamic(this, &AFPSCharacter::HandleTakeAnyDamage);
 
     // Updating the crouched spring arm height based on the crouched capsule half height
     DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
@@ -695,6 +697,29 @@ FRotator AFPSCharacter::GetAimOffsets() const
     const FRotator AimRotLS = AimDirLS.Rotation();
 
     return AimRotLS;
+}
+
+void AFPSCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+    if (Damage <= 0.0f)
+    {
+        // Health is already at most 0, so no need to perform any calculations
+        return;
+    }
+
+
+    // Updating health, clamped between 0 and 100
+    Health = FMath::Clamp(Health - Damage, 0.0f, 100.0f);
+    UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
+    UE_LOG(LogTemp, Warning, TEXT("Healt : %f"), Health);
+
+    // Broadcasting our new health
+
+    if (Health <= 0.f)
+    {
+        Die();
+    }
+
 }
 
 void AFPSCharacter::PossessedBy(AController* NewController)
