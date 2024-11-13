@@ -760,6 +760,8 @@ void AFPSCharacter::MulticastHandleDeath_Implementation()
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+    bDead = true;
     //TODO : 캐릭터가 죽으면 Equip과 Inventory에 있는 물품들을 Drop하는 Box를 생성하기
     // 배틀 그라운드 처럼.
 }

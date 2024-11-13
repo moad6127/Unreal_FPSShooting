@@ -208,7 +208,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_ReplicatedMovement() override;
 
-	void Die();
+	virtual void Die();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath();
@@ -438,7 +438,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Health Component")
 	float DefaultHealth = 100.0f;
 
+	/** A reference to the player's Inventory Component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UEquipInventoryComponent* SInventoryComponent;
 
 #pragma endregion 
 
@@ -501,6 +507,8 @@ protected:
 	
 	/** Whether the character is crouching */
 	bool bIsCrouching;
+
+	bool bDead;
 	
 	/** The start location of a vaulting or mantle */
 	FTransform VaultStartLocation;
@@ -553,13 +561,7 @@ protected:
 	/** Timer manager for sliding */
 	FTimerHandle SlideStop;
 
-	/** A reference to the player's Inventory Component */ 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInventoryComponent> InventoryComponent;
 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
-	UEquipInventoryComponent* SInventoryComponent;
 
 #pragma endregion 
 

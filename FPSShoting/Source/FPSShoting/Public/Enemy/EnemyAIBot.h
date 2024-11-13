@@ -31,6 +31,8 @@ protected:
 	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 		AController* InstigatedBy, AActor* DamageCauser) override;
 
+	virtual void Die() override;
+
 	UPROPERTY(EditAnywhere, Category = Behavior)
 	TObjectPtr<UBehaviorTree> BotBehavior;
 

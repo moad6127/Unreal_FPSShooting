@@ -35,5 +35,16 @@ void AEnemyAIBot::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const 
 {
 	Super::HandleTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 
+	if (DamageCauser == nullptr || DamageCauser->GetOwner() == nullptr)
+	{
+		return;
+	}
+	EnemyAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), DamageCauser->GetOwner());
+}
 
+void AEnemyAIBot::Die()
+{
+	Super::Die();
+
+	EnemyAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bDead"), bDead);
 }
