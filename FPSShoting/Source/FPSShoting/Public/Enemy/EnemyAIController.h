@@ -14,6 +14,8 @@ class UBlackboardComponent;
 class UBehaviorTreeComponent;
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
+struct FAIStimulus;
+class UAISense;
 
 UCLASS()
 class FPSSHOTING_API AEnemyAIController : public AAIController
@@ -29,7 +31,7 @@ protected:
 
 	void HandleSensedSight(AActor* UpdatedActorr);
 
-
+	FAIStimulus CanSenseActor(AActor* Actor, TSubclassOf<UAISense> SenseToUse);
 
 	UPROPERTY()
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;

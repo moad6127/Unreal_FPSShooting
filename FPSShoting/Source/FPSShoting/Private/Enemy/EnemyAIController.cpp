@@ -40,16 +40,39 @@ AEnemyAIController::AEnemyAIController()
 void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 {
 	//TODO : Sense를 구별하면서 Update를 확인하기
-	TArray<AActor*> Actors;
-	AIPerception->GetCurrentlyPerceivedActors(SightConfig->GetSenseImplementation(), Actors);
-	if (Actors.Num() > 0)
+	for (auto Actor : UpdatedActors)
 	{
-
-		Blackboard->SetValueAsObject("Target", Actors[0]);
+		FAIStimulus AIStimulus;
+		// SightActors들 모아두기
+		AIStimulus = CanSenseActor(Actor, SightConfig->GetSenseImplementation());
+		if (AIStimulus.WasSuccessfullySensed())
+		{
+			Blackboard->SetValueAsObject("Target", Actor);
+		}
 	}
 }
 
 void AEnemyAIController::HandleSensedSight(AActor* UpdatedActorr)
 {
 	
+}
+
+FAIStimulus AEnemyAIController::CanSenseActor(AActor* Actor, TSubclassOf<UAISense> SenseToUse)
+{
+	FActorPerceptionBlueprintInfo ActorPerceptionBlueprintInfo;
+	FAIStimulus ResultStimulus;
+	AIPerception->GetActorsPerception(Actor, ActorPerceptionBlueprintInfo);
+
+	TSubclassOf<UAISense> LastSensedStimulusClass;
+	for (auto& AIStimulus : ActorPerceptionBlueprintInfo.LastSensedStimuli)
+	{
+		LastSensedStimulusClass = UAIPerceptionSystem::GetSenseClassForStimulus(this, AIStimulus);
+		if (SenseToUse == LastSensedStimulusClass)
+		{
+			ResultStimulus = AIStimulus;
+			return ResultStimulus;
+		}
+	}
+
+	return ResultStimulus;
 }
