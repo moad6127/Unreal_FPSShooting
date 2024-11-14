@@ -147,6 +147,10 @@ private:
 	void AddAmmo(UItemObject* InItem);
 	void RemoveAmmo(UItemObject* InItem);
 
+	//Replace를 할때 Item이 Ammo일경우 인벤토리의 모든 Ammo체크하기
+	void CheckAmmo(UItemObject* InItem);
+
+
 	UFUNCTION()
 	void OnRep_InventoryItems();
 

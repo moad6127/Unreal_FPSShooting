@@ -151,9 +151,40 @@ void UEquipInventoryComponent::AddAmmo(UItemObject* InItem)
 void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
 {
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+	if (PlayerCharacter)
+	{
+		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+		if (CharacterController)
+		{
+			CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemQuantity;
+		}
+	}
+}
 
-	CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemQuantity;
+void UEquipInventoryComponent::CheckAmmo(UItemObject* InItem)
+{
+	if (InItem->SlotType != EEquipmentSlotType::EEST_Ammo)
+	{
+		return;
+	}
+	EAmmoType AmmoType = InItem->WeaponData.AmmoType;
+	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
+	if (PlayerCharacter)
+	{
+		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+		if (CharacterController)
+		{
+			CharacterController->AmmoMap[AmmoType] = 0;
+			for (auto Item : InventoryItems)
+			{
+				if (Item->WeaponData.AmmoType == AmmoType)
+				{
+					CharacterController->AmmoMap[AmmoType] += Item->ItemQuantity;
+				}
+			}
+		}
+	}
+
 }
 
 void UEquipInventoryComponent::OnRep_InventoryItems()
@@ -171,6 +202,7 @@ bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 	{
 		InventoryItems.Remove(InItem);
 		RemovePlaceItem(InItem);
+		//CheckAmmo(InItem);
 		InventoryChanged.Broadcast();
 		return true;
 	}
@@ -193,10 +225,7 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 	//Drop아이템에 대해서 Initialize해주기
 	ItemToDrop->ResetItemFlags();
 	DropItem->InitializeDrop(ItemToDrop);
-	if (ItemToDrop->SlotType == EEquipmentSlotType::EEST_Ammo)
-	{
-		RemoveAmmo(ItemToDrop);
-	}
+	CheckAmmo(ItemToDrop);
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
@@ -210,6 +239,10 @@ bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint
 		PlaceItem(ItemToReplace, InLocation);
 		ItemToReplace->SetItemItemLocation(InLocation);
 		InventoryItems.Add(ItemToReplace);
+		if (ItemToReplace->SlotType == EEquipmentSlotType::EEST_Ammo)
+		{
+			CheckAmmo(ItemToReplace);
+		}
 		InventoryChanged.Broadcast();
 		return true;
 	}
