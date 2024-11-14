@@ -25,25 +25,31 @@ AEnemyAIController::AEnemyAIController()
 	SightConfig->AutoSuccessRangeFromLastSeenLocation = -1.;
 
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = false;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	AIPerception->ConfigureSense(*SightConfig);
 	AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
+	// TODO : Hearing 도 추가하기
+
 
 	AIPerception->OnPerceptionUpdated.AddDynamic(this, &AEnemyAIController::UpdatePercention);
 }
 
+
 void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 {
+	//TODO : Sense를 구별하면서 Update를 확인하기
 	TArray<AActor*> Actors;
 	AIPerception->GetCurrentlyPerceivedActors(SightConfig->GetSenseImplementation(), Actors);
 	if (Actors.Num() > 0)
 	{
+
 		Blackboard->SetValueAsObject("Target", Actors[0]);
 	}
 }
 
 void AEnemyAIController::HandleSensedSight(AActor* UpdatedActorr)
 {
+	
 }

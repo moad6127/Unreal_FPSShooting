@@ -11,6 +11,7 @@
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/HitResult.h"
+#include "GenericTeamAgentInterface.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
@@ -73,7 +74,7 @@ struct FMovementVariables
 };
 
 UCLASS()
-class FPSCORE_API AFPSCharacter : public ACharacter
+class FPSCORE_API AFPSCharacter : public ACharacter , public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -209,6 +210,9 @@ public:
 	virtual void OnRep_ReplicatedMovement() override;
 
 	virtual void Die();
+
+	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
+
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath();
@@ -437,6 +441,9 @@ protected:
 	/** The starting health */
 	UPROPERTY(EditDefaultsOnly, Category = "Health Component")
 	float DefaultHealth = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Team")
+	uint8 TeamID = 1;
 
 	/** A reference to the player's Inventory Component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))

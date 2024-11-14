@@ -29,6 +29,8 @@ protected:
 
 	void HandleSensedSight(AActor* UpdatedActorr);
 
+
+
 	UPROPERTY()
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
 

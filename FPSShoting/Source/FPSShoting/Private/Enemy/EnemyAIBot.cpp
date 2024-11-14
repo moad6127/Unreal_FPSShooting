@@ -8,7 +8,7 @@
 
 AEnemyAIBot::AEnemyAIBot()
 {
-
+	TeamID = 2;
 }
 
 void AEnemyAIBot::PossessedBy(AController* NewController)
@@ -21,6 +21,7 @@ void AEnemyAIBot::PossessedBy(AController* NewController)
 	EnemyAIController = Cast<AEnemyAIController>(NewController);
 	EnemyAIController->GetBlackboardComponent()->InitializeBlackboard(*BotBehavior->BlackboardAsset);
 	EnemyAIController->RunBehaviorTree(BotBehavior);
+	EnemyAIController->SetGenericTeamId(GetGenericTeamId());
 }
 
 void AEnemyAIBot::BeginPlay()

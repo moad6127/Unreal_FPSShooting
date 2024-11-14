@@ -27,7 +27,8 @@ public class FPSCore : ModuleRules
 				"Core",
                 "PhysicsCore",
                 "Niagara",
-                "EnhancedInput"
+                "EnhancedInput",
+                 "AIModule"
                 // ... add other public dependencies that you statically link with here ...
 			}
 			);
