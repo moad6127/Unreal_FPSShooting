@@ -745,6 +745,7 @@ void AFPSCharacter::Die()
     MulticastHandleDeath();
 }
 
+
 void AFPSCharacter::MulticastHandleDeath_Implementation()
 {
     GetMesh()->SetSimulatePhysics(true);
@@ -766,6 +767,10 @@ void AFPSCharacter::MulticastHandleDeath_Implementation()
     // 배틀 그라운드 처럼.
 }
 
+bool AFPSCharacter::IsAlive()
+{
+    return !bDead;
+}
 
 // Called every frame
 void AFPSCharacter::Tick(const float DeltaTime)

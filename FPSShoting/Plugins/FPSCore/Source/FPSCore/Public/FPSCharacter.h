@@ -211,6 +211,8 @@ public:
 
 	virtual void Die();
 
+	bool IsAlive();
+
 	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
 
 

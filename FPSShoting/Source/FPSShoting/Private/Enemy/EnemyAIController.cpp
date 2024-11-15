@@ -2,10 +2,13 @@
 
 
 #include "Enemy/EnemyAIController.h"
+#include "Enemy/EnemyAIBot.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "WeaponBase.h"
+#include "Components/InventoryComponent.h"
 
 AEnemyAIController::AEnemyAIController()
 {
@@ -79,4 +82,35 @@ FAIStimulus AEnemyAIController::CanSenseActor(AActor* Actor, TSubclassOf<UAISens
 	}
 
 	return ResultStimulus;
+}
+
+void AEnemyAIController::ShootEnemy()
+{
+	AEnemyAIBot* AIBot = Cast<AEnemyAIBot>(GetPawn());
+	AWeaponBase* BotWeapon = AIBot ? AIBot->GetInventoryComponent()->GetCurrentWeapon() : nullptr;
+	if (BotWeapon == nullptr)
+	{
+		return;
+	}
+
+	AFPSCharacter* EnemyCharacter;
+	EnemyCharacter = Cast<AFPSCharacter>(Blackboard->GetValueAsObject("Target"));
+
+	bool CanFire = false;
+	if (EnemyCharacter && EnemyCharacter->IsAlive() && BotWeapon->CanFire())
+	{
+		if (LineOfSightTo(EnemyCharacter, AIBot->GetActorLocation()))
+		{
+			CanFire = true;
+		}
+	}
+
+	if (CanFire)
+	{
+		BotWeapon->StartFire();
+	}
+	else
+	{
+		BotWeapon->StopFire();
+	}
 }

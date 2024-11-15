@@ -26,12 +26,19 @@ public:
 	AEnemyAIController();
 
 protected:
+
+	UFUNCTION(BlueprintCallable, Category = "Behavior")
+	void ShootEnemy();
+
 	UFUNCTION()
 	void UpdatePercention(const TArray<AActor*>& UpdatedActors);
 
 	void HandleSensedSight(AActor* UpdatedActorr);
 
 	FAIStimulus CanSenseActor(AActor* Actor, TSubclassOf<UAISense> SenseToUse);
+
+	
+
 
 	UPROPERTY()
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
