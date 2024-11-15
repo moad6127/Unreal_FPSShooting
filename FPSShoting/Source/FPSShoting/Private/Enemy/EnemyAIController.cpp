@@ -49,6 +49,10 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 		{
 			Blackboard->SetValueAsObject("Target", Actor);
 		}
+		else if (!AIStimulus.WasSuccessfullySensed())
+		{
+			Blackboard->SetValueAsObject("Target", nullptr);
+		}
 	}
 }
 
