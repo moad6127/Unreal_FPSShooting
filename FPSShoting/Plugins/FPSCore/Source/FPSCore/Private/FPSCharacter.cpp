@@ -125,6 +125,10 @@ void AFPSCharacter::PawnClientRestart()
 
 void AFPSCharacter::Move(const FInputActionValue& Value)
 {
+    if (!IsAlive())
+    {
+        return;
+    }
     // Storing movement vectors for animation manipulation
     ForwardMovement = Value[1];
     RightMovement = Value[0];
@@ -146,6 +150,10 @@ void AFPSCharacter::Move(const FInputActionValue& Value)
 
 void AFPSCharacter::Look(const FInputActionValue& Value)
 {
+    if (!IsAlive())
+    {
+        return;
+    }
     // Storing look vectors for animation manipulation
     MouseX = Value[1];
     MouseY = Value[0];
@@ -167,6 +175,10 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
 
 void AFPSCharacter::ToggleCrouch()
 {
+    if (!IsAlive())
+    {
+        return;
+    }
     bHoldingCrouch = true;
 
     if (GetCharacterMovement()->IsMovingOnGround())
@@ -198,6 +210,10 @@ void AFPSCharacter::ToggleCrouch()
 
 void AFPSCharacter::Jump()
 {
+    if (!IsAlive())
+    {
+        return;
+    }
     if (MovementState == EMovementState::State_Crouch)
     {
         ToggleCrouch();
@@ -210,6 +226,7 @@ void AFPSCharacter::Jump()
 
 void AFPSCharacter::ReleaseCrouch()
 {
+
     bHoldingCrouch = false;
     bPerformedSlide = false;
     if (MovementState == EMovementState::State_Slide)
@@ -752,22 +769,29 @@ void AFPSCharacter::MulticastHandleDeath_Implementation()
     GetMesh()->SetEnableGravity(true);
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
     GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECollisionResponse::ECR_Block);
+    GetMesh()->bOwnerNoSee = false;
+    GetMesh()->bOnlyOwnerSee = true;
+
 
     GetHandsMesh()->SetSimulatePhysics(true);
     GetHandsMesh()->SetEnableGravity(true);
     GetHandsMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
     GetHandsMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECollisionResponse::ECR_Block);
+    GetHandsMesh()->bOwnerNoSee = true;
+
+
+
 
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-    CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+    //CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
     bDead = true;
     //TODO : 캐릭터가 죽으면 Equip과 Inventory에 있는 물품들을 Drop하는 Box를 생성하기
     // 배틀 그라운드 처럼.
 }
 
-bool AFPSCharacter::IsAlive()
+bool AFPSCharacter::IsAlive() const
 {
     return !bDead;
 }

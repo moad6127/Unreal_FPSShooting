@@ -28,8 +28,10 @@ void AEnemyAIBot::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnemyAIController->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetActorLocation());
-
+	if (HasAuthority())
+	{
+		EnemyAIController->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetActorLocation());
+	}
 	OnTakeAnyDamage.Clear();
 	OnTakeAnyDamage.AddDynamic(this, &AEnemyAIBot::HandleTakeAnyDamage);
 }

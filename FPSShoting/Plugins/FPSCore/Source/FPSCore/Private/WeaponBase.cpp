@@ -314,7 +314,11 @@ void AWeaponBase::Fire()
     {
         // Casting to the player character
         const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-        
+        if (!PlayerCharacter->IsAlive())
+        {
+            bCanFire = false;
+            return;
+        }
         USkeletalMeshComponent* UseMeshComp;
         if (PlayerCharacter->GetController()->IsLocalPlayerController())
         {
@@ -664,6 +668,10 @@ bool AWeaponBase::Reload()
 
                 AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
                     WeaponData.EmptyPlayerReload, 1.0f);
+                if (WeaponData.TPPPlayerReload)
+                {
+                    PlayerCharacter->GetMesh()->GetAnimInstance()->Montage_Play(WeaponData.TPPPlayerReload, 1.0f);
+                }
             }
             else if (WeaponData.PlayerReload)
             {
@@ -677,6 +685,10 @@ bool AWeaponBase::Reload()
                 }
                 AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
                     WeaponData.PlayerReload, 1.0f);
+                if (WeaponData.TPPPlayerReload)
+                {
+                    PlayerCharacter->GetMesh()->GetAnimInstance()->Montage_Play(WeaponData.TPPPlayerReload, 1.0f);
+                }
             }
             else
             {
@@ -745,23 +757,21 @@ void AWeaponBase::UpdateAmmo()
         * Inventory에 있는 Ammo의 수를 줄인다.
         */
         int RemoveInventory = (Temp + Value);
-        while (RemoveInventory)
+        for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
         {
-            for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
+            if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
+                Item->WeaponData.AmmoType == GeneralWeaponData.AmmoType)
             {
-                if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
-                    Item->WeaponData.AmmoType == GeneralWeaponData.AmmoType)
+                if (Item->ItemQuantity >= RemoveInventory)
                 {
-                    if (Item->ItemQuantity >= RemoveInventory)
-                    {
-                        PlayerCharacter->GetEquipInventoryComponent()->ConsumeItem(Item, RemoveInventory);
-                        RemoveInventory = 0;
-                    }
-                    else
-                    {
-                        PlayerCharacter->GetEquipInventoryComponent()->RemoveItems(Item);
-                        RemoveInventory -= Item->ItemQuantity;
-                    }
+                    PlayerCharacter->GetEquipInventoryComponent()->ConsumeItem(Item, RemoveInventory);
+                    RemoveInventory = 0;
+                    break;
+                }
+                else
+                {
+                    PlayerCharacter->GetEquipInventoryComponent()->RemoveItems(Item);
+                    RemoveInventory -= Item->ItemQuantity;
                 }
             }
         }
