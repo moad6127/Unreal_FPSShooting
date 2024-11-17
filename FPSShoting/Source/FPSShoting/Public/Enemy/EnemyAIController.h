@@ -16,7 +16,9 @@ class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 struct FAIStimulus;
 class UAISense;
-
+class AFPSCharacter;
+class AEnemyAIBot;
+class AWeaponBase;
 UCLASS()
 class FPSSHOTING_API AEnemyAIController : public AAIController
 {
@@ -24,7 +26,9 @@ class FPSSHOTING_API AEnemyAIController : public AAIController
 
 public:
 	AEnemyAIController();
+	virtual void Tick(float DeltaTime) override;
 
+	void SetTarget(AActor* Target);
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Behavior")
@@ -37,7 +41,9 @@ protected:
 
 	FAIStimulus CanSenseActor(AActor* Actor, TSubclassOf<UAISense> SenseToUse);
 
-	
+	void RotateToTarget(float DeltaTime);
+
+	void ResetFireCooldown();
 
 
 	UPROPERTY()
@@ -56,4 +62,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float AIPeripheralVisionAngleDegrees = 60.f;
+
+	UPROPERTY()
+	TObjectPtr<AFPSCharacter> EnemyCharacter;
+
+	UPROPERTY()
+	TObjectPtr<AEnemyAIBot> AIBot;
+
+	bool CanFire = false;
+
+
+private:
+
+	FTimerHandle FireTimerHandle;
+
 };

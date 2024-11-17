@@ -44,7 +44,7 @@ void AEnemyAIBot::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const 
 	{
 		return;
 	}
-	EnemyAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), DamageCauser->GetOwner());
+	EnemyAIController->SetTarget(DamageCauser->GetOwner());
 }
 
 void AEnemyAIBot::Die()

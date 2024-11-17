@@ -335,10 +335,15 @@ void AWeaponBase::Fire()
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(GeneralWeaponData.ClipSize > 0 && !bIsReloading), true);
         }
 
+        
         GunFired();
 
         // Subtracting from the ammunition count of the weapon
         GeneralWeaponData.ClipSize -= 1;
+
+
+        UE_LOG(LogTemp, Warning, TEXT("Owner : %s"), *GetOwner()->GetName());
+        UE_LOG(LogTemp, Warning, TEXT("ClipSize : %d"), GetRuntimeWeaponData()->ClipSize);
 
         const int NumberOfShots = WeaponData.bIsShotgun? WeaponData.ShotgunPellets : 1;
         // We run this for the number of bullets/projectiles per shot, in order to support shotguns

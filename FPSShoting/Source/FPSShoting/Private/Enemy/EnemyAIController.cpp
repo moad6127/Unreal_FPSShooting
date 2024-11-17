@@ -12,6 +12,8 @@
 
 AEnemyAIController::AEnemyAIController()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	Blackboard = CreateDefaultSubobject<UBlackboardComponent>("BlackboardComponent");
 	check(Blackboard);
 	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviorTreeComponent");
@@ -39,6 +41,16 @@ AEnemyAIController::AEnemyAIController()
 	AIPerception->OnPerceptionUpdated.AddDynamic(this, &AEnemyAIController::UpdatePercention);
 }
 
+void AEnemyAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (EnemyCharacter)
+	{
+		RotateToTarget(DeltaTime);
+	}
+}
+
 
 void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 {
@@ -50,11 +62,11 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 		AIStimulus = CanSenseActor(Actor, SightConfig->GetSenseImplementation());
 		if (AIStimulus.WasSuccessfullySensed())
 		{
-			Blackboard->SetValueAsObject("Target", Actor);
+			SetTarget(Actor);
 		}
 		else if (!AIStimulus.WasSuccessfullySensed())
 		{
-			Blackboard->SetValueAsObject("Target", nullptr);
+			SetTarget(nullptr);
 		}
 	}
 }
@@ -84,19 +96,51 @@ FAIStimulus AEnemyAIController::CanSenseActor(AActor* Actor, TSubclassOf<UAISens
 	return ResultStimulus;
 }
 
+void AEnemyAIController::RotateToTarget(float DeltaTime)
+{
+	if (!EnemyCharacter)
+	{
+		return;
+	}
+
+	FVector Direction = EnemyCharacter->GetActorLocation() - GetPawn()->GetActorLocation();
+	Direction.Z = 0;
+
+	FRotator TargetRotation = Direction.Rotation();
+	FRotator CurrentRotation = GetPawn()->GetActorRotation();
+
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 5.f);
+	GetPawn()->SetActorRotation(NewRotation);
+}
+
+void AEnemyAIController::ResetFireCooldown()
+{
+	AIBot = AIBot ? AIBot : Cast<AEnemyAIBot>(GetPawn());
+	AWeaponBase* BotWeapon = AIBot ? AIBot->GetInventoryComponent()->GetCurrentWeapon() : nullptr;
+
+	if (BotWeapon)
+	{
+		BotWeapon->StopFire();
+	}
+
+}
+
+void AEnemyAIController::SetTarget(AActor* Target)
+{
+	Blackboard->SetValueAsObject("Target", Target);
+	EnemyCharacter = Cast<AFPSCharacter>(Blackboard->GetValueAsObject("Target"));
+}
+
 void AEnemyAIController::ShootEnemy()
 {
-	AEnemyAIBot* AIBot = Cast<AEnemyAIBot>(GetPawn());
+	AIBot = AIBot ? AIBot : Cast<AEnemyAIBot>(GetPawn());
 	AWeaponBase* BotWeapon = AIBot ? AIBot->GetInventoryComponent()->GetCurrentWeapon() : nullptr;
 	if (BotWeapon == nullptr)
 	{
 		return;
 	}
 
-	AFPSCharacter* EnemyCharacter;
-	EnemyCharacter = Cast<AFPSCharacter>(Blackboard->GetValueAsObject("Target"));
 
-	bool CanFire = false;
 	if (EnemyCharacter && EnemyCharacter->IsAlive() && BotWeapon->CanFire())
 	{
 		if (LineOfSightTo(EnemyCharacter, AIBot->GetActorLocation()))
@@ -106,8 +150,14 @@ void AEnemyAIController::ShootEnemy()
 	}
 
 	if (CanFire)
-	{
+	{		
 		BotWeapon->StartFire();
+		GetWorld()->GetTimerManager().SetTimer(
+			FireTimerHandle,
+			this,
+			&AEnemyAIController::ResetFireCooldown,
+			1.f,
+			false);
 	}
 	else
 	{
