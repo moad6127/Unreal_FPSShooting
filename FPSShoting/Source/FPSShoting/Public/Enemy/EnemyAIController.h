@@ -28,11 +28,18 @@ public:
 	AEnemyAIController();
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Behavior")
+	void TargetRemove();
+
+
 	void SetTarget(AActor* Target);
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Behavior")
 	void ShootEnemy();
+
+	UFUNCTION(BlueprintCallable, Category = "Behavior")
+	float CheckDistanceToTarget();
 
 	UFUNCTION()
 	void UpdatePercention(const TArray<AActor*>& UpdatedActors);

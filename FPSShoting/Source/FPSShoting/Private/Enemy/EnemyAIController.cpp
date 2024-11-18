@@ -51,6 +51,11 @@ void AEnemyAIController::Tick(float DeltaTime)
 	}
 }
 
+void AEnemyAIController::TargetRemove()
+{
+	SetTarget(nullptr);
+}
+
 
 void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 {
@@ -66,7 +71,10 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 		}
 		else if (!AIStimulus.WasSuccessfullySensed())
 		{
-			SetTarget(nullptr);
+			if (CheckDistanceToTarget() > 2000.f)
+			{
+				SetTarget(nullptr);
+			}
 		}
 	}
 }
@@ -152,15 +160,25 @@ void AEnemyAIController::ShootEnemy()
 	if (CanFire)
 	{		
 		BotWeapon->StartFire();
+
+		float RandShootingTime;
+		
+		RandShootingTime = FMath::RandRange(0.3f, 1.2f);
+
 		GetWorld()->GetTimerManager().SetTimer(
 			FireTimerHandle,
 			this,
 			&AEnemyAIController::ResetFireCooldown,
-			1.f,
+			RandShootingTime,
 			false);
 	}
 	else
 	{
 		BotWeapon->StopFire();
 	}
+}
+
+float AEnemyAIController::CheckDistanceToTarget()
+{
+	return Blackboard->GetValueAsFloat("TargetDistance");
 }
