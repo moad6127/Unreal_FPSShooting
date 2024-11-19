@@ -14,4 +14,10 @@ class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+
+public:
+
+	void SaveGame();
+
+	void LoadGame();
 };

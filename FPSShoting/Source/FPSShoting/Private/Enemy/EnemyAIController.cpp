@@ -60,6 +60,7 @@ void AEnemyAIController::TargetRemove()
 void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 {
 	//TODO : Sense를 구별하면서 Update를 확인하기
+
 	for (auto Actor : UpdatedActors)
 	{
 		FAIStimulus AIStimulus;
@@ -71,6 +72,8 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 		}
 		else if (!AIStimulus.WasSuccessfullySensed())
 		{
+			// TODO : 어그로를 해제하는 코드 만들기
+			// 시간이 지나거나, 일정부분 멀어지면 어그로가 해제되도록 만들어보기
 			if (CheckDistanceToTarget() > 2000.f)
 			{
 				SetTarget(nullptr);
@@ -180,5 +183,13 @@ void AEnemyAIController::ShootEnemy()
 
 float AEnemyAIController::CheckDistanceToTarget()
 {
-	return Blackboard->GetValueAsFloat("TargetDistance");
+	if (!AIBot)
+	{
+		return 0.f;
+	}
+	if (!EnemyCharacter)
+	{
+		return 0.f;
+	}
+	return AIBot->GetDistanceTo(EnemyCharacter);
 }
