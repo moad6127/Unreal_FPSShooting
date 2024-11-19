@@ -5,25 +5,22 @@
 #include "GameMode/FPSSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
-void AFPSGameModeBase::SaveGame()
+void AFPSGameModeBase::SaveGame(UFPSSaveGame* SaveGame)
 {
-	UFPSSaveGame* SaveGameInstance = Cast<UFPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UFPSSaveGame::StaticClass()));
-
-	if (SaveGameInstance)
-	{
-
-	}
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SlotName, SaveGameInstance->SlotIndex);
+	UGameplayStatics::SaveGameToSlot(SaveGame, SaveGame->SlotName, SaveGame->SlotIndex);
 }
 
-void AFPSGameModeBase::LoadGame()
+UFPSSaveGame* AFPSGameModeBase::GetSaveData()
 {
-	UFPSSaveGame* LoadGameInstance = Cast<UFPSSaveGame>(UGameplayStatics::CreateSaveGameObject(UFPSSaveGame::StaticClass()));
-	
-	if (LoadGameInstance)
+	USaveGame* SaveGameObject = nullptr;
+	if (UGameplayStatics::DoesSaveGameExist("SaveGame", 0))
 	{
-		LoadGameInstance = Cast<UFPSSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SlotName, LoadGameInstance->SlotIndex));
-
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot("SaveGame", 0);
 	}
-
+	else
+	{
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(USaveGame::StaticClass());
+	}
+	UFPSSaveGame* FPSSaveGame = Cast<UFPSSaveGame>(SaveGameObject);
+	return FPSSaveGame;
 }

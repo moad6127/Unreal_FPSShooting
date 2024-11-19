@@ -2,15 +2,46 @@
 
 
 #include "Character/SInvenFPSCharacter.h"
+#include "GameMode/FPSGameModeBase.h"
+#include "GameMode/FPSSaveGame.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InventoryComponent.h"
 #include "HUD/FPSHUD.h"
 #include "WeaponBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "FPSCharacterController.h"
 
 
 ASInvenFPSCharacter::ASInvenFPSCharacter()
 {
+}
+
+void ASInvenFPSCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	LoadGame();
+}
+void ASInvenFPSCharacter::LoadGame()
+{
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	{
+		if (GameMode)
+		{
+			UFPSSaveGame* SaveGame = GameMode->GetSaveData();
+			if (SaveGame == nullptr)
+			{
+				return;
+			}
+			//TODO : Character의 인벤, 장비창 로드하기
+
+		}
+	}
 }
 
 void ASInvenFPSCharacter::BeginPlay()
@@ -52,6 +83,7 @@ void ASInvenFPSCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	SetHUDCrosshair(DeltaTime);
 }
+
 
 void ASInvenFPSCharacter::SetHUDCrosshair(float DeltaTime)
 {

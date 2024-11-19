@@ -346,11 +346,11 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerADSSet(bool bADS);
 	
-
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
 
 	void ShowDebugMovementState(const float DeltaTime);
+
 
 #pragma endregion 
 

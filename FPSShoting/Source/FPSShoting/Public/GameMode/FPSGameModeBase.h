@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+class UFPSSaveGame;
+
 UCLASS()
 class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 {
@@ -17,7 +20,8 @@ class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 
 public:
 
-	void SaveGame();
+	void SaveGame(UFPSSaveGame* SaveGame);
 
-	void LoadGame();
+
+	UFPSSaveGame* GetSaveData();
 };

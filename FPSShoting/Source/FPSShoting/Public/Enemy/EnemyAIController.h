@@ -31,7 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Behavior")
 	void TargetRemove();
 
-
+	AFPSCharacter* GetTarget() const { return EnemyCharacter; }
 	void SetTarget(AActor* Target);
 protected:
 

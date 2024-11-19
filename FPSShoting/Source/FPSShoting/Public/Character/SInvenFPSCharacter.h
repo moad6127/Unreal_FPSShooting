@@ -16,6 +16,7 @@ class FPSSHOTING_API ASInvenFPSCharacter : public AFPSCharacter
 {
 	GENERATED_BODY()
 public:
+	virtual void PossessedBy(AController* NewController) override;
 
 
 protected:
@@ -32,6 +33,9 @@ protected:
 
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
+
+	// 게임 load하기
+	void LoadGame();
 
 	UPROPERTY()
 	AFPSHUD* HUD;

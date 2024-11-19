@@ -30,6 +30,7 @@
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 AFPSCharacter::AFPSCharacter()
 {
@@ -742,6 +743,7 @@ void AFPSCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 void AFPSCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
+
 }
 
 void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -963,6 +965,7 @@ void AFPSCharacter::ShowDebugMovementState(const float DeltaTime)
         break;
     }
 }
+
 
 // Called to bind functionality to input
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
