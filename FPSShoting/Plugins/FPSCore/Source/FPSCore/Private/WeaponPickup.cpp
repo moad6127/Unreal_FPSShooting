@@ -43,11 +43,6 @@ void AWeaponPickup::BeginPlay()
 	// Spawning attachments on begin play
 	SpawnAttachmentMesh();
 
-	// Simulating physics if not bStatic
-	if (!bStatic)
-	{
-		MeshComp->SetSimulatePhysics(true);
-	}
 }
 
 // Updating the appearance of the pickup in the editor

@@ -10,6 +10,8 @@
 
 AItemBase::AItemBase()
 {
+
+
 	Sphere = CreateDefaultSubobject<USphereComponent>("ItemCollision");
 	Sphere->SetupAttachment(MeshComp);	
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);

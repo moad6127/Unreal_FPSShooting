@@ -10,5 +10,8 @@ AInteractionBase::AInteractionBase()
 {
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	RootComponent = MeshComp;
+
+	MeshComp->SetSimulatePhysics(true);
+
 	bReplicates = true;
 }
