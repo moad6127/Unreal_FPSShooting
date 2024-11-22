@@ -406,13 +406,22 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 
 
 
-void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
+bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 {
 	EEquipmentSlotType SlotType = InItem->SlotType;
 	if (!EquipmentItems.Contains(SlotType))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Not have item in EquipmentItems!!"));
-		return;
+		return false;
+	}
+
+	//만약 증가된 인벤토리에 아이템이 있으면 장비해제를 못하게 하기
+	if (InItem->ItemNumbericData.bExpandableSize)
+	{
+		if (!CheckPlace(InItem->ItemNumbericData.ExpandableInventorySize))
+		{
+			return false;
+		}
 	}
 	// Equip창에 Slot을 구분하기위해 Weapon은 1과 2로 나누었다.
 
@@ -433,6 +442,8 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		UE_LOG(LogTemp, Warning, TEXT("NowAmmo : %d"), InItem->DataStruct.ClipSize);
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다
+
+
 	EquipmentItems.Remove(SlotType);
 	ItemEquipChanged.Broadcast(SlotType);
 	if (InItem->ItemNumbericData.bExpandableSize)
@@ -440,6 +451,7 @@ void UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		Rows -= InItem->ItemNumbericData.ExpandableInventorySize;
 		InventorySizeChanged.Broadcast();
 	}
+	return true;
 }
 
 void UEquipInventoryComponent::ConsumeItem(UItemObject* InItem, int32 ConsumeAmount)
@@ -551,9 +563,26 @@ void UEquipInventoryComponent::RemovePlaceItem(UItemObject* InItem)
 	}
 }
 
+bool UEquipInventoryComponent::CheckPlace(int32 ExpandableSize)
+{
+	for (int i = Rows - ExpandableSize; i < Rows; i++)
+	{
+		for (int j = 0; j < Columns; j++)
+		{
+			if (InventoryGrid[GetIndex(j, i)])
+			{
+				// 추가된 인벤토리에 아이템이 존재하면 false를 반환
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
 void UEquipInventoryComponent::InitializeInventory()
 {
-	InventoryGrid.Init(false, Columns * Rows);
+	InventoryGrid.Init(false, 100 * 100);
 }
 
 bool UEquipInventoryComponent::IsPositionValid(FIntPoint InLocation)

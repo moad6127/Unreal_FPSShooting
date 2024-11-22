@@ -33,6 +33,15 @@ enum class EWeaponSwapBehaviour : uint8
 };
 
 USTRUCT()
+struct FEquipWeapon
+{
+	GENERATED_BODY()
+	// TMap을 복제하기위해서 만들어본 구조체, TMap이 들어있으면 복제가 안된다.
+	UPROPERTY(VisibleAnywhere, Category = "Equipment")
+	TMap<int, AWeaponBase*> EquippedWeapons;
+};
+
+USTRUCT()
 struct FStarterWeaponData
 {
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")

@@ -77,12 +77,13 @@ void UBasicWidgetController::EquipItem(UItemObject* InItem)
 	}
 }
 
-void UBasicWidgetController::UnEquipItem(UItemObject* ItemToUnEquip)
+bool UBasicWidgetController::UnEquipItem(UItemObject* ItemToUnEquip)
 {
 	if (GetEquipInventoryComponent())
 	{
-		GetEquipInventoryComponent()->UnEquipItem(ItemToUnEquip);
+		return GetEquipInventoryComponent()->UnEquipItem(ItemToUnEquip);
 	}
+	return false;
 }
 
 void UBasicWidgetController::SplitItem(UItemObject* SplitToItem)

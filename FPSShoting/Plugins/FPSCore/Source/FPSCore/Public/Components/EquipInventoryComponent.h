@@ -92,7 +92,7 @@ public:
 	/*
 	* 아이템 장착 해제 함수
 	*/
-	void UnEquipItem(UItemObject* InItem);
+	bool UnEquipItem(UItemObject* InItem);
 
 	/*
 	* 아이템을 소비/제거 하는 함수
@@ -125,6 +125,7 @@ private:
 	*/
 	void RemovePlaceItem(UItemObject* InItem);
 
+	bool CheckPlace(int32 ExpandableSize);
 
 	/*
 	* 인벤토리Grid초기화

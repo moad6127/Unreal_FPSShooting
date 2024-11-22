@@ -68,7 +68,7 @@ public:
 	void EquipItem(UItemObject* InItem);
 
 	UFUNCTION(BlueprintCallable)
-	void UnEquipItem(UItemObject* ItemToUnEquip);
+	bool UnEquipItem(UItemObject* ItemToUnEquip);
 
 	UFUNCTION(BlueprintCallable)
 	void SplitItem(UItemObject* SplitToItem);
