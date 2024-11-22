@@ -22,6 +22,7 @@ void ASInvenFPSCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	LoadGame();
 }
+
 void ASInvenFPSCharacter::LoadGame()
 {
 	if (!IsLocallyControlled())
@@ -33,14 +34,29 @@ void ASInvenFPSCharacter::LoadGame()
 	{
 		if (GameMode)
 		{
-			UFPSSaveGame* SaveGame = GameMode->GetSaveData();
-			if (SaveGame == nullptr)
+			UFPSSaveGame* SaveData = GameMode->GetSaveData();
+			if (SaveData == nullptr)
 			{
 				return;
 			}
 			//TODO : Character의 인벤, 장비창 로드하기
 
 		}
+	}
+}
+
+void ASInvenFPSCharacter::SaveGame()
+{
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		UFPSSaveGame* SaveData = GameMode->GetSaveData();
+		if (SaveData == nullptr)
+		{
+			return;
+		}
+		//TODO : Character의 인벤, 장비창 세이브 하기
+
 	}
 }
 

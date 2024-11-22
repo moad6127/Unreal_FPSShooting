@@ -18,7 +18,7 @@ class FPSSHOTING_API ASInvenFPSCharacter : public AFPSCharacter
 public:
 	virtual void PossessedBy(AController* NewController) override;
 
-
+	void SaveGame();
 protected:
 	ASInvenFPSCharacter();
 

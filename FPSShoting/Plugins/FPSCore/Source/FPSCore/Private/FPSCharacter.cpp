@@ -798,6 +798,7 @@ bool AFPSCharacter::IsAlive() const
     return !bDead;
 }
 
+
 // Called every frame
 void AFPSCharacter::Tick(const float DeltaTime)
 {

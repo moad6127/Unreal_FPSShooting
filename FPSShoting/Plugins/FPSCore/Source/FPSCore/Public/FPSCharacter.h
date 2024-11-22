@@ -215,9 +215,9 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
 
-
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath();
+
 protected:
 
 	/** The character's FPS camera component */
