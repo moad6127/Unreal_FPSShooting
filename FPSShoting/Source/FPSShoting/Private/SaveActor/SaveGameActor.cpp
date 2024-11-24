@@ -14,6 +14,7 @@ void ASaveGameActor::Interact()
 	ASInvenFPSCharacter* PlayerCharacter = Cast<ASInvenFPSCharacter>(GetOwner());
 	if (PlayerCharacter)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("SaveGame!"));
 		PlayerCharacter->SaveGame();
 	}
 }

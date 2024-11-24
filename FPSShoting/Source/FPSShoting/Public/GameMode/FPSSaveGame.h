@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+class UItemObject;
+
 UCLASS()
 class FPSSHOTING_API UFPSSaveGame : public USaveGame
 {
@@ -21,4 +24,7 @@ public:
 
 	UPROPERTY()
 	int32 SlotIndex = 0;
+
+	UPROPERTY()
+	TArray<UItemObject*> InventoryItems;
 };

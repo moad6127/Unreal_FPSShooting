@@ -11,7 +11,7 @@
  */
 
 class UFPSSaveGame;
-
+class USaveGame;
 UCLASS()
 class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 {
@@ -24,4 +24,7 @@ public:
 
 
 	UFPSSaveGame* GetSaveData();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USaveGame> FPSSaveGameClass;
 };

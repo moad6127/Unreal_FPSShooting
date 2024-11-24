@@ -19,7 +19,10 @@ UFPSSaveGame* AFPSGameModeBase::GetSaveData()
 	}
 	else
 	{
-		SaveGameObject = UGameplayStatics::CreateSaveGameObject(USaveGame::StaticClass());
+		if (FPSSaveGameClass)
+		{
+			SaveGameObject = UGameplayStatics::CreateSaveGameObject(FPSSaveGameClass);
+		}
 	}
 	UFPSSaveGame* FPSSaveGame = Cast<UFPSSaveGame>(SaveGameObject);
 	return FPSSaveGame;
