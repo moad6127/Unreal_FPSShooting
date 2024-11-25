@@ -42,10 +42,34 @@ void ASInvenFPSCharacter::LoadGame()
 			{
 				return;
 			}
+			UDataTable* ItemDataTable = GameMode->ItemDataTable;
+			if (!ItemDataTable)
+			{
+				return;
+			}
 			//TODO : Character의 인벤, 장비창 로드하기
 			for (FItemSaveData Data : SaveData->InventoryItems)
 			{
+				const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(Data.ItemID, Data.ItemID.ToString());
 
+				UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
+				//TODO : ItemValueSet
+				ItemObject->ID = ItemData->ID;
+				ItemObject->SlotType = ItemData->SlotType;
+				ItemObject->ItemQuantity = Data.ItemQuantity;
+				ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
+				ItemObject->Asset = ItemData->Asset;
+				ItemObject->ItemName = ItemData->ItemName;
+				ItemObject->WeaponData = ItemData->WeaponData;
+				ItemObject->SetItemSizeX(ItemData->SizeX);
+				ItemObject->SetItemSizeY(ItemData->SizeY);
+				ItemObject->DataStruct = Data.DataStruct;
+				ItemObject->SetItemItemLocation(Data.ItemLocation);
+
+				if (!GetEquipInventoryComponent()->AddItem(ItemObject))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("LoadFail!!!!"));
+				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));
 

@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/SInvenFPSCharacter.h"
+#include "FPSCharacter.h"
+//#include "Character/SInvenFPSCharacter.h"
 #include "EnemyAIBot.generated.h"
 
 /**
@@ -14,7 +15,7 @@ class AEnemyAIController;
 class UBehaviorTree;
 
 UCLASS()
-class FPSSHOTING_API AEnemyAIBot : public ASInvenFPSCharacter
+class FPSSHOTING_API AEnemyAIBot : public AFPSCharacter
 {
 	GENERATED_BODY()
 

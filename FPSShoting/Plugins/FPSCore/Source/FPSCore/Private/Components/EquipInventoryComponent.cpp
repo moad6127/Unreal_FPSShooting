@@ -64,10 +64,26 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 	return false;
 }
 
-bool UEquipInventoryComponent::LoadItems(UFPSSaveGame* SaveData)
+bool UEquipInventoryComponent::AddItem(UItemObject* InItem)
 {
+	//위치는 정해져 있다.
+	//만약 해당 위치에 다른 물건이 존재하거나 인벤토리를 넘어가면 false를 발생시킨다.
+	if (IsRoomAvailable(InItem, InItem->GetItemItemLocation()))
+	{
+		if (HandleAddItem(InItem))
+		{
+			return true;
+		}
+		PlaceItem(InItem, InItem->GetItemItemLocation());
+		InItem->InInventorys = true;
+		InItem->bIsCopy = false;
+		InventoryItems.Add(InItem);
+		InventoryChanged.Broadcast();
+		return true;
+	}
 	return false;
 }
+
 
 bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 {
@@ -512,7 +528,7 @@ void UEquipInventoryComponent::SplitItem(UItemObject* InItem)
 void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeInventory();
+	//InitializeInventory();
 	StarterItem();
 }
 

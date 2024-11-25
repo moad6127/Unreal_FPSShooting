@@ -743,7 +743,10 @@ void AFPSCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 void AFPSCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
-
+    if (GetEquipInventoryComponent())
+    {
+        GetEquipInventoryComponent()->InitializeInventory();
+    }
 }
 
 void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

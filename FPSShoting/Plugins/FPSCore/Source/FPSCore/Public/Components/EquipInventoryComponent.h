@@ -61,8 +61,11 @@ public:
 	*/
 	bool TryAddItem(UItemObject* InItem);
 
+	/*
+	* Inventory를 Load할때 사용할 함수
+	*/
+	bool AddItem(UItemObject* InItem);
 
-	bool LoadItems(UFPSSaveGame* SaveData);
 	/*
 	* 아이템을 인벤토리에서 제거하는 함수
 	*/
@@ -111,6 +114,12 @@ public:
 	*/
 	void SplitItem(UItemObject* InItem);
 
+	/*
+	* 인벤토리Grid초기화
+	*/
+	UFUNCTION(BlueprintCallable, Category = "InventoryInit")
+	void InitializeInventory();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -130,11 +139,7 @@ private:
 
 	bool CheckPlace(int32 ExpandableSize);
 
-	/*
-	* 인벤토리Grid초기화
-	*/ 
-	UFUNCTION(BlueprintCallable, Category = "InventoryInit")
-	void InitializeInventory();
+
 
 	/*
 	* 아이템의 BottomRight가 인벤토리 공간 범위를 넘어가는지 확인하기
