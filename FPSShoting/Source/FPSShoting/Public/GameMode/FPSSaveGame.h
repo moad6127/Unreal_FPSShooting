@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "WeaponBase.h"
 #include "FPSSaveGame.generated.h"
 
 /**
@@ -11,6 +12,25 @@
  */
 
 class UItemObject;
+struct FRuntimeWeaponData;
+
+USTRUCT()
+struct FItemSaveData {
+
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FName ItemID = FName();
+
+	UPROPERTY()
+	int32 ItemQuantity = 0;
+
+	UPROPERTY()
+	FIntPoint ItemLocation = FIntPoint();
+
+	UPROPERTY()
+	FRuntimeWeaponData DataStruct = FRuntimeWeaponData();
+};
 
 UCLASS()
 class FPSSHOTING_API UFPSSaveGame : public USaveGame
@@ -26,5 +46,5 @@ public:
 	int32 SlotIndex = 0;
 
 	UPROPERTY()
-	TArray<UItemObject*> InventoryItems;
+	TArray<FItemSaveData> InventoryItems;
 };

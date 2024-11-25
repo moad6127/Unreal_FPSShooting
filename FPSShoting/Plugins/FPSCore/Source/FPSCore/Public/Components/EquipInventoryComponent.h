@@ -9,6 +9,7 @@
 struct FTile;
 class UItemObject;
 class UDataTable;
+class UFPSSaveGame;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
@@ -60,6 +61,8 @@ public:
 	*/
 	bool TryAddItem(UItemObject* InItem);
 
+
+	bool LoadItems(UFPSSaveGame* SaveData);
 	/*
 	* 아이템을 인벤토리에서 제거하는 함수
 	*/

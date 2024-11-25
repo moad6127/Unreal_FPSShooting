@@ -43,12 +43,11 @@ void ASInvenFPSCharacter::LoadGame()
 				return;
 			}
 			//TODO : Character의 인벤, 장비창 로드하기
-			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));
-			for (UItemObject* Item : SaveData->InventoryItems)
+			for (FItemSaveData Data : SaveData->InventoryItems)
 			{
-				GetEquipInventoryComponent()->TryAddItem(Item);
-				UE_LOG(LogTemp, Warning, TEXT("ItemName : %s"), *Item->GetName());
+
 			}
+			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));
 
 		}
 	}
@@ -71,8 +70,13 @@ void ASInvenFPSCharacter::SaveGame()
 
 		for (UItemObject* Item : GetEquipInventoryComponent()->GetInventoryItems())
 		{
-			UItemObject* CopyItem = Item->CreateItemCopy();
-			SaveData->InventoryItems.Add(CopyItem);
+			FItemSaveData ItemData;
+			ItemData.ItemID = Item->ID;
+			ItemData.ItemQuantity = Item->ItemQuantity;
+			ItemData.DataStruct = Item->DataStruct;
+			ItemData.ItemLocation = Item->GetItemItemLocation();
+
+			SaveData->InventoryItems.Add(ItemData);
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));

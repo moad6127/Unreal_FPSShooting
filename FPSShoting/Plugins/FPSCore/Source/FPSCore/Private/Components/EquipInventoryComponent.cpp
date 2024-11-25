@@ -64,6 +64,11 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 	return false;
 }
 
+bool UEquipInventoryComponent::LoadItems(UFPSSaveGame* SaveData)
+{
+	return false;
+}
+
 bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 {
 	bool Flag = false;

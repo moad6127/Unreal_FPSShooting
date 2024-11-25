@@ -12,6 +12,8 @@
 
 class UFPSSaveGame;
 class USaveGame;
+class UDataTable;
+
 UCLASS()
 class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 {
@@ -22,9 +24,13 @@ public:
 
 	void SaveGame(UFPSSaveGame* SaveGame);
 
-
 	UFPSSaveGame* GetSaveData();
+
+
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> FPSSaveGameClass;
+
+	UPROPERTY(EditAnywhere, Category = "Data Table")
+	TObjectPtr<UDataTable> ItemDataTable;
 };
