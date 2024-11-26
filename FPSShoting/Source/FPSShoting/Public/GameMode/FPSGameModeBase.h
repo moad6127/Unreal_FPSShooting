@@ -23,6 +23,7 @@ class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 public:
 
 	void SaveGame(UFPSSaveGame* SaveGame);
+	void DeleteSlot(UFPSSaveGame* SaveGame);
 
 	UFPSSaveGame* GetSaveData();
 

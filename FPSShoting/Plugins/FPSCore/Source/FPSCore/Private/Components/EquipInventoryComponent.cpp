@@ -70,13 +70,13 @@ bool UEquipInventoryComponent::AddItem(UItemObject* InItem)
 	//만약 해당 위치에 다른 물건이 존재하거나 인벤토리를 넘어가면 false를 발생시킨다.
 	if (IsRoomAvailable(InItem, InItem->GetItemItemLocation()))
 	{
-		if (HandleAddItem(InItem))
-		{
-			return true;
-		}
 		PlaceItem(InItem, InItem->GetItemItemLocation());
 		InItem->InInventorys = true;
 		InItem->bIsCopy = false;
+		if (InItem->SlotType == EEquipmentSlotType::EEST_Ammo)
+		{
+			CheckAmmo(InItem);
+		}
 		InventoryItems.Add(InItem);
 		InventoryChanged.Broadcast();
 		return true;
@@ -528,7 +528,7 @@ void UEquipInventoryComponent::SplitItem(UItemObject* InItem)
 void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	//InitializeInventory();
+	InitializeInventory();
 	StarterItem();
 }
 
@@ -603,7 +603,10 @@ bool UEquipInventoryComponent::CheckPlace(int32 ExpandableSize)
 
 void UEquipInventoryComponent::InitializeInventory()
 {
-	InventoryGrid.Init(false, 100 * 100);
+	if (InventoryGrid.IsEmpty())
+	{
+		InventoryGrid.Init(false, 100 * 100);
+	}
 }
 
 bool UEquipInventoryComponent::IsPositionValid(FIntPoint InLocation)

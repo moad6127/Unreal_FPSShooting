@@ -80,9 +80,12 @@ void ASInvenFPSCharacter::LoadGame()
 void ASInvenFPSCharacter::SaveGame()
 {
 	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+
 	if (GameMode)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("InGameMode!"));
 		UFPSSaveGame* SaveData = GameMode->GetSaveData();
+		UE_LOG(LogTemp, Warning, TEXT("SaveDataGet!"));
 		if (SaveData == nullptr)
 		{
 			return;
