@@ -28,7 +28,7 @@ void ASInvenFPSCharacter::PossessedBy(AController* NewController)
 
 void ASInvenFPSCharacter::LoadGame()
 {
-	if (!Cast<APlayerController>(GetController()))
+	if (!IsLocallyControlled())
 	{
 		return;
 	}
@@ -51,7 +51,10 @@ void ASInvenFPSCharacter::LoadGame()
 			for (FItemSaveData Data : SaveData->InventoryItems)
 			{
 				const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(Data.ItemID, Data.ItemID.ToString());
-
+				if (!ItemData)
+				{
+					return;
+				}
 				UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
 				//TODO : ItemValueSet
 				ItemObject->ID = ItemData->ID;

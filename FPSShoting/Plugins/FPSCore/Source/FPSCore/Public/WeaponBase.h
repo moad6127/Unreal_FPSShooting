@@ -89,8 +89,8 @@ struct FRuntimeWeaponData
 	GENERATED_BODY()
 
 	/** A reference to the weapon class of the given weapon */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
-	TSubclassOf<AWeaponBase> WeaponClassReference;
+	//UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	//TSubclassOf<AWeaponBase> WeaponClassReference;
 
 	/** The maximum size of the player's magazine */
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")

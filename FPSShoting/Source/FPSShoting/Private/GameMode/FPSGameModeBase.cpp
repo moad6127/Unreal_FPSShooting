@@ -8,12 +8,7 @@
 void AFPSGameModeBase::SaveGame(UFPSSaveGame* SaveGame)
 {
 	DeleteSlot(SaveGame);
-	if (FPSSaveGameClass)
-	{
-		USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(FPSSaveGameClass);
-		UFPSSaveGame* FPSSaveGame = Cast<UFPSSaveGame>(SaveGameObject);
-		UGameplayStatics::SaveGameToSlot(FPSSaveGame, FPSSaveGame->SlotName, FPSSaveGame->SlotIndex);
-	}
+	UGameplayStatics::SaveGameToSlot(SaveGame, SaveGame->SlotName, SaveGame->SlotIndex);
 }
 
 void AFPSGameModeBase::DeleteSlot(UFPSSaveGame* SaveGame)
@@ -26,10 +21,10 @@ void AFPSGameModeBase::DeleteSlot(UFPSSaveGame* SaveGame)
 
 UFPSSaveGame* AFPSGameModeBase::GetSaveData()
 {
-	USaveGame* SaveGameObject = nullptr;
-	if (UGameplayStatics::DoesSaveGameExist("SaveGame", 0))
+	USaveGame* SaveGameObject{};
+	if (UGameplayStatics::DoesSaveGameExist(FString("SaveGame"), 0))
 	{
-		SaveGameObject = UGameplayStatics::LoadGameFromSlot("SaveGame", 0);
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(FString("SaveGame"), 0);
 	}
 	else
 	{
@@ -39,5 +34,6 @@ UFPSSaveGame* AFPSGameModeBase::GetSaveData()
 		}
 	}
 	UFPSSaveGame* FPSSaveGame = Cast<UFPSSaveGame>(SaveGameObject);
+
 	return FPSSaveGame;
 }
