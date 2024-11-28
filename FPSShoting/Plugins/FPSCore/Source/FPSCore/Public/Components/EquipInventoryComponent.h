@@ -30,6 +30,27 @@ struct FStarterItemData
 	int32 ItemQuantity;
 };
 
+USTRUCT(BlueprintType)
+struct FEquipmentItems
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TObjectPtr<UItemObject> Head = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UItemObject> Body = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UItemObject> BackPack = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UItemObject> Weapon1 = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UItemObject> Weapon2 = nullptr;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
 {
@@ -50,8 +71,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }
 
+	//UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
+	//TMap<EEquipmentSlotType, UItemObject*> GetEquipmentItems() const { return EquipmentItems; }
+
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
-	TMap<EEquipmentSlotType, UItemObject*> GetEquipmentItems() const { return EquipmentItems; }
+	FEquipmentItems GetEquipmentItems() const { return EquipmentItems; }
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags);
@@ -120,6 +144,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InventoryInit")
 	void InitializeInventory();
 
+	UFUNCTION(BlueprintCallable, Category = "Eqiupment")
+	UItemObject* GetEquipItemToSlot(EEquipmentSlotType SlotType);
+
+	void SetEquipmentItem(UItemObject* InItem);
+	void RemoveEquipmentItem(EEquipmentSlotType SlotType);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -160,6 +189,7 @@ private:
 	void CheckAmmo(UItemObject* InItem);
 
 
+
 	UFUNCTION()
 	void OnRep_InventoryItems();
 
@@ -174,8 +204,11 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_InventoryItems, VisibleAnywhere, BlueprintReadOnly, Category = "Items", meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UItemObject>> InventoryItems;
 
-	UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
-	TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
+	//UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+	//TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
+
+	UPROPERTY(Replicated,VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+	FEquipmentItems EquipmentItems;
 
 	UPROPERTY(Replicated)
 	TArray<bool> InventoryGrid;

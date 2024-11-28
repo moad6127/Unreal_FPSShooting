@@ -21,6 +21,7 @@ void UEquipInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryItems);
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryGrid);
+	DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems);
 }
 
 bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
@@ -98,7 +99,7 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		* 만약 장착된 아이템이 없을경우 
 		* 아이템을 장착한다.
 		*/
-		if (!EquipmentItems.Contains(SlotType))
+		if (!GetEquipItemToSlot(SlotType))
 		{
 			EquipItem(InItem);
 			Flag = true;
@@ -111,13 +112,13 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		}
 		break;
 	case EEquipmentSlotType::EEST_Weapon:
-
-		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1)
-			&& EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon2))
+		if (GetEquipItemToSlot(EEquipmentSlotType::EEST_Weapon1) != nullptr)
 		{
-			break;
+			if (GetEquipItemToSlot(EEquipmentSlotType::EEST_Weapon2) != nullptr)
+			{
+				break;
+			}
 		}
-
 		EquipItem(InItem);
 		Flag = true;
 		break;
@@ -340,23 +341,11 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	switch (ItemSlot)
 	{
 	case EEquipmentSlotType::EEST_Head:
-		if (EquipmentItems.Contains(ItemSlot))
-		{
-			UItemObject* PrevItem = EquipmentItems[ItemSlot];
-			UnEquipItem(PrevItem);
-		}
-		break;
 	case EEquipmentSlotType::EEST_Chest:
-		if (EquipmentItems.Contains(ItemSlot))
-		{
-			UItemObject* PrevItem = EquipmentItems[ItemSlot];
-			UnEquipItem(PrevItem);
-		}
-		break;
 	case EEquipmentSlotType::EEST_Backpack:
-		if (EquipmentItems.Contains(ItemSlot))
+		if (GetEquipItemToSlot(ItemSlot))
 		{
-			UItemObject* PrevItem = EquipmentItems[ItemSlot];
+			UItemObject* PrevItem = GetEquipItemToSlot(ItemSlot);
 			UnEquipItem(PrevItem);
 		}
 		break;
@@ -365,10 +354,10 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	{
 		int InventorySlot{};
 		bool bSwapingWeapon{};
-		if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon1))
+		if (GetEquipItemToSlot(EEquipmentSlotType::EEST_Weapon1))
 		{
 			//Weapon2에도 무기가 장착되어 있으면
-			if (EquipmentItems.Contains(EEquipmentSlotType::EEST_Weapon2))
+			if (GetEquipItemToSlot(EEquipmentSlotType::EEST_Weapon2))
 			{
 				//현재 무기의 index를 구해서 그곳으로slot을 정한다.
 				// Index가 0일경우 weapon1 1일경우 weapon2로 만든다.
@@ -420,7 +409,8 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	default:
 		break;
 	}
-	EquipmentItems.Add({ ItemSlot,InItem });
+	//EquipmentItems.Add({ ItemSlot,InItem });
+	SetEquipmentItem(InItem);
 	ItemEquipChanged.Broadcast(ItemSlot);
 }
 
@@ -430,7 +420,7 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 {
 	EEquipmentSlotType SlotType = InItem->SlotType;
-	if (!EquipmentItems.Contains(SlotType))
+	if (!GetEquipItemToSlot(SlotType))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Not have item in EquipmentItems!!"));
 		return false;
@@ -456,8 +446,8 @@ bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 		{
 			InItem->DataStruct = *FPSCharacter->GetInventoryComponent()->GetWeaponByID(index)->GetRuntimeWeaponData();
-			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
-			
+
+			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);		
 		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
 		UE_LOG(LogTemp, Warning, TEXT("NowAmmo : %d"), InItem->DataStruct.ClipSize);
@@ -465,7 +455,8 @@ bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 	// 제거하는것은 들어온것의 SlotType을 제거한다
 
 
-	EquipmentItems.Remove(SlotType);
+	//EquipmentItems.Remove(SlotType);
+	RemoveEquipmentItem(SlotType);
 	ItemEquipChanged.Broadcast(SlotType);
 	if (InItem->ItemNumbericData.bExpandableSize)
 	{
@@ -606,6 +597,85 @@ void UEquipInventoryComponent::InitializeInventory()
 	if (InventoryGrid.IsEmpty())
 	{
 		InventoryGrid.Init(false, 100 * 100);
+	}
+}
+
+UItemObject* UEquipInventoryComponent::GetEquipItemToSlot(EEquipmentSlotType SlotType)
+{
+	UItemObject* ReturnItem = nullptr;
+	switch (SlotType)
+	{
+	case EEquipmentSlotType::EEST_Head:
+		ReturnItem = EquipmentItems.Head;
+		break;
+	case EEquipmentSlotType::EEST_Chest:
+		ReturnItem = EquipmentItems.Body;
+		break;
+	case EEquipmentSlotType::EEST_Backpack:
+		ReturnItem = EquipmentItems.BackPack;
+		break;
+	case EEquipmentSlotType::EEST_Weapon:
+		break;
+	case EEquipmentSlotType::EEST_Weapon1:
+		ReturnItem = EquipmentItems.Weapon1;
+		break;
+	case EEquipmentSlotType::EEST_Weapon2:
+		ReturnItem = EquipmentItems.Weapon2;
+		break;
+	}
+	return ReturnItem;
+}
+
+void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
+{
+	EEquipmentSlotType SlotType = InItem->SlotType;
+	switch (SlotType)
+	{
+
+	case EEquipmentSlotType::EEST_Head:
+		EquipmentItems.Head = InItem;
+		break;
+	case EEquipmentSlotType::EEST_Chest:
+		EquipmentItems.Body = InItem;
+		break;
+	case EEquipmentSlotType::EEST_Backpack:
+		EquipmentItems.BackPack = InItem;
+		break;
+	case EEquipmentSlotType::EEST_Weapon:
+		break;
+	case EEquipmentSlotType::EEST_Weapon1:
+		EquipmentItems.Weapon1 = InItem;
+		break;
+	case EEquipmentSlotType::EEST_Weapon2:
+		EquipmentItems.Weapon2 = InItem;
+		break;
+	}
+}
+
+void UEquipInventoryComponent::RemoveEquipmentItem(EEquipmentSlotType SlotType)
+{
+	switch (SlotType)
+	{
+
+	case EEquipmentSlotType::EEST_Head:
+		EquipmentItems.Head = nullptr;
+		break;
+	case EEquipmentSlotType::EEST_Chest:
+		EquipmentItems.Body = nullptr;
+		break;
+	case EEquipmentSlotType::EEST_Backpack:
+		EquipmentItems.BackPack = nullptr;
+		break;
+
+	case EEquipmentSlotType::EEST_Weapon:
+		break;
+	case EEquipmentSlotType::EEST_Weapon1:
+		EquipmentItems.Weapon1 = nullptr;
+		break;
+	case EEquipmentSlotType::EEST_Weapon2:
+		EquipmentItems.Weapon2 = nullptr;
+		break;
+
 	}
 }
 

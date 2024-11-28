@@ -629,9 +629,8 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
 
 bool AFPSCharacter::IsPlayerEquippedWeapon() const
 {
-
-    if(!GetInventoryComponent()->GetEquippedWeapons().IsEmpty() &&
-        GetInventoryComponent()->GetWeaponByID(GetInventoryComponent()->GetCurrentWeaponSlot()))
+    if(!GetInventoryComponent()->GetEquippedWeapons().IsEmpty()
+        && GetInventoryComponent()->GetCurrentWeapon())
     {
         return true;
     }
