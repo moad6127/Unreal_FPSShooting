@@ -35,19 +35,19 @@ struct FEquipmentItems
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Head = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Body = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> BackPack = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Weapon1 = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Weapon2 = nullptr;
 };
 
@@ -207,7 +207,7 @@ private:
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
 	//TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
 
-	UPROPERTY(Replicated,VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
 	FEquipmentItems EquipmentItems;
 
 	UPROPERTY(Replicated)

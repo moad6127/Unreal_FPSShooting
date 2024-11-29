@@ -119,7 +119,9 @@ public:
 
 	// 만약 들고있는 무기가 있을경우 true아니면 false
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	bool IsPlayerEquippedWeapon() const;
+	bool IsPlayerEquippedWeapon() const { return bWeaponEquipping; }
+
+	void SetWeaponEquip(bool InSet);
 	
 	/** Returns the character's current movement state */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
@@ -488,6 +490,9 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_bCanAim)
 	bool bCanAim = true;
 
+	UPROPERTY(Replicated)
+	bool bWeaponEquipping;
+
 	/** Whether the player is holding down the sprint key */
 	bool bWantsToSprint;
 
@@ -498,6 +503,8 @@ protected:
 	
 	/** Whether the player is actually aiming down sights */
 	bool bIsAiming;
+
+
 	
 	/** Whether we are currently vaulting or not */
 	bool bIsVaulting;

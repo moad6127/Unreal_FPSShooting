@@ -627,17 +627,11 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     VaultTimeline.PlayFromStart();
 }
 
-bool AFPSCharacter::IsPlayerEquippedWeapon() const
+
+void AFPSCharacter::SetWeaponEquip(bool InSet)
 {
-    if(!GetInventoryComponent()->GetEquippedWeapons().IsEmpty()
-        && GetInventoryComponent()->GetCurrentWeapon())
-    {
-        return true;
-    }
-    return false;
-
+    bWeaponEquipping = InSet;
 }
-
 
 void AFPSCharacter::OnRep_bCanAim()
 {
@@ -754,6 +748,7 @@ void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
     DOREPLIFETIME(AFPSCharacter,MovementState);
     DOREPLIFETIME(AFPSCharacter, bWantsToAim);
     DOREPLIFETIME(AFPSCharacter, bCanAim);
+    DOREPLIFETIME(AFPSCharacter, bWeaponEquipping);
 }
 
 void AFPSCharacter::OnRep_ReplicatedMovement()

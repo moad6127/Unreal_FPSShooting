@@ -446,7 +446,10 @@ bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 		{
 			InItem->DataStruct = *FPSCharacter->GetInventoryComponent()->GetWeaponByID(index)->GetRuntimeWeaponData();
-
+			if (index == FPSCharacter->GetInventoryComponent()->GetCurrentWeaponSlot())
+			{
+				FPSCharacter->SetWeaponEquip(false);
+			}
 			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);		
 		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;

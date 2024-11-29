@@ -163,6 +163,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
         	{
+				FPSCharacter->SetWeaponEquip(true);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
         		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
@@ -228,6 +229,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             {
             	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	            {
+					FPSCharacter->SetWeaponEquip(true);
             		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
 		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
             		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
