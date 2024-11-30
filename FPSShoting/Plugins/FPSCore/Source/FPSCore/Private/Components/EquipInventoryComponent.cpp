@@ -22,6 +22,11 @@ void UEquipInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryItems);
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryGrid);
 	DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems);
+	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Head);
+	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Body);
+	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.BackPack);
+	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Weapon1);
+	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Weapon2);
 }
 
 bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
@@ -214,6 +219,12 @@ void UEquipInventoryComponent::OnRep_InventoryItems()
 	InventoryChanged.Broadcast();
 }
 
+void UEquipInventoryComponent::OnRep_EquipmentItems()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnRep_EquipmentItems"));
+}
+
+
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 {
 	if (!IsValid(InItem))
@@ -330,6 +341,7 @@ void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
 	}
 }
 
+
 void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 {
 	EEquipmentSlotType ItemSlot = InItem->SlotType;
@@ -419,6 +431,7 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 
 bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 {
+
 	EEquipmentSlotType SlotType = InItem->SlotType;
 	if (!GetEquipItemToSlot(SlotType))
 	{
@@ -468,6 +481,7 @@ bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 	}
 	return true;
 }
+
 
 void UEquipInventoryComponent::ConsumeItem(UItemObject* InItem, int32 ConsumeAmount)
 {
@@ -631,7 +645,13 @@ UItemObject* UEquipInventoryComponent::GetEquipItemToSlot(EEquipmentSlotType Slo
 
 void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerSetEquipmentItem(InItem);
+		return;
+	}
 	EEquipmentSlotType SlotType = InItem->SlotType;
+
 	switch (SlotType)
 	{
 
@@ -653,6 +673,12 @@ void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 		EquipmentItems.Weapon2 = InItem;
 		break;
 	}
+	GetOwner()->ForceNetUpdate();
+}
+
+void UEquipInventoryComponent::ServerSetEquipmentItem_Implementation(UItemObject* InItem)
+{
+	SetEquipmentItem(InItem);
 }
 
 void UEquipInventoryComponent::RemoveEquipmentItem(EEquipmentSlotType SlotType)
@@ -687,5 +713,3 @@ bool UEquipInventoryComponent::IsPositionValid(FIntPoint InLocation)
 	// 아이템을 넣을때 해당 위치가 올바른지 확인
 	return InLocation.X >= 0 && InLocation.X <= Columns && InLocation.Y >= 0 && InLocation.Y <= Rows;
 }
-
-

@@ -49,6 +49,7 @@ struct FEquipmentItems
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Weapon2 = nullptr;
+
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -119,6 +120,7 @@ public:
 	* 아이템 장착 함수
 	*/
 	void EquipItem(UItemObject* InItem);
+
 	/*
 	* 아이템 장착 해제 함수
 	*/
@@ -148,6 +150,11 @@ public:
 	UItemObject* GetEquipItemToSlot(EEquipmentSlotType SlotType);
 
 	void SetEquipmentItem(UItemObject* InItem);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetEquipmentItem(UItemObject* InItem);
+
+
 	void RemoveEquipmentItem(EEquipmentSlotType SlotType);
 protected:
 	// Called when the game starts
@@ -193,6 +200,9 @@ private:
 	UFUNCTION()
 	void OnRep_InventoryItems();
 
+	UFUNCTION()
+	void OnRep_EquipmentItems();
+
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
@@ -207,7 +217,7 @@ private:
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
 	//TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
 
-	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
+	UPROPERTY(ReplicatedUsing = OnRep_EquipmentItems, VisibleAnywhere, Category = "Equipment")
 	FEquipmentItems EquipmentItems;
 
 	UPROPERTY(Replicated)
