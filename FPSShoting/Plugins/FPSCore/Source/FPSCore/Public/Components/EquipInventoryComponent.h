@@ -50,7 +50,27 @@ struct FEquipmentItems
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Weapon2 = nullptr;
 
+	//bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+	//{
+	//	// 각 아이템 객체 직렬화
+	//	Ar << Head;
+	//	Ar << Body;
+	//	Ar << BackPack;
+	//	Ar << Weapon1;
+	//	Ar << Weapon2;
+
+	//	bOutSuccess = true;
+	//	return true;
+	//}
 };
+//template<>
+//struct TStructOpsTypeTraits<FEquipmentItems> : public TStructOpsTypeTraitsBase2<FEquipmentItems>
+//{
+//	enum
+//	{
+//		WithNetSerializer = true
+//	};
+//};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
@@ -151,10 +171,6 @@ public:
 
 	void SetEquipmentItem(UItemObject* InItem);
 
-	UFUNCTION(Server, Reliable)
-	void ServerSetEquipmentItem(UItemObject* InItem);
-
-
 	void RemoveEquipmentItem(EEquipmentSlotType SlotType);
 protected:
 	// Called when the game starts
@@ -201,7 +217,7 @@ private:
 	void OnRep_InventoryItems();
 
 	UFUNCTION()
-	void OnRep_EquipmentItems();
+	void OnRep_EquipmentItems(FEquipmentItems LastItems);
 
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 

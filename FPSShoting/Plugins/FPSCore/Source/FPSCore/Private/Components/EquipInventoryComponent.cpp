@@ -36,6 +36,11 @@ bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutB
 	{
 		bWroteSomething |= Channel->ReplicateSubobject(Item, *Bunch, *RepFlags);
 	}
+	bWroteSomething |= Channel->ReplicateSubobject(EquipmentItems.Head, *Bunch, *RepFlags);
+	bWroteSomething |= Channel->ReplicateSubobject(EquipmentItems.Body, *Bunch, *RepFlags);
+	bWroteSomething |= Channel->ReplicateSubobject(EquipmentItems.BackPack, *Bunch, *RepFlags);
+	bWroteSomething |= Channel->ReplicateSubobject(EquipmentItems.Weapon1, *Bunch, *RepFlags);
+	bWroteSomething |= Channel->ReplicateSubobject(EquipmentItems.Weapon2, *Bunch, *RepFlags);
 	return bWroteSomething;
 }
 
@@ -219,9 +224,30 @@ void UEquipInventoryComponent::OnRep_InventoryItems()
 	InventoryChanged.Broadcast();
 }
 
-void UEquipInventoryComponent::OnRep_EquipmentItems()
+void UEquipInventoryComponent::OnRep_EquipmentItems(FEquipmentItems LastItems)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnRep_EquipmentItems"));
+	if (EquipmentItems.Head != LastItems.Head)
+	{
+		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Head);
+	}
+	if (EquipmentItems.Body != LastItems.Body)
+	{
+		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Chest);
+	}
+	if (EquipmentItems.BackPack != LastItems.BackPack)
+	{
+		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Backpack);
+	}
+	if (EquipmentItems.Weapon1 != LastItems.Weapon1)
+	{
+		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Weapon1);
+	}
+	if (EquipmentItems.Weapon2 != LastItems.Weapon2)
+	{
+		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Weapon2);
+	}
+
+
 }
 
 
@@ -645,11 +671,6 @@ UItemObject* UEquipInventoryComponent::GetEquipItemToSlot(EEquipmentSlotType Slo
 
 void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 {
-	if (!GetOwner()->HasAuthority())
-	{
-		ServerSetEquipmentItem(InItem);
-		return;
-	}
 	EEquipmentSlotType SlotType = InItem->SlotType;
 
 	switch (SlotType)
@@ -673,13 +694,8 @@ void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 		EquipmentItems.Weapon2 = InItem;
 		break;
 	}
-	GetOwner()->ForceNetUpdate();
 }
 
-void UEquipInventoryComponent::ServerSetEquipmentItem_Implementation(UItemObject* InItem)
-{
-	SetEquipmentItem(InItem);
-}
 
 void UEquipInventoryComponent::RemoveEquipmentItem(EEquipmentSlotType SlotType)
 {
