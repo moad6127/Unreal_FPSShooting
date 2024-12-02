@@ -50,27 +50,8 @@ struct FEquipmentItems
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemObject> Weapon2 = nullptr;
 
-	//bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
-	//{
-	//	// 각 아이템 객체 직렬화
-	//	Ar << Head;
-	//	Ar << Body;
-	//	Ar << BackPack;
-	//	Ar << Weapon1;
-	//	Ar << Weapon2;
-
-	//	bOutSuccess = true;
-	//	return true;
-	//}
 };
-//template<>
-//struct TStructOpsTypeTraits<FEquipmentItems> : public TStructOpsTypeTraitsBase2<FEquipmentItems>
-//{
-//	enum
-//	{
-//		WithNetSerializer = true
-//	};
-//};
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UEquipInventoryComponent : public UActorComponent
@@ -91,9 +72,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }
-
-	//UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
-	//TMap<EEquipmentSlotType, UItemObject*> GetEquipmentItems() const { return EquipmentItems; }
 
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	FEquipmentItems GetEquipmentItems() const { return EquipmentItems; }
@@ -166,11 +144,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InventoryInit")
 	void InitializeInventory();
 
+
+	/*
+	* 해당 슬롯의 장비를 Get하는 함수
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Eqiupment")
 	UItemObject* GetEquipItemToSlot(EEquipmentSlotType SlotType);
-
+	
+	/*
+	* 장비를 장착할때 사용되는 함수
+	*/
 	void SetEquipmentItem(UItemObject* InItem);
 
+	/*
+	* 장비를 해제할때 사용되는 함수
+	*/
 	void RemoveEquipmentItem(EEquipmentSlotType SlotType);
 protected:
 	// Called when the game starts
@@ -229,9 +217,6 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_InventoryItems, VisibleAnywhere, BlueprintReadOnly, Category = "Items", meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UItemObject>> InventoryItems;
-
-	//UPROPERTY(VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
-	//TMap<EEquipmentSlotType, UItemObject*> EquipmentItems;
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquipmentItems, VisibleAnywhere, Category = "Equipment")
 	FEquipmentItems EquipmentItems;

@@ -488,4 +488,6 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UInventoryComponent, CurrentWeapon);
+	DOREPLIFETIME(UInventoryComponent, PrimaryWeapon);
+	DOREPLIFETIME(UInventoryComponent, SecondaryWeapon);
 }

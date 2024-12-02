@@ -264,6 +264,12 @@ private:
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	UPROPERTY(VisibleAnywhere, Category = "Equipment")
 	TMap<int, AWeaponBase*> EquippedWeapons;
+	
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
+	TObjectPtr<AWeaponBase> PrimaryWeapon;
+
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
+	TObjectPtr<AWeaponBase> SecondaryWeapon;
 
 	/** The player's currently equipped weapon */
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentWeapon)
