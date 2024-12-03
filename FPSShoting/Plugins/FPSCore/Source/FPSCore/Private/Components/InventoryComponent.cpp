@@ -239,6 +239,78 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     }
 }
 
+void UInventoryComponent::EquipWeapon(UItemObject* ItemObject, int InventoryPosition)
+{
+	if (!ItemObject->WeaponData.bIsWeapon)
+	{
+		return;
+	}
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	AWeaponBase* SpawnedWeapon = GetWorld()->SpawnActor<AWeaponBase>(ItemObject->WeaponData.WeaponReference, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+
+	if (SpawnedWeapon)
+	{
+		// Placing the new weapon at the correct location and finishing up it's initialisation
+		SpawnedWeapon->SetOwner(GetOwner());
+		if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+		{
+			//SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+			//SpawnedWeapon->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+			SpawnedWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+			SpawnedWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		}
+
+		SpawnedWeapon->SetRuntimeWeaponData(ItemObject->DataStruct);
+		SpawnedWeapon->SpawnAttachments();
+
+		//TODO : Primary일지 Secondary일지 체크 하기
+		if (InventoryPosition == 0)
+		{
+			// PrimaryWeapon에 넣기
+			PrimaryWeapon = SpawnedWeapon;
+		}
+		else
+		{
+			//SecondaryWeapon에 넣기
+			SecondaryWeapon = SpawnedWeapon;
+		}
+
+		// Disabling the currently equipped weapon, if it exists
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
+			CurrentWeapon->SetActorHiddenInGame(true);
+			CurrentWeapon->StopFire();
+		}
+
+
+		// Swapping to the new weapon, enabling it and playing it's equip animation
+		
+		//CurrentWeapon = EquippedWeapons[InventoryPosition];
+
+		CurrentWeapon = SpawnedWeapon;
+		CurrentWeaponSlot = InventoryPosition;
+
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+			CurrentWeapon->SetActorHiddenInGame(false);
+			if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+			{
+				if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+				{
+					FPSCharacter->SetWeaponEquip(true);
+					FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+					FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+					FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
+				}
+			}
+		}
+	}
+}
+
 void UInventoryComponent::DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition)
 {
 	// Calculating the location where to spawn the new weapon in front of the player
@@ -416,6 +488,7 @@ void UInventoryComponent::UnequipReturn()
 {
 	SwapWeapon(TargetWeaponSlot);
 }
+
 
 void UInventoryComponent::OnRep_CurrentWeapon()
 {

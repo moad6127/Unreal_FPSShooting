@@ -12,6 +12,7 @@
 
 class UCameraComponent;
 class UInventoryComponent;
+class UItemObject;
 
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FHitActor, UInventoryComponent, EventHitActor, FHitResult, HitResult);
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FFailedToReload, UInventoryComponent, EventFailedToReload);
@@ -30,15 +31,6 @@ enum class EWeaponSwapBehaviour : uint8
 {
 	UseNewValue		UMETA(DisplayName = "Swap to new value"),
 	Ignore			UMETA(DisplayName = "Ignore subsequent swaps")
-};
-
-USTRUCT()
-struct FEquipWeapon
-{
-	GENERATED_BODY()
-	// TMap을 복제하기위해서 만들어본 구조체, TMap이 들어있으면 복제가 안된다.
-	UPROPERTY(VisibleAnywhere, Category = "Equipment")
-	TMap<int, AWeaponBase*> EquippedWeapons;
 };
 
 USTRUCT()
@@ -89,6 +81,7 @@ public:
 	 */
 	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup,
 						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
+	void EquipWeapon(UItemObject* ItemObject, int InventoryPosition);
 
 	void DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition);
 
@@ -214,6 +207,7 @@ private:
 	void HandleUnequip();
 
 	void UnequipReturn();
+
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
