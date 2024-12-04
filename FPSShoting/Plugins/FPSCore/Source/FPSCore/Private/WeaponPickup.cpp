@@ -135,9 +135,9 @@ void AWeaponPickup::Interact()
 		bool SpawnPickup = true;
 
 		// Checking if the player has a free weapon slot. If not, we swap out the currently equipped weapon
-		for (int Index = 0; Index < PlayerCharacter->GetInventoryComponent()->GetNumberOfWeaponSlots(); Index++)
+		for (int Index = 0; Index < 2; Index++)
 		{
-			if (PlayerCharacter->GetInventoryComponent()->GetEquippedWeapons().Find(Index) == nullptr)
+			if (PlayerCharacter->GetInventoryComponent()->GetWeaponByID(Index) == nullptr)
 			{
 				InventoryPosition = Index;
 				SpawnPickup = false;

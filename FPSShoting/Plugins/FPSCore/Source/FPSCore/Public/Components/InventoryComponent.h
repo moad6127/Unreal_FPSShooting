@@ -79,8 +79,7 @@ public:
 	 * @param PickupTransform The position at which to spawn the new pickup, in the case that it is static (bStatic)
 	 * @param DataStruct The FRuntimeWeaponData struct for the newly equipped weapon
 	 */
-	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup,
-						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
+	//void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup, bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
 	void EquipWeapon(UItemObject* ItemObject, int InventoryPosition);
 
 	void DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition);
@@ -96,15 +95,15 @@ public:
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
 
 	/** Returns the map of currently equipped weapons */
-	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
-	TMap<int, AWeaponBase*> GetEquippedWeapons() const { return EquippedWeapons; }
+	//UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	//TMap<int, AWeaponBase*> GetEquippedWeapons() const { return EquippedWeapons; }
 	
 	/** Returns an equipped weapon
 	 *	@param WeaponID The ID of the weapon to get
 	 *	@return The weapon with the given ID
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
-	AWeaponBase* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
+	AWeaponBase* GetWeaponByID(const int WeaponID) const;
 
 	/** Returns the current weapon equipped by the player */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -256,8 +255,8 @@ private:
 	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
-	UPROPERTY(VisibleAnywhere, Category = "Equipment")
-	TMap<int, AWeaponBase*> EquippedWeapons;
+	//UPROPERTY(VisibleAnywhere, Category = "Equipment")
+	//TMap<int, AWeaponBase*> EquippedWeapons;
 	
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
 	TObjectPtr<AWeaponBase> PrimaryWeapon;

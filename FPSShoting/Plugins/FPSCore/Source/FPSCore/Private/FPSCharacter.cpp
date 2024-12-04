@@ -90,13 +90,6 @@ void AFPSCharacter::BeginPlay()
         VaultTimeline.AddInterpFloat(VaultTimelineCurve, TimelineProgress);
     }
 
-    // Obtaining our inventory component and reserving space in memory for our set of weapons
-    if (UInventoryComponent* InventoryComp = FindComponentByClass<UInventoryComponent>())
-    {
-        InventoryComponent = InventoryComp;
-        InventoryComponent->GetEquippedWeapons().Reserve(InventoryComponent->GetNumberOfWeaponSlots());
-    }
-
     OnTakeAnyDamage.AddDynamic(this, &AFPSCharacter::HandleTakeAnyDamage);
 
     // Updating the crouched spring arm height based on the crouched capsule half height
@@ -907,13 +900,13 @@ void AFPSCharacter::Tick(const float DeltaTime)
     {
         if (InventoryComponent)
         {
-            for ( int Index = 0; Index < InventoryComponent->GetNumberOfWeaponSlots(); Index++ )
+            for ( int Index = 0; Index < 2; Index++ )
             {
-                if (InventoryComponent->GetEquippedWeapons().Contains(Index))
+                if (InventoryComponent->GetWeaponByID(Index))
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipSize));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipCapacity));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->WeaponHealth));
+                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipSize));
+                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipCapacity));
+                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->WeaponHealth));
                 }
                 else
                 {
