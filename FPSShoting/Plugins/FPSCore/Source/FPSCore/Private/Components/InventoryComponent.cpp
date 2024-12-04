@@ -294,20 +294,22 @@ void UInventoryComponent::RemoveEquipItems(int index)
 	if (index == 0)
 	{
 		PrimaryWeapon->Destroy();
+		PrimaryWeapon = nullptr;
 	}
 	else if(index == 1)
 	{
 		SecondaryWeapon->Destroy();
+		SecondaryWeapon = nullptr;
 	}
 }
 
 AWeaponBase* UInventoryComponent::GetWeaponByID(const int WeaponID) const
 {
-	if (WeaponID)
+	if (WeaponID == 0)
 	{
 		return PrimaryWeapon;
 	}
-	else
+	else if(WeaponID == 1)
 	{
 		return SecondaryWeapon;
 	}

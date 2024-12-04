@@ -265,7 +265,7 @@ private:
 	TObjectPtr<AWeaponBase> SecondaryWeapon;
 
 	/** The player's currently equipped weapon */
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentWeapon)
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentWeapon, VisibleAnywhere)
 	AWeaponBase* CurrentWeapon;
 
 	FTimerHandle ReloadRetry;

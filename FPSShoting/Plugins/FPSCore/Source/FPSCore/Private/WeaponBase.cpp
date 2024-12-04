@@ -263,13 +263,16 @@ void AWeaponBase::StartFire()
 void AWeaponBase::StartRecoil()
 {
     const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-    const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-    
-    if (bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading && CharacterController)
+    if (PlayerCharacter)
     {
-        // Plays the recoil timelines and saves the current control rotation in order to recover to it
-        ControlRotation = CharacterController->GetControlRotation();
-        bShouldRecover = true;
+        const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+
+        if (bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading && CharacterController)
+        {
+            // Plays the recoil timelines and saves the current control rotation in order to recover to it
+            ControlRotation = CharacterController->GetControlRotation();
+            bShouldRecover = true;
+        }
     }
 }
 
