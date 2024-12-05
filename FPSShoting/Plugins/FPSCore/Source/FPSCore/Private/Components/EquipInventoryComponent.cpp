@@ -22,11 +22,8 @@ void UEquipInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryItems);
 	DOREPLIFETIME(UEquipInventoryComponent, InventoryGrid);
 	DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems);
-	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Head);
-	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Body);
-	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.BackPack);
-	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Weapon1);
-	//DOREPLIFETIME(UEquipInventoryComponent, EquipmentItems.Weapon2);
+	DOREPLIFETIME(UEquipInventoryComponent, Columns);
+	DOREPLIFETIME(UEquipInventoryComponent, Rows);
 }
 
 bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
@@ -219,6 +216,11 @@ void UEquipInventoryComponent::CheckAmmo(UItemObject* InItem)
 
 }
 
+void UEquipInventoryComponent::OnRep_InventorySizeChanged()
+{
+	InventorySizeChanged.Broadcast();
+}
+
 void UEquipInventoryComponent::OnRep_InventoryItems()
 {
 	InventoryChanged.Broadcast();
@@ -348,25 +350,22 @@ bool UEquipInventoryComponent::IsRoomAvailable(UItemObject* InItem, FIntPoint In
 	return true;
 }
 
-void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
+void UEquipInventoryComponent::ServerEquipItem_Implementation(UItemObject* InItem)
 {
-
 	HandleEquip(InItem);
-
-	EEquipmentSlotType ItemSlot = InItem->SlotType;
-	/*
-	* 만약 이미 장착된 아이템이 존재하면 
-	* 기존의 장착된 아이템을 뺀후 현재 아이템을 장착한다.
-	*/
-
-	//Backpack && Chest
-	if (InItem->ItemNumbericData.bExpandableSize)
-	{
-		Rows += InItem->ItemNumbericData.ExpandableInventorySize;
-		InventorySizeChanged.Broadcast();
-	}
 }
 
+void UEquipInventoryComponent::EquipItem(UItemObject* InItem)
+{
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerEquipItem(InItem);
+	}
+	else
+	{
+		HandleEquip(InItem);
+	}
+}
 
 void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 {
@@ -443,15 +442,39 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 	default:
 		break;
 	}
+
+	if (InItem->ItemNumbericData.bExpandableSize)
+	{
+		Rows += InItem->ItemNumbericData.ExpandableInventorySize;
+		InventorySizeChanged.Broadcast();
+	}
+
+
 	//EquipmentItems.Add({ ItemSlot,InItem });
 	SetEquipmentItem(InItem);
 	ItemEquipChanged.Broadcast(ItemSlot);
 }
 
 
-
+void UEquipInventoryComponent::ServerUnEquipItem_Implementation(UItemObject* InItem)
+{
+	HandleUnEquipItem(InItem);
+}
 
 bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
+{
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerUnEquipItem(InItem);
+		return true;
+	}
+	else
+	{
+		return HandleUnEquipItem(InItem);
+	}
+}
+
+bool UEquipInventoryComponent::HandleUnEquipItem(UItemObject* InItem)
 {
 
 	EEquipmentSlotType SlotType = InItem->SlotType;
@@ -485,22 +508,23 @@ bool UEquipInventoryComponent::UnEquipItem(UItemObject* InItem)
 			{
 				FPSCharacter->SetWeaponEquip(false);
 			}
-			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);		
+			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
 		}
 		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
-		UE_LOG(LogTemp, Warning, TEXT("NowAmmo : %d"), InItem->DataStruct.ClipSize);
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다
 
-
-	//EquipmentItems.Remove(SlotType);
-	RemoveEquipmentItem(SlotType);
-	ItemEquipChanged.Broadcast(SlotType);
 	if (InItem->ItemNumbericData.bExpandableSize)
 	{
 		Rows -= InItem->ItemNumbericData.ExpandableInventorySize;
 		InventorySizeChanged.Broadcast();
 	}
+
+
+	//EquipmentItems.Remove(SlotType);
+	RemoveEquipmentItem(SlotType);
+	ItemEquipChanged.Broadcast(SlotType);
+
 	return true;
 }
 

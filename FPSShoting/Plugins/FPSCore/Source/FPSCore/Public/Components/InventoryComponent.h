@@ -84,7 +84,12 @@ public:
 
 	void DropWeapon(FActorSpawnParameters& SpawnParameters, const bool& bStatic, const FTransform& PickupTransform, const int& InventoryPosition);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRemoveEquipItems(int index);
+
 	void RemoveEquipItems(int index);
+
+	void HandleRemoveEquipItems(int index);
 
 	/** Returns the number of weapon slots */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -259,10 +264,10 @@ private:
 	//TMap<int, AWeaponBase*> EquippedWeapons;
 	
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
-	TObjectPtr<AWeaponBase> PrimaryWeapon;
+	AWeaponBase* PrimaryWeapon;
 
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
-	TObjectPtr<AWeaponBase> SecondaryWeapon;
+	AWeaponBase* SecondaryWeapon;
 
 	/** The player's currently equipped weapon */
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentWeapon, VisibleAnywhere)

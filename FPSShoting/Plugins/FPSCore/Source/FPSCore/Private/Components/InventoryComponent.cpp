@@ -78,15 +78,18 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     if (!GetWeaponByID(SlotId)) { return; }
 	if (!bPerformingWeaponSwap)
 	{
-		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+		if (CurrentWeapon)
 		{
-			CurrentWeapon->StopFire();
-			CurrentWeapon->SetCanFire(false);
-			bPerformingWeaponSwap = true;
-			TargetWeaponSlot = SlotId;
-			HandleUnequip();
-			return;
-		}	
+			if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+			{
+				CurrentWeapon->StopFire();
+				CurrentWeapon->SetCanFire(false);
+				bPerformingWeaponSwap = true;
+				TargetWeaponSlot = SlotId;
+				HandleUnequip();
+				return;
+			}
+		}
 	}
 
 	CurrentWeaponSlot = SlotId;
@@ -289,17 +292,40 @@ void UInventoryComponent::DropWeapon(FActorSpawnParameters& SpawnParameters, con
 	GetWeaponByID(InventoryPosition)->Destroy();
 }
 
+void UInventoryComponent::ServerRemoveEquipItems_Implementation(int index)
+{
+	HandleRemoveEquipItems(index);
+}
+
 void UInventoryComponent::RemoveEquipItems(int index)
+{
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerRemoveEquipItems(index);
+	}
+	else
+	{
+		HandleRemoveEquipItems(index);
+	}	
+}
+
+void UInventoryComponent::HandleRemoveEquipItems(int index)
 {
 	if (index == 0)
 	{
-		PrimaryWeapon->Destroy();
-		PrimaryWeapon = nullptr;
+		if (PrimaryWeapon)
+		{
+			PrimaryWeapon->Destroy();
+			PrimaryWeapon = nullptr;
+		}
 	}
-	else if(index == 1)
+	else if (index == 1)
 	{
-		SecondaryWeapon->Destroy();
-		SecondaryWeapon = nullptr;
+		if (SecondaryWeapon)
+		{
+			SecondaryWeapon->Destroy();
+			SecondaryWeapon = nullptr;
+		}
 	}
 }
 
@@ -459,10 +485,11 @@ void UInventoryComponent::OnRep_CurrentWeapon()
 {
 	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	{
-		//SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-		//SpawnedWeapon->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-		CurrentWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-		CurrentWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+			CurrentWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		}
 	}
 
 	if (CurrentWeapon)

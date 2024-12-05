@@ -117,13 +117,21 @@ public:
 	/*
 	* 아이템 장착 함수
 	*/
+	UFUNCTION(Server, Reliable)
+	void ServerEquipItem(UItemObject* InItem);
+
 	void EquipItem(UItemObject* InItem);
+
 
 	/*
 	* 아이템 장착 해제 함수
 	*/
+	UFUNCTION(Server, Reliable)
+	void ServerUnEquipItem(UItemObject* InItem);
+
 	bool UnEquipItem(UItemObject* InItem);
 
+	bool HandleUnEquipItem(UItemObject* InItem);
 	/*
 	* 아이템을 소비/제거 하는 함수
 	*/
@@ -199,7 +207,8 @@ private:
 	//Replace를 할때 Item이 Ammo일경우 인벤토리의 모든 Ammo체크하기
 	void CheckAmmo(UItemObject* InItem);
 
-
+	UFUNCTION()
+	void OnRep_InventorySizeChanged();
 
 	UFUNCTION()
 	void OnRep_InventoryItems();
@@ -209,10 +218,10 @@ private:
 
 	int32 GetIndex(int32 x, int32 y) const { return y * Columns + x; };
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_InventorySizeChanged, EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
 	int32 Columns = 5;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_InventorySizeChanged,EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (AllowPrivateAccess = "true"))
 	int32 Rows = 5;
 
 	UPROPERTY(ReplicatedUsing = OnRep_InventoryItems, VisibleAnywhere, BlueprintReadOnly, Category = "Items", meta = (AllowPrivateAccess = "true"))

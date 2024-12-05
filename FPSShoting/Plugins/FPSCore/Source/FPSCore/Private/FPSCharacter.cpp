@@ -898,6 +898,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
 
     if (bDrawDebug)
     {
+        FString Name = FString::Printf(TEXT("PlayerName : %s"), *GetName());
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, Name);
+
         if (InventoryComponent)
         {
             for ( int Index = 0; Index < 2; Index++ )
