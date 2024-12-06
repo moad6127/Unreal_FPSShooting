@@ -428,7 +428,7 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 		else
 		{
 			// UPDATEITEM
-			InItem->SlotType = ItemSlot;
+			InItem->SetSlotType(ItemSlot);
 			const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
 			const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
 			
@@ -510,7 +510,7 @@ bool UEquipInventoryComponent::HandleUnEquipItem(UItemObject* InItem)
 			}
 			FPSCharacter->GetInventoryComponent()->RemoveEquipItems(index);
 		}
-		InItem->SlotType = EEquipmentSlotType::EEST_Weapon;
+		InItem->SetSlotType(EEquipmentSlotType::EEST_Weapon);
 	}
 	// 제거하는것은 들어온것의 SlotType을 제거한다
 

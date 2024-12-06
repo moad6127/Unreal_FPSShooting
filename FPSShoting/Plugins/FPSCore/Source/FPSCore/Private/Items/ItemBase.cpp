@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "FPSCharacter.h"
 #include "Kismet/GameplayStatics.h"
+
 #include "Components/EquipInventoryComponent.h"
 
 AItemBase::AItemBase()

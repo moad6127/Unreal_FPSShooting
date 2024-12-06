@@ -71,6 +71,7 @@ public:
 	UItemObject* CreateItemCopy();
 
 	void ResetItemFlags();
+	void SetSlotType(EEquipmentSlotType InSlotType);
 
 	virtual bool IsSupportedForNetworking() const { return true; }
 	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const;

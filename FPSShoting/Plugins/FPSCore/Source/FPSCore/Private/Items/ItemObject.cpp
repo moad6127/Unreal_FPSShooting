@@ -33,6 +33,11 @@ void UItemObject::ResetItemFlags()
 	InInventorys = false;
 }
 
+void UItemObject::SetSlotType(EEquipmentSlotType InSlotType)
+{
+	SlotType = InSlotType;
+}
+
 void UItemObject::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

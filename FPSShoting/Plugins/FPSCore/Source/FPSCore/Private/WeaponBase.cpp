@@ -19,6 +19,7 @@
 #include "Engine/World.h"
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -836,6 +837,13 @@ void AWeaponBase::Tick(float DeltaTime)
         GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bCanFire? TEXT("Can Fire") : TEXT("Can not Fire"));
         GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bIsWeaponReadyToFire? TEXT("Weapon is ready to fire") : TEXT("Weapon is not ready to fire"));
     }
+}
+
+void AWeaponBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AWeaponBase, GeneralWeaponData);
 }
 
 // Recovering the player's recoil to the pre-fired position

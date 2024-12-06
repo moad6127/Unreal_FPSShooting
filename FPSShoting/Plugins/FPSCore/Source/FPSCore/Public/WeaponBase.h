@@ -849,6 +849,8 @@ private:
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const;
+
 #pragma endregion
 
 #pragma region USER_VARIABLES
@@ -886,11 +888,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Particles")
 	UNiagaraSystem* EjectedCasing;
 
+	UPROPERTY(Replicated)
+	FRuntimeWeaponData GeneralWeaponData;
+
 #pragma endregion 
 
 #pragma region INTERNAL_VARIABLES
 	
-	FRuntimeWeaponData GeneralWeaponData;
+
 
 	/** Determines if the player can fire */
 	bool bCanFire = true;
