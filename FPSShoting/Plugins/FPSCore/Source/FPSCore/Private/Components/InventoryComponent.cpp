@@ -367,19 +367,39 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 // Passing player inputs to WeaponBase
 void UInventoryComponent::StartFire()
 {
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->StartFire();
-    }
+	ServerFire();
+}
+
+void UInventoryComponent::ServerFire_Implementation()
+{
+	MulticastFire();
+}
+
+void UInventoryComponent::MulticastFire_Implementation()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StartFire();
+	}
 }
 
 // Passing player inputs to WeaponBase
 void UInventoryComponent::StopFire()
 {
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->StopFire();
-    }
+	ServerStopFire();
+}
+
+void UInventoryComponent::ServerStopFire_Implementation()
+{
+	MulticastStopFire();
+}
+
+void UInventoryComponent::MulticastStopFire_Implementation()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+	}
 }
 
 // Passing player inputs to WeaponBase

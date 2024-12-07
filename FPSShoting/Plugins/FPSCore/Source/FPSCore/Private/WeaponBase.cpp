@@ -324,7 +324,7 @@ void AWeaponBase::Fire()
             return;
         }
         USkeletalMeshComponent* UseMeshComp;
-        if (PlayerCharacter->GetController()->IsLocalPlayerController())
+        if (PlayerCharacter->IsLocallyControlled())
         {
             UseMeshComp = GetMainMeshComp();
         }

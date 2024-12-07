@@ -199,8 +199,20 @@ private:
 	/** Fires the weapon */
 	void StartFire();
 
+	UFUNCTION(Server,Reliable)
+	void ServerFire();
+
+	UFUNCTION(NetMulticast,Reliable)
+	void MulticastFire();
+
 	/** Stops firing the weapon */
 	void StopFire();
+
+	UFUNCTION(Server, Reliable)
+	void ServerStopFire();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastStopFire();
 
 	/** Reloads the weapon */
 	void Reload();
