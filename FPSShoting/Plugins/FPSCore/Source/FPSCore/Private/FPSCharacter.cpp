@@ -57,6 +57,7 @@ AFPSCharacter::AFPSCharacter()
     {
         CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
     }
+    CameraComponent->SetIsReplicated(true);
 
     SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
     SInventoryComponent->SetIsReplicated(true);
@@ -64,6 +65,8 @@ AFPSCharacter::AFPSCharacter()
     InventoryComponent->SetIsReplicated(true);
 
     Health = DefaultHealth;
+    GetMovementComponent()->SetIsReplicated(true);
+    
 }
 
 // Called when the game starts or when spawned

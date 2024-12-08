@@ -781,6 +781,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
 	void FinishReload();
 
+	void GetHitTarget(const FVector& HitTarget);
+
 protected:
 		
 	/** The main skeletal mesh - holds the weapon model */

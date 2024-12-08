@@ -21,6 +21,7 @@
 #include "Items/ItemObject.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 AWeaponBase::AWeaponBase()
 {
@@ -248,7 +249,10 @@ void AWeaponBase::StartFire()
     if (bCanFire)
     {
         // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
-        GetWorldTimerManager().SetTimer(ShotDelay, this, &AWeaponBase::Fire, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
+        GetWorldTimerManager().SetTimer(ShotDelay,
+            [this]() {
+                Fire();
+            }, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
 
         if (bShowDebug)
         {
@@ -351,7 +355,8 @@ void AWeaponBase::Fire()
         {
             // Calculating the start and end points of our line trace, and applying randomised variation
             TraceStart = PlayerCharacter->GetCameraComponent()->GetComponentLocation();
-            TraceStartRotation = PlayerCharacter->GetCameraComponent()->GetComponentRotation();
+            FRotator LocalAimRotation = PlayerCharacter->GetAimOffsets();
+            TraceStartRotation = PlayerCharacter->GetActorRotation() + LocalAimRotation;
 
             float AccuracyMultiplier = 1.0f;
             if (!PlayerCharacter->IsPlayerAiming())
@@ -365,10 +370,13 @@ void AWeaponBase::Fire()
             TraceStartRotation.Pitch += FMath::FRandRange(
                 -((WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier),
                 (WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier);
+
             TraceStartRotation.Yaw += FMath::FRandRange(
                 -((WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier),
                 (WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier);
+
             TraceDirection = TraceStartRotation.Vector();
+
             TraceEnd = TraceStart + (TraceDirection * (WeaponData.bIsShotgun
                                                            ? WeaponData.ShotgunRange
                                                            : WeaponData.LengthMultiplier));
@@ -596,6 +604,11 @@ void AWeaponBase::Fire()
         RecoilRecovery();
     }
     
+}
+
+void AWeaponBase::GetHitTarget(const FVector& HitTarget)
+{
+
 }
 
 void AWeaponBase::Recoil()
