@@ -372,14 +372,15 @@ void UInventoryComponent::StartFire()
 
 void UInventoryComponent::ServerFire_Implementation()
 {
-	MulticastFire();
+	int32 RandomSeed = FMath::Rand();
+	MulticastFire(RandomSeed);
 }
 
-void UInventoryComponent::MulticastFire_Implementation()
+void UInventoryComponent::MulticastFire_Implementation(int32 RandomSeed)
 {
 	if (CurrentWeapon)
 	{
-		CurrentWeapon->StartFire();
+		CurrentWeapon->StartFire(RandomSeed);
 	}
 }
 

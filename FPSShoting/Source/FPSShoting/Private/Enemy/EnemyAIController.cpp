@@ -162,7 +162,8 @@ void AEnemyAIController::ShootEnemy()
 
 	if (CanFire)
 	{		
-		BotWeapon->StartFire();
+		int32 RandSeed = FMath::Rand();
+		BotWeapon->StartFire(RandSeed);
 
 		float RandShootingTime;
 		

@@ -244,14 +244,15 @@ void AWeaponBase::SpawnAttachments()
     }
 }
 
-void AWeaponBase::StartFire()
+void AWeaponBase::StartFire(int32 RandomSeed)
 { 
+    WeaponRandomSeed = RandomSeed;
     if (bCanFire)
     {
         // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
         GetWorldTimerManager().SetTimer(ShotDelay,
             [this]() {
-                Fire();
+                Fire(WeaponRandomSeed);
             }, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
 
         if (bShowDebug)
@@ -315,7 +316,7 @@ void AWeaponBase::StopFire()
     GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
-void AWeaponBase::Fire()
+void AWeaponBase::Fire(int32 RandomSeed)
 {    
     // Allowing the gun to fire if it has ammunition, is not reloading and the bCanFire variable is true
     if(bCanFire && bIsWeaponReadyToFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
@@ -353,6 +354,9 @@ void AWeaponBase::Fire()
         // We run this for the number of bullets/projectiles per shot, in order to support shotguns
         for (int i = 0; i < NumberOfShots; i++)
         {
+            FRandomStream RandomStream(RandomSeed);
+
+            UE_LOG(LogTemp, Warning, TEXT("RandomSeed : %d"), RandomSeed);
             // Calculating the start and end points of our line trace, and applying randomised variation
             TraceStart = PlayerCharacter->GetCameraComponent()->GetComponentLocation();
             FRotator LocalAimRotation = PlayerCharacter->GetAimOffsets();
@@ -367,11 +371,12 @@ void AWeaponBase::Fire()
             float WeaponPitchVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponPitchVariation;
             float WeaponYawVal = PlayerCharacter->IsPlayerAiming() ? 0 : WeaponData.WeaponYawVariation;
 
-            TraceStartRotation.Pitch += FMath::FRandRange(
+
+            TraceStartRotation.Pitch += RandomStream.FRandRange(
                 -((WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier),
                 (WeaponPitchVal + WeaponPitchModifier) * AccuracyMultiplier);
 
-            TraceStartRotation.Yaw += FMath::FRandRange(
+            TraceStartRotation.Yaw += RandomStream.FRandRange(
                 -((WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier),
                 (WeaponYawVal + WeaponYawModifier) * AccuracyMultiplier);
 
@@ -606,10 +611,6 @@ void AWeaponBase::Fire()
     
 }
 
-void AWeaponBase::GetHitTarget(const FVector& HitTarget)
-{
-
-}
 
 void AWeaponBase::Recoil()
 {
@@ -830,7 +831,7 @@ void AWeaponBase::UpdateAmmo()
 
     if (WeaponData.bAutoFireAfterReload && ShotsFired > 0)
     {
-       StartFire(); 
+       StartFire(WeaponRandomSeed); 
     }
 }
 

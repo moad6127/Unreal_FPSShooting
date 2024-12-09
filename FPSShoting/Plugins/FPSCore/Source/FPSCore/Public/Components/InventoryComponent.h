@@ -203,7 +203,7 @@ private:
 	void ServerFire();
 
 	UFUNCTION(NetMulticast,Reliable)
-	void MulticastFire();
+	void MulticastFire(int32 RandomSeed);
 
 	/** Stops firing the weapon */
 	void StopFire();
