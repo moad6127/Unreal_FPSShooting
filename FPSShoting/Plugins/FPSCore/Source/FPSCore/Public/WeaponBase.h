@@ -711,6 +711,10 @@ public:
 	/** Whether the weapon can fire or not */
 	bool CanFire() const { return bCanFire; }
 
+	bool GetHasFiredRecently() const { return bHasFiredRecently; }
+	
+	void SetHasFiredRecently(bool NewRecently) { bHasFiredRecently = NewRecently; }
+
 	/** Update the weapon's ability to fire
 	 *	@param bNewFire The new state of the weapon's ability to fire
 	 */

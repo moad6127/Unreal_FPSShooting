@@ -368,6 +368,7 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 void UInventoryComponent::StartFire()
 {
 	ServerFire();
+	StartFireTimer();
 }
 
 void UInventoryComponent::ServerFire_Implementation()
@@ -388,6 +389,7 @@ void UInventoryComponent::MulticastFire_Implementation(int32 RandomSeed)
 void UInventoryComponent::StopFire()
 {
 	ServerStopFire();
+	StopFireTimer();
 }
 
 void UInventoryComponent::ServerStopFire_Implementation()
@@ -499,6 +501,52 @@ void UInventoryComponent::HandleUnequip()
 void UInventoryComponent::UnequipReturn()
 {
 	SwapWeapon(TargetWeaponSlot);
+}
+
+void UInventoryComponent::StartFireTimer()
+{
+	if (CurrentWeapon && CurrentWeapon->CanFire())
+	{
+		GetOwner()->GetWorldTimerManager().SetTimer(
+			ShotDelay,
+			this,
+			&UInventoryComponent::FinishFireTimer,
+			(60 / CurrentWeapon->GetStaticWeaponData()->RateOfFire));
+	}
+}
+
+void UInventoryComponent::FinishFireTimer()
+{
+	if (CurrentWeapon->GetStaticWeaponData()->bAutomaticFire)
+	{
+		StartFire();
+	}
+}
+
+void UInventoryComponent::StopFireTimer()
+{
+	if (!CurrentWeapon)
+	{
+		return;
+	}
+	if (CurrentWeapon->GetStaticWeaponData()->bPreventRapidManualFire && CurrentWeapon->GetHasFiredRecently())
+	{
+		GetOwner()->GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
+		const float TimeRemaining = GetOwner()->GetWorldTimerManager().GetTimerRemaining(ShotDelay);
+		// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(TimeRemaining));
+		if (TimeRemaining > 0.0f)
+		{
+			CurrentWeapon->SetHasFiredRecently(false);
+			bIsWeaponReadyToFire = false;
+			GetOwner()->GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &UInventoryComponent::ReadyToFire, GetOwner()->GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetOwner()->GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+		}
+	}
+	GetOwner()->GetWorldTimerManager().ClearTimer(ShotDelay);
+}
+
+void UInventoryComponent::ReadyToFire()
+{
+	bIsWeaponReadyToFire = true;
 }
 
 

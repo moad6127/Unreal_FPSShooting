@@ -224,6 +224,14 @@ private:
 
 	void UnequipReturn();
 
+	void StartFireTimer();
+
+	void FinishFireTimer();
+
+	void StopFireTimer();
+
+	void ReadyToFire();
+
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
@@ -271,6 +279,8 @@ private:
 
 	bool bPerformingWeaponSwap;
 
+	bool bIsWeaponReadyToFire = true;
+
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment")
 	//TMap<int, AWeaponBase*> EquippedWeapons;
@@ -288,4 +298,8 @@ private:
 	FTimerHandle ReloadRetry;
 
 	FTimerHandle WeaponSwapDelegate;
+
+	FTimerHandle ShotDelay;
+
+	FTimerHandle SpamFirePreventionDelay;
 };

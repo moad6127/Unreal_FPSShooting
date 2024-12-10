@@ -249,12 +249,15 @@ void AWeaponBase::StartFire(int32 RandomSeed)
     WeaponRandomSeed = RandomSeed;
     if (bCanFire)
     {
-        // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
-        GetWorldTimerManager().SetTimer(ShotDelay,
-            [this]() {
-                Fire(WeaponRandomSeed);
-            }, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
 
+        //InventoryComponent로 기능을 옮김
+        // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
+        //GetWorldTimerManager().SetTimer(ShotDelay,
+        //    [this]() {
+        //        Fire(WeaponRandomSeed);
+        //    }, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
+
+        Fire(RandomSeed);
         if (bShowDebug)
         {
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Started firing timer"));
@@ -301,19 +304,22 @@ void AWeaponBase::StopFire()
     RecoilRecovery();
     ShotsFired = 0;
 
-    if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
-    {
-        GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
-        const float TimeRemaining = GetWorldTimerManager().GetTimerRemaining(ShotDelay);
-        // GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(TimeRemaining));
-        if (TimeRemaining > 0.0f)
-        {
-            bHasFiredRecently = false;
-            bIsWeaponReadyToFire = false;
-            GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
-        }
-    }
-    GetWorldTimerManager().ClearTimer(ShotDelay);
+
+    // InventoryComponent로 기능을 옮김
+    // 
+    //if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
+    //{
+    //    GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
+    //    const float TimeRemaining = GetWorldTimerManager().GetTimerRemaining(ShotDelay);
+    //    // GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(TimeRemaining));
+    //    if (TimeRemaining > 0.0f)
+    //    {
+    //        bHasFiredRecently = false;
+    //        bIsWeaponReadyToFire = false;
+    //        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+    //    }
+    //}
+    //GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
 void AWeaponBase::Fire(int32 RandomSeed)
