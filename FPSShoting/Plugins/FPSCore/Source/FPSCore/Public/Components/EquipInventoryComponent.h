@@ -98,6 +98,12 @@ public:
 	* 아이템을 Drop할때 사용되는 함수
 	*/
 	void DropItem(UItemObject* ItemToDrop);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerDropItem(UItemObject* ItemToDrop);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDropItem(UItemObject* ItemToDrop);
 
 	/*	
 	* 아이템을 인벤토리의 다른 공간으로 이동시키는 함수

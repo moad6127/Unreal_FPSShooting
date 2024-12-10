@@ -249,7 +249,6 @@ void AWeaponBase::StartFire(int32 RandomSeed)
     WeaponRandomSeed = RandomSeed;
     if (bCanFire)
     {
-
         //InventoryComponent로 기능을 옮김
         // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
         //GetWorldTimerManager().SetTimer(ShotDelay,

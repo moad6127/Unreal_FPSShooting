@@ -272,6 +272,11 @@ bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 
 void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 {
+	ServerDropItem(ItemToDrop);
+}
+
+void UEquipInventoryComponent::MulticastDropItem_Implementation(UItemObject* ItemToDrop)
+{
 	// SpawnParasm를 생성한후 설정해주기
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = GetOwner();
@@ -284,9 +289,25 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 
 	AItemBase* DropItem = GetWorld()->SpawnActor<AItemBase>(AItemBase::StaticClass(), SpawnTransform, SpawnParams);
 	//Drop아이템에 대해서 Initialize해주기
-	ItemToDrop->ResetItemFlags();
-	DropItem->InitializeDrop(ItemToDrop);
-	CheckAmmo(ItemToDrop);
+	if (DropItem)
+	{
+		DropItem->SetReplicates(true);
+		DropItem->SetReplicateMovement(true);
+
+		ItemToDrop->ResetItemFlags();
+		DropItem->InitializeDrop(ItemToDrop);
+		CheckAmmo(ItemToDrop);
+	}
+}
+
+void UEquipInventoryComponent::ServerDropItem_Implementation(UItemObject* ItemToDrop)
+{
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
+	MulticastDropItem(ItemToDrop);
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
