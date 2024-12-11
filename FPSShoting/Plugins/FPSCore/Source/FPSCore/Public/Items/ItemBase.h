@@ -40,6 +40,7 @@ protected:
 	void Init();
 	virtual void BeginPlay() override;
 
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -102,4 +103,6 @@ protected:
 private:
 
 	void HandleInteract();
+
+	
 };

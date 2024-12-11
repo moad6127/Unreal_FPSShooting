@@ -10,6 +10,7 @@ struct FTile;
 class UItemObject;
 class UDataTable;
 class UFPSSaveGame;
+class AItemBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
@@ -101,9 +102,6 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void ServerDropItem(UItemObject* ItemToDrop);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastDropItem(UItemObject* ItemToDrop);
 
 	/*	
 	* 아이템을 인벤토리의 다른 공간으로 이동시키는 함수
@@ -241,5 +239,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Items")
 	TArray<FStarterItemData> StartItems;
-	
+
 };

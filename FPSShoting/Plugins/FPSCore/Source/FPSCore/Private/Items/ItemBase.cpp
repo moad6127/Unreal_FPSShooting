@@ -6,12 +6,13 @@
 #include "Components/SphereComponent.h"
 #include "FPSCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 #include "Components/EquipInventoryComponent.h"
 
 AItemBase::AItemBase()
 {
-
+	bAlwaysRelevant = true;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("ItemCollision");
 	Sphere->SetupAttachment(MeshComp);	
@@ -30,6 +31,7 @@ void AItemBase::Interact()
 			Destroy();
 		}
 	}
+
 }
 
 void AItemBase::HandleInteract()
@@ -80,6 +82,8 @@ void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 void AItemBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AItemBase, ItemObject);
 }
 
 void AItemBase::Init()

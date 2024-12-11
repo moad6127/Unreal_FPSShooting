@@ -275,11 +275,15 @@ void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
 	ServerDropItem(ItemToDrop);
 }
 
-void UEquipInventoryComponent::MulticastDropItem_Implementation(UItemObject* ItemToDrop)
+void UEquipInventoryComponent::ServerDropItem_Implementation(UItemObject* ItemToDrop)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
 	// SpawnParasm를 생성한후 설정해주기
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = GetOwner();
+	SpawnParams.Owner = nullptr;
 	SpawnParams.bNoFail = true;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -291,23 +295,12 @@ void UEquipInventoryComponent::MulticastDropItem_Implementation(UItemObject* Ite
 	//Drop아이템에 대해서 Initialize해주기
 	if (DropItem)
 	{
-		DropItem->SetReplicates(true);
-		DropItem->SetReplicateMovement(true);
-
+		//DropItem->SetReplicates(true);
+		//DropItem->SetReplicateMovement(true);
 		ItemToDrop->ResetItemFlags();
 		DropItem->InitializeDrop(ItemToDrop);
 		CheckAmmo(ItemToDrop);
 	}
-}
-
-void UEquipInventoryComponent::ServerDropItem_Implementation(UItemObject* ItemToDrop)
-{
-	if (!GetOwner()->HasAuthority())
-	{
-		return;
-	}
-
-	MulticastDropItem(ItemToDrop);
 }
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)

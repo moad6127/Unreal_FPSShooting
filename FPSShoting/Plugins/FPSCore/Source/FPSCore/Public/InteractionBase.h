@@ -18,6 +18,8 @@ public:
 
 	/** The description to be passed to the player for this item */
 	FText InteractionText;
+
+	UStaticMeshComponent* GetMeshComp() const { return MeshComp; }
 	
 protected:
 	
