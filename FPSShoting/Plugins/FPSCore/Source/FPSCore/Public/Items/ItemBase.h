@@ -40,11 +40,13 @@ protected:
 	void Init();
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnRep_ItemObject();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Data Table")
+	UPROPERTY(ReplicatedUsing = OnRep_ItemObject, BlueprintReadOnly, Category = "Data Table")
 	TObjectPtr<UItemObject> ItemObject;
 
 	/** Whether this pickup has been spawned at runtime or not  (determines whether we inherit DataStruct values or */

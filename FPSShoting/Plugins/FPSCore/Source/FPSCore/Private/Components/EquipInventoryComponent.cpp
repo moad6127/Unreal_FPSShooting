@@ -295,8 +295,8 @@ void UEquipInventoryComponent::ServerDropItem_Implementation(UItemObject* ItemTo
 	//Drop아이템에 대해서 Initialize해주기
 	if (DropItem)
 	{
-		//DropItem->SetReplicates(true);
-		//DropItem->SetReplicateMovement(true);
+		DropItem->SetReplicates(true);
+		DropItem->SetReplicateMovement(true);
 		ItemToDrop->ResetItemFlags();
 		DropItem->InitializeDrop(ItemToDrop);
 		CheckAmmo(ItemToDrop);

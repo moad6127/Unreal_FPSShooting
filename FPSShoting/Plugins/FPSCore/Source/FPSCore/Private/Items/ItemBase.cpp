@@ -53,6 +53,12 @@ void AItemBase::BeginPlay()
 	Init();
 }
 
+void AItemBase::OnRep_ItemObject()
+{
+	MeshComp->SetStaticMesh(ItemObject->Asset.Mesh);
+	InteractionText = ItemObject->ItemName;
+}
+
 
 void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 {
