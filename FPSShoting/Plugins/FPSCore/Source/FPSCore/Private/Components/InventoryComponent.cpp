@@ -104,6 +104,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 
 	// Swapping to the new weapon, enabling it and playing it's equip animation
 	CurrentWeapon = GetWeaponByID(SlotId);
+	OnRep_CurrentWeapon();
     if (CurrentWeapon)
     {
         CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
@@ -116,7 +117,11 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 				FPSCharacter->SetWeaponEquip(true);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-        		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
+				if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
+				{
+					FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.f);
+				}
+				FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
         	}
         }
     }
@@ -571,6 +576,10 @@ void UInventoryComponent::OnRep_CurrentWeapon()
 			{
 				FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
 				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+				if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
+				{
+					FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.f);
+				}
 				FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
 			}
 		}

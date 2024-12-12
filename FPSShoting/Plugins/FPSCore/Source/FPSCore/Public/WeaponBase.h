@@ -478,6 +478,10 @@ struct FStaticWeaponData : public FTableRowBase
 
 	/** An override for the player's reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* TPPWeaponEquip;
+
+	/** An override for the player's reload animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponUnequip;
 
 	/** Firing Mechanisms */
