@@ -107,9 +107,6 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	OnRep_CurrentWeapon();
     if (CurrentWeapon)
     {
-        CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
-        CurrentWeapon->SetActorHiddenInGame(false);
-    	CurrentWeapon->SetCanFire(true);
         if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
@@ -124,6 +121,9 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 				FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
         	}
         }
+		CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+		CurrentWeapon->SetActorHiddenInGame(false);
+		CurrentWeapon->SetCanFire(true);
     }
 	
 	bPerformingWeaponSwap = false;
