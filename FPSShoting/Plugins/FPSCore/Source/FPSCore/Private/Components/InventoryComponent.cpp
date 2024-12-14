@@ -67,15 +67,46 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UInventoryComponent::PlaySwapAnimation()
+{
+	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	{
+		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+		FPSCharacter->GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+		if (CurrentWeapon)
+		{
+			if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+			{
+				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+			}
+			if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
+			{
+				FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.0f);
+			}
+		}
+		FPSCharacter->SetWeaponEquip(true);
+		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
+	}
+
+}
+
 void UInventoryComponent::SwapWeapon(const int SlotId)
+{
+	if (!GetOwner()->HasAuthority())
+	{
+		PlaySwapAnimation();
+	}
+	ServerSwapWeapon(SlotId);	
+}
+
+void UInventoryComponent::ServerSwapWeapon_Implementation(int SlotId)
 {
 	// Clearing the weapon swap timer in case it's still active
 	GetWorld()->GetTimerManager().ClearTimer(ReloadRetry);
 
-	
 	// Returning if the target weapon is already equipped or it does not exist
-    if (CurrentWeaponSlot == SlotId) { return; }
-    if (!GetWeaponByID(SlotId)) { return; }
+	if (CurrentWeaponSlot == SlotId) { return; }
+	if (!GetWeaponByID(SlotId)) { return; }
 	if (!bPerformingWeaponSwap)
 	{
 		if (CurrentWeapon)
@@ -93,39 +124,28 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	}
 
 	CurrentWeaponSlot = SlotId;
-	
+
 	// Disabling the currently equipped weapon, if it exists
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
-        CurrentWeapon->SetActorHiddenInGame(true);
-        CurrentWeapon->StopFire();
-    }
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
+		CurrentWeapon->SetActorHiddenInGame(true);
+		CurrentWeapon->StopFire();
+	}
 
 	// Swapping to the new weapon, enabling it and playing it's equip animation
 	CurrentWeapon = GetWeaponByID(SlotId);
-	OnRep_CurrentWeapon();
-    if (CurrentWeapon)
-    {
-        if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
-        {
-        	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
-        	{
-				FPSCharacter->SetWeaponEquip(true);
-        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-				if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
-				{
-					FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.f);
-				}
-				FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
-        	}
-        }
+	if (CurrentWeapon)
+	{
 		CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
 		CurrentWeapon->SetActorHiddenInGame(false);
 		CurrentWeapon->SetCanFire(true);
-    }
-	
+	}
+	if (GetOwner()->HasAuthority())
+	{
+		PlaySwapAnimation();
+	}
+
 	bPerformingWeaponSwap = false;
 }
 
@@ -630,6 +650,7 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(UInventoryComponent, CurrentWeaponSlot);
 	DOREPLIFETIME(UInventoryComponent, CurrentWeapon);
 	DOREPLIFETIME(UInventoryComponent, PrimaryWeapon);
 	DOREPLIFETIME(UInventoryComponent, SecondaryWeapon);

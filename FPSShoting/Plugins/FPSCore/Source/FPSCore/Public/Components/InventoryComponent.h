@@ -185,7 +185,12 @@ private:
 	/** Swap to a new weapon
 	 *	@param SlotId The ID of the slot which to swap to
 	 */
+
+	void PlaySwapAnimation();
 	void SwapWeapon(int SlotId);
+
+	UFUNCTION(Server,Reliable)
+	void ServerSwapWeapon(int SlotId);
 
 	/** Swaps to the weapon in CurrentWeaponSlot */
 
@@ -272,6 +277,7 @@ private:
 	EWeaponSwapBehaviour WeaponSwapBehaviour = EWeaponSwapBehaviour::UseNewValue;
 	
 	/** The integer that keeps track of which weapon slot ID is currently active */
+	UPROPERTY(Replicated)
 	int CurrentWeaponSlot;
 
 	/** The integer that keeps track of which weapon slot ID we are aiming to switch to while waiting for the unequip animation to play */
