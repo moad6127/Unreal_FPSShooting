@@ -241,6 +241,9 @@ private:
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
 
+	UFUNCTION()
+	void OnRep_PerformingWeaponSwap();
+
 	/** Whether to print debug statements to the screen */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bDrawDebug = false;
@@ -281,8 +284,10 @@ private:
 	int CurrentWeaponSlot;
 
 	/** The integer that keeps track of which weapon slot ID we are aiming to switch to while waiting for the unequip animation to play */
+	UPROPERTY(Replicated)
 	int TargetWeaponSlot;
 
+	UPROPERTY(ReplicatedUsing = OnRep_PerformingWeaponSwap)
 	bool bPerformingWeaponSwap;
 
 	bool bIsWeaponReadyToFire = true;
@@ -290,7 +295,7 @@ private:
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment")
 	//TMap<int, AWeaponBase*> EquippedWeapons;
-	
+
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Equipment")
 	AWeaponBase* PrimaryWeapon;
 
