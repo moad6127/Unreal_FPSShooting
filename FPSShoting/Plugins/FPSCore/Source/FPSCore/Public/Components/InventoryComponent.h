@@ -189,8 +189,11 @@ private:
 	void PlaySwapAnimation();
 	void SwapWeapon(int SlotId);
 
+	void CompleteWeaponSwap(int SlotId);
+
 	UFUNCTION(Server,Reliable)
 	void ServerSwapWeapon(int SlotId);
+
 
 	/** Swaps to the weapon in CurrentWeaponSlot */
 
@@ -313,4 +316,5 @@ private:
 	FTimerHandle ShotDelay;
 
 	FTimerHandle SpamFirePreventionDelay;
+
 };

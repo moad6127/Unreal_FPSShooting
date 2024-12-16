@@ -89,6 +89,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	if (CurrentWeaponSlot == SlotId) { return; }
 	if (!GetWeaponByID(SlotId)) { return; }
 
+
 	// Returning if the target weapon is already equipped or it does not exist
 	ServerSwapWeapon(SlotId);	
 }
@@ -96,7 +97,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 void UInventoryComponent::ServerSwapWeapon_Implementation(int SlotId)
 {
 	// Clearing the weapon swap timer in case it's still active
-	GetWorld()->GetTimerManager().ClearTimer(ReloadRetry);
+	GetWorld()->GetTimerManager().ClearTimer(WeaponSwapDelegate);
 
 	if (!bPerformingWeaponSwap)
 	{
@@ -114,28 +115,63 @@ void UInventoryComponent::ServerSwapWeapon_Implementation(int SlotId)
 		}
 	}
 
+	CompleteWeaponSwap(SlotId);
+}
+
+void UInventoryComponent::CompleteWeaponSwap(int SlotId)
+{
 	CurrentWeaponSlot = SlotId;
 	// Disabling the currently equipped weapon, if it exists
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
+		//TODO : 등에 부착하기
 		CurrentWeapon->SetActorHiddenInGame(true);
 		CurrentWeapon->SetCanFire(false);
 		CurrentWeapon->StopFire();
-
 	}
 
 	// Swapping to the new weapon, enabling it and playing it's equip animation
 	CurrentWeapon = GetWeaponByID(SlotId);
-	
+
 	PlaySwapAnimation();
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+		//TODO : 손에 부착하기
 		CurrentWeapon->SetActorHiddenInGame(false);
 		CurrentWeapon->SetCanFire(true);
 	}
 	bPerformingWeaponSwap = false;
+}
+
+
+void UInventoryComponent::HandleUnequip()
+{
+	float AnimTime = 0.0f;
+	if (CurrentWeapon)
+	{
+		if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+		{
+			if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
+			{
+				FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.0f);
+			}
+			if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+			{
+				AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
+			}
+		}
+	}
+	if (GetOwner()->HasAuthority())
+	{
+		GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
+	}
+}
+
+void UInventoryComponent::UnequipReturn()
+{
+	SwapWeapon(TargetWeaponSlot);
 }
 
 //// Spawns a new weapon (either from weapon swap or picking up a new weapon)
@@ -379,6 +415,10 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 // Passing player inputs to WeaponBase
 void UInventoryComponent::StartFire()
 {
+	if (bPerformingWeaponSwap)
+	{
+		return;
+	}
 	ServerFire();
 	StartFireTimer();
 }
@@ -495,29 +535,6 @@ void UInventoryComponent::Inspect()
 	}
 }
 
-void UInventoryComponent::HandleUnequip()
-{
-	if (CurrentWeapon)
-	{
-		if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
-		{
-			if (CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip)
-			{
-				FPSCharacter->GetMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->TPPWeaponEquip, 1.0f);
-			}
-			if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
-			{
-				const float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
-				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
-			}
-		}
-	}
-}
-
-void UInventoryComponent::UnequipReturn()
-{
-	SwapWeapon(TargetWeaponSlot);
-}
 
 void UInventoryComponent::StartFireTimer()
 {
@@ -641,7 +658,6 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	
 	DOREPLIFETIME(UInventoryComponent, TargetWeaponSlot);
 	DOREPLIFETIME(UInventoryComponent, bPerformingWeaponSwap);
 	DOREPLIFETIME(UInventoryComponent, CurrentWeaponSlot);
