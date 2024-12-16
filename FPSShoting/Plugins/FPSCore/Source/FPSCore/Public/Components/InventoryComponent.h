@@ -225,6 +225,9 @@ private:
 	/** Reloads the weapon */
 	void Reload();
 
+	UFUNCTION(Server, Reliable)
+	void ServerReload();
+
 	/** Plays an inspect animation on the weapon */
 	void Inspect();
 

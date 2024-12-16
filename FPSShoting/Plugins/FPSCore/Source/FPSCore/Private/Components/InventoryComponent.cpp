@@ -460,61 +460,66 @@ void UInventoryComponent::MulticastStopFire_Implementation()
 // Passing player inputs to WeaponBase
 void UInventoryComponent::Reload()
 {
-    if (CurrentWeapon)
-    {
-        if (!CurrentWeapon->Reload())
-        {
-	        switch (ReloadFailedBehaviour)
-	        {
-	        case EReloadFailedBehaviour::Retry:
-	        	{
-		            if (MaxRetryAmount == 0)
-		            {
-						GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
-						if (bDrawDebug)
-						{
-							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));	
-						}
-		            	break;
-		            }
-		            if (RetryAmount < MaxRetryAmount)
-		            {
-						GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
-						if (bDrawDebug)
-						{
-							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));	
-						}
-		            	RetryAmount++;
-						break;
-		            }
-	        		RetryAmount = 0;
-	        		break;
-	        	}
+	ServerReload(); 
+}
 
-	        case EReloadFailedBehaviour::ChangeState:
-	        	{
-	        		AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-	        		FPSCharacter->SetMovementState(TargetMovementState);
-	        		Reload();
-	        		break;
-	        	}
+void UInventoryComponent::ServerReload_Implementation()
+{
+	if (CurrentWeapon)
+	{
+		if (!CurrentWeapon->Reload())
+		{
+			switch (ReloadFailedBehaviour)
+			{
+			case EReloadFailedBehaviour::Retry:
+			{
+				if (MaxRetryAmount == 0)
+				{
+					GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+					if (bDrawDebug)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
+					}
+					break;
+				}
+				if (RetryAmount < MaxRetryAmount)
+				{
+					GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+					if (bDrawDebug)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
+					}
+					RetryAmount++;
+					break;
+				}
+				RetryAmount = 0;
+				break;
+			}
 
-	        case EReloadFailedBehaviour::HandleInBP:
-	        	{
-	        		EventFailedToReload.Broadcast();	
-	        		break;
-	        	}
+			case EReloadFailedBehaviour::ChangeState:
+			{
+				AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
+				FPSCharacter->SetMovementState(TargetMovementState);
+				Reload();
+				break;
+			}
 
-	        case EReloadFailedBehaviour::Ignore:
-		        {
-			        // Ignoring it, obviously :)
-	        		break;
-		        }
+			case EReloadFailedBehaviour::HandleInBP:
+			{
+				EventFailedToReload.Broadcast();
+				break;
+			}
 
-	        default: { break; }
-	        } 
-        }
-    }
+			case EReloadFailedBehaviour::Ignore:
+			{
+				// Ignoring it, obviously :)
+				break;
+			}
+
+			default: { break; }
+			}
+		}
+	}
 }
 
 void UInventoryComponent::Inspect()
