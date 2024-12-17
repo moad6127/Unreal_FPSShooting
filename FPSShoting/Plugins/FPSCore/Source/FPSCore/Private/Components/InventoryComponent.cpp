@@ -377,6 +377,17 @@ void UInventoryComponent::HandleRemoveEquipItems(int index)
 	}
 }
 
+void UInventoryComponent::ReloadFinish()
+{
+	if (GetOwner()->HasAuthority())
+	{
+		CharacterState = ECharacterState::ECS_Unoccupied;
+
+		//TODO : Reload기능을 Weapon에서 Component로 옮기기
+
+	}
+}
+
 AWeaponBase* UInventoryComponent::GetWeaponByID(const int WeaponID) const
 {
 	if (WeaponID == 0)
@@ -460,66 +471,84 @@ void UInventoryComponent::MulticastStopFire_Implementation()
 // Passing player inputs to WeaponBase
 void UInventoryComponent::Reload()
 {
-	ServerReload(); 
+	if (CharacterState == ECharacterState::ECS_Unoccupied)
+	{
+		ServerReload();
+		HandleReloading();
+	}
 }
 
 void UInventoryComponent::ServerReload_Implementation()
 {
-	if (CurrentWeapon)
+	CharacterState = ECharacterState::ECS_Reloading;
+	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	{
-		if (!CurrentWeapon->Reload())
+		if (!FPSCharacter->IsLocallyControlled())
 		{
-			switch (ReloadFailedBehaviour)
-			{
-			case EReloadFailedBehaviour::Retry:
-			{
-				if (MaxRetryAmount == 0)
-				{
-					GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
-					if (bDrawDebug)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
-					}
-					break;
-				}
-				if (RetryAmount < MaxRetryAmount)
-				{
-					GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
-					if (bDrawDebug)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
-					}
-					RetryAmount++;
-					break;
-				}
-				RetryAmount = 0;
-				break;
-			}
-
-			case EReloadFailedBehaviour::ChangeState:
-			{
-				AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-				FPSCharacter->SetMovementState(TargetMovementState);
-				Reload();
-				break;
-			}
-
-			case EReloadFailedBehaviour::HandleInBP:
-			{
-				EventFailedToReload.Broadcast();
-				break;
-			}
-
-			case EReloadFailedBehaviour::Ignore:
-			{
-				// Ignoring it, obviously :)
-				break;
-			}
-
-			default: { break; }
-			}
+			HandleReloading();
 		}
 	}
+}
+
+void UInventoryComponent::HandleReloading()
+{
+	PlayReloadAnimation();
+
+	//if (CurrentWeapon)
+	//{
+	//	if (!CurrentWeapon->Reload())
+	//	{
+	//		switch (ReloadFailedBehaviour)
+	//		{
+	//		case EReloadFailedBehaviour::Retry:
+	//		{
+	//			if (MaxRetryAmount == 0)
+	//			{
+	//				GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+	//				if (bDrawDebug)
+	//				{
+	//					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
+	//				}
+	//				break;
+	//			}
+	//			if (RetryAmount < MaxRetryAmount)
+	//			{
+	//				GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+	//				if (bDrawDebug)
+	//				{
+	//					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));
+	//				}
+	//				RetryAmount++;
+	//				break;
+	//			}
+	//			RetryAmount = 0;
+	//			break;
+	//		}
+
+	//		case EReloadFailedBehaviour::ChangeState:
+	//		{
+	//			AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
+	//			FPSCharacter->SetMovementState(TargetMovementState);
+	//			Reload();
+	//			break;
+	//		}
+
+	//		case EReloadFailedBehaviour::HandleInBP:
+	//		{
+	//			EventFailedToReload.Broadcast();
+	//			break;
+	//		}
+
+	//		case EReloadFailedBehaviour::Ignore:
+	//		{
+	//			// Ignoring it, obviously :)
+	//			break;
+	//		}
+
+	//		default: { break; }
+	//		}
+	//	}
+	//}
 }
 
 void UInventoryComponent::Inspect()
@@ -587,6 +616,26 @@ void UInventoryComponent::ReadyToFire()
 	bIsWeaponReadyToFire = true;
 }
 
+void UInventoryComponent::PlayReloadAnimation()
+{
+	AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
+	if (FPSCharacter == nullptr)
+	{
+		return;
+	}
+	UAnimInstance* HandAnimInstance = FPSCharacter->GetHandsMesh()->GetAnimInstance();
+	UAnimInstance* MeshAnimInstance = FPSCharacter->GetMesh()->GetAnimInstance();
+
+	if(HandAnimInstance && GetCurrentWeapon()->GetStaticWeaponData()->PlayerReload)
+	{
+		HandAnimInstance->Montage_Play(GetCurrentWeapon()->GetStaticWeaponData()->PlayerReload, 1.0f);
+	}
+	if (MeshAnimInstance && GetCurrentWeapon()->GetStaticWeaponData()->TPPPlayerReload)
+	{
+		MeshAnimInstance->Montage_Play(GetCurrentWeapon()->GetStaticWeaponData()->TPPPlayerReload, 1.0f);
+	}
+}
+
 
 void UInventoryComponent::OnRep_CurrentWeapon()
 {
@@ -618,6 +667,27 @@ void UInventoryComponent::OnRep_PerformingWeaponSwap()
 	}
 	HandleUnequip();
 }
+
+void UInventoryComponent::OnRep_CharacterState()
+{
+	switch (CharacterState)
+	{
+	case ECharacterState::ECS_Unoccupied:
+		break;
+	case ECharacterState::ECS_Reloading:
+		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+		{
+			if (!FPSCharacter->IsLocallyControlled())
+			{
+				HandleReloading();
+			}
+		}
+		break;
+	case ECharacterState::ECS_MAX:
+		break;
+	}
+}
+
 
 void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInputComponent)
 {
@@ -663,6 +733,7 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(UInventoryComponent, CharacterState);
 	DOREPLIFETIME(UInventoryComponent, TargetWeaponSlot);
 	DOREPLIFETIME(UInventoryComponent, bPerformingWeaponSwap);
 	DOREPLIFETIME(UInventoryComponent, CurrentWeaponSlot);

@@ -27,6 +27,15 @@ enum class EReloadFailedBehaviour : uint8
 };
 
 UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+	ECS_Unoccupied	UMETA(DisplayName = "Unoccupied"),
+	ECS_Reloading	UMETA(DisplayName = "Reloading"),
+
+	ECS_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
+UENUM(BlueprintType)
 enum class EWeaponSwapBehaviour : uint8
 {
 	UseNewValue		UMETA(DisplayName = "Swap to new value"),
@@ -98,6 +107,9 @@ public:
 	/** Returns the currently equipped weapon slot */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
+
+	UFUNCTION(BlueprintCallable)
+	void ReloadFinish();
 
 	/** Returns the map of currently equipped weapons */
 	//UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -228,6 +240,8 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
 
+	void HandleReloading();
+
 	/** Plays an inspect animation on the weapon */
 	void Inspect();
 
@@ -243,12 +257,16 @@ private:
 
 	void ReadyToFire();
 
+	void PlayReloadAnimation();
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
 
 	UFUNCTION()
 	void OnRep_PerformingWeaponSwap();
+
+	UFUNCTION()
+	void OnRep_CharacterState();
 
 	/** Whether to print debug statements to the screen */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
@@ -268,6 +286,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
 	EReloadFailedBehaviour ReloadFailedBehaviour = EReloadFailedBehaviour::Ignore;
+
+	UPROPERTY(ReplicatedUsing = OnRep_CharacterState)
+	ECharacterState CharacterState = ECharacterState::ECS_Unoccupied;
 
 	/** How many times we should retry the reload before cancelling it. Set to 0 for unlimited. */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
@@ -319,5 +340,7 @@ private:
 	FTimerHandle ShotDelay;
 
 	FTimerHandle SpamFirePreventionDelay;
+
+
 
 };

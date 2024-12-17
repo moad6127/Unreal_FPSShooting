@@ -730,7 +730,10 @@ bool AWeaponBase::Reload()
             bIsReloading = true;
 
             // Starting the timer alongside the animation of the weapon reloading, casting to UpdateAmmo when it finishes
-            GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
+            if (GetOwner()->HasAuthority())
+            {
+                GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
+            }
         }
     }
 
