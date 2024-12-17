@@ -748,6 +748,10 @@ public:
 	{
 		bShowDebug = IsVisible;
 	};
+
+	bool IsAmmoEmpty() const;
+
+	bool IsAmmoFull() const;
 	
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")

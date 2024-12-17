@@ -384,7 +384,8 @@ void UInventoryComponent::ReloadFinish()
 		CharacterState = ECharacterState::ECS_Unoccupied;
 
 		//TODO : Reload기능을 Weapon에서 Component로 옮기기
-
+		UpdateWeaponAmmo();
+	
 	}
 }
 
@@ -471,7 +472,9 @@ void UInventoryComponent::MulticastStopFire_Implementation()
 // Passing player inputs to WeaponBase
 void UInventoryComponent::Reload()
 {
-	if (CharacterState == ECharacterState::ECS_Unoccupied)
+	if (CharacterState == ECharacterState::ECS_Unoccupied &&
+		CurrentWeapon &&
+		!CurrentWeapon->IsAmmoFull())
 	{
 		ServerReload();
 		HandleReloading();
@@ -488,6 +491,11 @@ void UInventoryComponent::ServerReload_Implementation()
 			HandleReloading();
 		}
 	}
+}
+
+void UInventoryComponent::UpdateWeaponAmmo()
+{
+
 }
 
 void UInventoryComponent::HandleReloading()

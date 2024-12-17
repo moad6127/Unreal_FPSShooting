@@ -240,6 +240,8 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
 
+	void UpdateWeaponAmmo();
+
 	void HandleReloading();
 
 	/** Plays an inspect animation on the weapon */

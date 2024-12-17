@@ -244,6 +244,20 @@ void AWeaponBase::SpawnAttachments()
     }
 }
 
+bool AWeaponBase::IsAmmoEmpty() const
+{
+    return GeneralWeaponData.ClipSize == 0;
+}
+
+bool AWeaponBase::IsAmmoFull() const
+{
+    if (GeneralWeaponData.ClipCapacity <= GeneralWeaponData.ClipSize)
+    {
+        return true;
+    }
+    return false;
+}
+
 void AWeaponBase::StartFire(int32 RandomSeed)
 { 
     WeaponRandomSeed = RandomSeed;
