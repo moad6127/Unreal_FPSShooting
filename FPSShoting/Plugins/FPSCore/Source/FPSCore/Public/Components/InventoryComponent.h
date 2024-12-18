@@ -216,6 +216,9 @@ private:
 	/** Swaps between weapons using the scroll wheel */
 	void ScrollWeapon(const FInputActionValue& Value);
 
+
+	bool CanFire();
+
 	/** Fires the weapon */
 	void StartFire();
 

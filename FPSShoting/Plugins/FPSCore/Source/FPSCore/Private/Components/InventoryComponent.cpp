@@ -62,6 +62,15 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 	}
 }
 
+bool UInventoryComponent::CanFire()
+{
+	if (CurrentWeapon == nullptr)
+	{
+		return false;
+	}
+	return !CurrentWeapon->IsAmmoEmpty() && CurrentWeapon->CanFire() && CharacterState == ECharacterState::ECS_Unoccupied;
+}
+
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -385,7 +394,6 @@ void UInventoryComponent::ReloadFinish()
 
 		//TODO : Reload기능을 Weapon에서 Component로 옮기기
 		UpdateWeaponAmmo();
-	
 	}
 }
 
@@ -431,6 +439,10 @@ void UInventoryComponent::StartFire()
 	{
 		return;
 	}
+	if (!CanFire())
+	{
+		return;
+	}
 	ServerFire();
 	StartFireTimer();
 }
@@ -443,7 +455,7 @@ void UInventoryComponent::ServerFire_Implementation()
 
 void UInventoryComponent::MulticastFire_Implementation(int32 RandomSeed)
 {
-	if (CurrentWeapon)
+	if (CurrentWeapon && CharacterState == ECharacterState::ECS_Unoccupied)
 	{
 		CurrentWeapon->StartFire(RandomSeed);
 	}
@@ -495,6 +507,14 @@ void UInventoryComponent::ServerReload_Implementation()
 
 void UInventoryComponent::UpdateWeaponAmmo()
 {
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->UpdateAmmo();
+		if (CurrentWeapon->GetStaticWeaponData()->bAutoFireAfterReload && CurrentWeapon->GetShotsFired() > 0)
+		{
+			StartFire();
+		}
+	}
 
 }
 
@@ -596,6 +616,10 @@ void UInventoryComponent::FinishFireTimer()
 	{
 		StartFire();
 	}
+	if (CurrentWeapon && CurrentWeapon->IsAmmoEmpty())
+	{
+		Reload();
+	}
 }
 
 void UInventoryComponent::StopFireTimer()
@@ -681,6 +705,10 @@ void UInventoryComponent::OnRep_CharacterState()
 	switch (CharacterState)
 	{
 	case ECharacterState::ECS_Unoccupied:
+		if (CurrentWeapon->GetStaticWeaponData()->bAutoFireAfterReload && CurrentWeapon->GetShotsFired() > 0)
+		{
+			StartFire();
+		}
 		break;
 	case ECharacterState::ECS_Reloading:
 		if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))

@@ -316,23 +316,6 @@ void AWeaponBase::StopFire()
     HorizontalRecoilTimeline.Stop();
     RecoilRecovery();
     ShotsFired = 0;
-
-
-    // InventoryComponent로 기능을 옮김
-    // 
-    //if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
-    //{
-    //    GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
-    //    const float TimeRemaining = GetWorldTimerManager().GetTimerRemaining(ShotDelay);
-    //    // GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(TimeRemaining));
-    //    if (TimeRemaining > 0.0f)
-    //    {
-    //        bHasFiredRecently = false;
-    //        bIsWeaponReadyToFire = false;
-    //        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
-    //    }
-    //}
-    //GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
 void AWeaponBase::Fire(int32 RandomSeed)
@@ -618,13 +601,7 @@ void AWeaponBase::Fire(int32 RandomSeed)
     {
         UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData.EmptyFireSound, MeshComp->GetSocketLocation(WeaponData.MuzzleLocation));
         // Clearing the ShotDelay timer so that we don't have a constant ticking when the player has no ammo, just a single click
-        GetWorldTimerManager().ClearTimer(ShotDelay);
-
-        if (WeaponData.bAutoReload && GeneralWeaponData.ClipSize == 0)
-        {
-            Reload();
-        }
-        
+        GetWorldTimerManager().ClearTimer(ShotDelay);     
         RecoilRecovery();
     }
     
@@ -851,10 +828,7 @@ void AWeaponBase::UpdateAmmo()
 
     bIsWeaponReadyToFire = true;
 
-    if (WeaponData.bAutoFireAfterReload && ShotsFired > 0)
-    {
-       StartFire(WeaponRandomSeed); 
-    }
+
 }
 
 

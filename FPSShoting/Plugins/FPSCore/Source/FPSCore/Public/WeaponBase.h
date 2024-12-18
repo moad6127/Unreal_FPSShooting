@@ -793,6 +793,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
 	void FinishReload();
 
+	/** Updates ammunition values (we do this after the animation has finished for cleaner UI updates and to prevent the player from being able to switch weapons to skip the reload animation) */
+	void UpdateAmmo();
+
+	int GetShotsFired() const { return ShotsFired; }
+
 protected:
 		
 	/** The main skeletal mesh - holds the weapon model */
@@ -836,8 +841,6 @@ private:
 	/** Applies recoil to the player controller */
 	void Recoil();
 
-	/** Updates ammunition values (we do this after the animation has finished for cleaner UI updates and to prevent the player from being able to switch weapons to skip the reload animation) */
-	void UpdateAmmo();
 
 	/** Allows the player to fire again */
 	void EnableFire();
@@ -1000,6 +1003,7 @@ private:
 	bool bShouldRecover;
 
 	/** Used in recoil to make sure the first shot has properly applied recoil */
+	UPROPERTY(VisibleAnywhere)
 	int ShotsFired;
 	
 	/** The base multiplier for vertical recoil, modified by attachments */
