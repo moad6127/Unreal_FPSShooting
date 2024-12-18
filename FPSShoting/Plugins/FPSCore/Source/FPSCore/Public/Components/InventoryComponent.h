@@ -142,6 +142,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	FText GetCurrentWeaponRemainingAmmo() const;
 
+	int32 GetCurrentWeaponCarriedAmmo() const;
+
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	FName GetCurrentWeaponDisplayName() const
 	{
@@ -219,6 +221,8 @@ private:
 
 	bool CanFire();
 
+	bool CanReload();
+
 	/** Fires the weapon */
 	void StartFire();
 
@@ -244,6 +248,8 @@ private:
 	void ServerReload();
 
 	void UpdateWeaponAmmo();
+
+	void UpdateCarriedAmmo();
 
 	void HandleReloading();
 
@@ -272,6 +278,9 @@ private:
 
 	UFUNCTION()
 	void OnRep_CharacterState();
+
+	UFUNCTION()
+	void OnRep_CarriedAmmo();
 
 	/** Whether to print debug statements to the screen */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
@@ -323,6 +332,9 @@ private:
 	bool bPerformingWeaponSwap;
 
 	bool bIsWeaponReadyToFire = true;
+
+	UPROPERTY(ReplicatedUsing = OnRep_CarriedAmmo)
+	int32 CarriedAmmo;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment")
