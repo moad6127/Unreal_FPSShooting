@@ -168,11 +168,10 @@ void UEquipInventoryComponent::AddAmmo(UItemObject* InItem)
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	if (PlayerCharacter)
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-
-		if (CharacterController)
+		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComp)
 		{
-			CharacterController->AmmoMap[InItem->WeaponData.AmmoType] += InItem->ItemQuantity;
+			InventoryComp->AddAmmo(InItem->WeaponData.AmmoType, InItem->ItemQuantity);
 		}
 	}
 }
@@ -182,10 +181,10 @@ void UEquipInventoryComponent::RemoveAmmo(UItemObject* InItem)
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	if (PlayerCharacter)
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-		if (CharacterController)
+		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComp)
 		{
-			CharacterController->AmmoMap[InItem->WeaponData.AmmoType] -= InItem->ItemQuantity;
+			InventoryComp->AddAmmo(InItem->WeaponData.AmmoType, -InItem->ItemQuantity);
 		}
 	}
 }
@@ -200,17 +199,18 @@ void UEquipInventoryComponent::CheckAmmo(UItemObject* InItem)
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
 	if (PlayerCharacter)
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-		if (CharacterController)
+		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComp)
 		{
-			CharacterController->AmmoMap[AmmoType] = 0;
+			int32 CheckAmmoValue = 0;
 			for (auto Item : InventoryItems)
 			{
 				if (Item->WeaponData.AmmoType == AmmoType)
 				{
-					CharacterController->AmmoMap[AmmoType] += Item->ItemQuantity;
+					CheckAmmoValue += Item->ItemQuantity;
 				}
 			}
+			InventoryComp->SetAmmo(AmmoType, CheckAmmoValue);
 		}
 	}
 

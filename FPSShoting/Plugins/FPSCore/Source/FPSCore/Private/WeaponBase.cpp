@@ -651,8 +651,7 @@ bool AWeaponBase::Reload()
     
     // Casting to the character controller (which stores all the ammunition and health variables)
     const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-
+    UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
     // Changing the maximum ammunition based on if the weapon can hold a bullet in the chamber
     int Value = 0;
     if (WeaponData.bCanBeChambered)
@@ -662,9 +661,9 @@ bool AWeaponBase::Reload()
 
     // Checking if we are not reloading, if a reloading montage exists, and if there is any point in reloading
     // (current ammunition does not match maximum magazine capacity and there is spare ammunition to load into the gun)
-    if (CharacterController && CharacterController->AmmoMap.Contains(GeneralWeaponData.AmmoType))
+    if (InventoryComp && InventoryComp->GetAmmo(GeneralWeaponData.AmmoType))
     {
-        if (!bIsReloading && CharacterController->AmmoMap[GeneralWeaponData.AmmoType] > 0 && (GeneralWeaponData.ClipSize
+        if (!bIsReloading && InventoryComp->GetAmmo(GeneralWeaponData.AmmoType) > 0 && (GeneralWeaponData.ClipSize
             !=
             (GeneralWeaponData.ClipCapacity + Value)))
         {
@@ -743,9 +742,13 @@ void AWeaponBase::UpdateAmmo()
     }
 
     // Casting to the game instance (which stores all the ammunition and health variables)
-    AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-    
+    AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());    
+    if (!PlayerCharacter)
+    {
+        return;
+    }
+    UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
+
     // value system to reload the correct amount of bullets if the weapon is using a chambered reloading system
     int Value = 0;
 
@@ -764,17 +767,16 @@ void AWeaponBase::UpdateAmmo()
     // is currently loaded (i.e. how much ammunition we need to reload into the gun)
     const int Temp = GeneralWeaponData.ClipCapacity - GeneralWeaponData.ClipSize;
     // Making sure we have enough ammunition to reload
-    if (CharacterController->AmmoMap[GeneralWeaponData.AmmoType] >= Temp + Value)
+    if (InventoryComp && InventoryComp->GetAmmo(GeneralWeaponData.AmmoType) >= Temp + Value)
     {
         // Then, we update the weapon to have full ammunition, plus the value (1 if there is a bullet in the chamber, 0 if not)
         GeneralWeaponData.ClipSize = GeneralWeaponData.ClipCapacity + Value;
-        // Finally, we remove temp (and an extra bullet, if one is chambered) from the player's ammunition store
-        CharacterController->AmmoMap[GeneralWeaponData.AmmoType] -= (Temp + Value);
-
         /*
         * Inventory에 있는 Ammo의 수를 줄인다.
         */
         int RemoveInventory = (Temp + Value);
+        InventoryComp->AddAmmo(GeneralWeaponData.AmmoType, -RemoveInventory);
+
         for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
         {
             if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
@@ -797,8 +799,9 @@ void AWeaponBase::UpdateAmmo()
     // If we don't, add the remaining ammunition to the clip, and set the remaining ammunition to 0
     else
     {
-        GeneralWeaponData.ClipSize = GeneralWeaponData.ClipSize + CharacterController->AmmoMap[GeneralWeaponData.AmmoType];
-        CharacterController->AmmoMap[GeneralWeaponData.AmmoType] = 0;
+        GeneralWeaponData.ClipSize = GeneralWeaponData.ClipSize + InventoryComp->GetAmmo(GeneralWeaponData.AmmoType);
+        InventoryComp->AddAmmo(GeneralWeaponData.AmmoType, -InventoryComp->GetAmmo(GeneralWeaponData.AmmoType));
+
         for (auto Item : PlayerCharacter->GetEquipInventoryComponent()->GetInventoryItems())
         {
             if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
@@ -813,7 +816,7 @@ void AWeaponBase::UpdateAmmo()
     if(bShowDebug)
     {
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::FromInt(GeneralWeaponData.ClipSize), true);
-        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::FromInt(CharacterController->AmmoMap[GeneralWeaponData.AmmoType]), true);
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::FromInt(InventoryComp->GetAmmo(GeneralWeaponData.AmmoType)), true);
     }
 
     // Resetting bIsReloading and allowing the player to fire the gun again

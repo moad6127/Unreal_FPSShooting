@@ -3,8 +3,8 @@
 #include "AmmoPickup.h"
 #include "DrawDebugHelpers.h"
 #include "FPSCharacter.h"
-#include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/InventoryComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
@@ -53,23 +53,22 @@ void AAmmoPickup::Interact()
 	if (!bIsEmpty)
 	{
 		const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
 
 
 		// Debug print of the ammo before pickup
 		if (bDrawDebug)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::FromInt(CharacterController->AmmoMap[AmmoType]));
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::FromInt(InventoryComp->GetAmmo(AmmoType)));
 			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Before"));
 		}
-
 		// Adding ammo to our character's ammo map
-		CharacterController->AmmoMap[AmmoType] += AmmoData[AmmoType].AmmoCounts[AmmoAmount];
+		InventoryComp->AddAmmo(AmmoType, AmmoData[AmmoType].AmmoCounts[AmmoAmount]);
 
 		// Debug print of the ammo after pickup
 		if (bDrawDebug)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::FromInt(CharacterController->AmmoMap[AmmoType]));
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::FromInt(InventoryComp->GetAmmo(AmmoType)));
 			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("After"));
 		}
 

@@ -17,9 +17,6 @@ class AFPSCharacterController : public APlayerController
 	public:
 		
 	virtual void OnPossess(APawn* aPawn) override;
-	/** Stored ammo data for the player character */
-    UPROPERTY(EditDefaultsOnly, Category = "Inventory")
-    TMap<EAmmoType, int32> AmmoMap;
 
 	/** The amount of ammunition boxes that the player has */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")

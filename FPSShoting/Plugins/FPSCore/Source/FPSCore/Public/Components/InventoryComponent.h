@@ -111,6 +111,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReloadFinish();
 
+	void SetAmmo(EAmmoType AmmoType, int32 Amount);
+	void AddAmmo(EAmmoType AmmoType, int32 Amount);
+
+	int32 GetAmmo(EAmmoType AmmoType);
+
 	/** Returns the map of currently equipped weapons */
 	//UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	//TMap<int, AWeaponBase*> GetEquippedWeapons() const { return EquippedWeapons; }
@@ -335,6 +340,9 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_CarriedAmmo)
 	int32 CarriedAmmo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	TMap<EAmmoType, int32> AmmoMap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	//UPROPERTY(VisibleAnywhere, Category = "Equipment")

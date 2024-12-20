@@ -923,13 +923,12 @@ void AFPSCharacter::Tick(const float DeltaTime)
                 GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
             }
         }
-        if (const AFPSCharacterController* PlayerController = Cast<AFPSCharacterController>(GetController()))
+        if (UInventoryComponent* InventoryComp = GetInventoryComponent())
         {
-            for (auto e : PlayerController->AmmoMap)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(e.Value));
-
-            }
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Pistol)));
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Rifle)));
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Shotgun)));
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Special)));         
         }
         
         GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));

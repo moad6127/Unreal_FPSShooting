@@ -418,37 +418,24 @@ AWeaponBase* UInventoryComponent::GetWeaponByID(const int WeaponID) const
 
 FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 {
-	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	if (CurrentWeapon != nullptr)
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(FPSCharacter->GetController());
-
-		if (CharacterController)	
+		if (AmmoMap.Contains(CurrentWeapon->GetRuntimeWeaponData()->AmmoType))
 		{
-			if (CurrentWeapon != nullptr)
-			{
-				return FText::AsNumber(CharacterController->AmmoMap[CurrentWeapon->GetRuntimeWeaponData()->AmmoType]);
-			}
-			UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
-			return FText::AsNumber(0);
+			return FText::AsNumber(AmmoMap[CurrentWeapon->GetRuntimeWeaponData()->AmmoType]);
 		}
-		UE_LOG(LogProfilingDebugging, Error, TEXT("No character controller found in UInventoryComponent"))
-		return FText::FromString("Err");
 	}
-	UE_LOG(LogProfilingDebugging, Error, TEXT("No player character found in UInventoryComponent"))
-	return FText::FromString("Err");
+	UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
+	return FText::AsNumber(0);
 }
 
 int32 UInventoryComponent::GetCurrentWeaponCarriedAmmo() const
 {
-	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	if (CurrentWeapon != nullptr)
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(FPSCharacter->GetController());
-		if (CharacterController)
+		if (AmmoMap.Contains(CurrentWeapon->GetRuntimeWeaponData()->AmmoType))
 		{
-			if (CurrentWeapon != nullptr)
-			{
-				return CharacterController->AmmoMap[CurrentWeapon->GetRuntimeWeaponData()->AmmoType];
-			}
+			return AmmoMap[CurrentWeapon->GetRuntimeWeaponData()->AmmoType];
 		}
 	}
 	return int32();
@@ -534,6 +521,34 @@ void UInventoryComponent::ReloadFinish()
 	}
 }
 
+void UInventoryComponent::SetAmmo(EAmmoType AmmoType, int32 Amount)
+{
+	int32 SetAmmoValue = FMath::Clamp(Amount, 0, Amount);
+	if (AmmoMap.Contains(AmmoType))
+	{
+		AmmoMap[AmmoType] = SetAmmoValue;
+		UpdateCarriedAmmo();
+	}
+}
+
+void UInventoryComponent::AddAmmo(EAmmoType AmmoType, int32 Amount)
+{
+	if (AmmoMap.Contains(AmmoType))
+	{
+		AmmoMap[AmmoType] = FMath::Clamp(AmmoMap[AmmoType] + Amount, 0, AmmoMap[AmmoType] + Amount);
+		UpdateCarriedAmmo();	
+	}
+}
+
+int32 UInventoryComponent::GetAmmo(EAmmoType AmmoType)
+{
+	if (AmmoMap.Contains(AmmoType))
+	{
+		return AmmoMap[AmmoType];
+	}
+	return int32();
+}
+
 void UInventoryComponent::UpdateWeaponAmmo()
 {
 	if (CurrentWeapon)
@@ -554,6 +569,7 @@ void UInventoryComponent::UpdateCarriedAmmo()
 		return;
 	}
 	CarriedAmmo = GetCurrentWeaponCarriedAmmo();
+	UE_LOG(LogTemp, Warning, TEXT("CarriedAmmo : %d"), CarriedAmmo);
 }
 
 void UInventoryComponent::HandleReloading()
@@ -709,6 +725,7 @@ void UInventoryComponent::OnRep_CharacterState()
 
 void UInventoryComponent::OnRep_CarriedAmmo()
 {
+	UE_LOG(LogTemp, Warning, TEXT("CarriedAmmo : %d"), CarriedAmmo);
 }
 
 
