@@ -782,7 +782,7 @@ void AWeaponBase::UpdateAmmo()
             if (Item->SlotType == EEquipmentSlotType::EEST_Ammo &&
                 Item->WeaponData.AmmoType == GeneralWeaponData.AmmoType)
             {
-                if (Item->ItemQuantity >= RemoveInventory)
+                if (Item->ItemQuantity > RemoveInventory)
                 {
                     PlayerCharacter->GetEquipInventoryComponent()->ConsumeItem(Item, RemoveInventory);
                     RemoveInventory = 0;

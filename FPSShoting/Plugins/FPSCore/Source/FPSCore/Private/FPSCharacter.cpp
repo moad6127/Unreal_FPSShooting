@@ -559,8 +559,11 @@ void AFPSCharacter::CheckGroundAngle(float DeltaTime)
         FloorAngle = FinalRotation.Pitch;
         if (bDrawDebug)
         {
-            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red,
-                                             FString::Printf(TEXT("Current floor angle = %f"), FloorAngle), true);
+            if (IsLocallyControlled())
+            {
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red,
+                    FString::Printf(TEXT("Current floor angle = %f"), FloorAngle), true);
+            }
         }
     }
 }
@@ -573,7 +576,10 @@ float AFPSCharacter::CheckRelativeMovementAngle(const float DeltaTime) const
 
     if (bDrawDebug)
     {
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(FMath::Abs(RelativeMovementVector.HeadingAngle() * (180/PI))));    
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(FMath::Abs(RelativeMovementVector.HeadingAngle() * (180 / PI))));
+        }
     }
     
     return FMath::Abs(RelativeMovementVector.HeadingAngle());
@@ -602,7 +608,10 @@ bool AFPSCharacter::HasSpaceToStandUp()
         /* confetti or smth idk */
         if (bDrawDebug)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Stand up trace returned hit", true);
+            if (IsLocallyControlled())
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Stand up trace returned hit", true);
+            }
         }
         return false;
     }
@@ -902,36 +911,52 @@ void AFPSCharacter::Tick(const float DeltaTime)
     if (bDrawDebug)
     {
         FString Name = FString::Printf(TEXT("PlayerName : %s"), *GetName());
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, Name);
-
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, Name);
+        }
         if (InventoryComponent)
         {
             for ( int Index = 0; Index < 2; Index++ )
             {
                 if (InventoryComponent->GetWeaponByID(Index))
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipSize));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipCapacity));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->WeaponHealth));
+                    if (IsLocallyControlled())
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipSize));
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->ClipCapacity));
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetWeaponByID(Index)->GetRuntimeWeaponData()->WeaponHealth));
+                    }
                 }
                 else
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
+                    if (IsLocallyControlled())
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
+                        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
+                    }
                 }
-                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
+                if (IsLocallyControlled())
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
+                }
             }
         }
         if (UInventoryComponent* InventoryComp = GetInventoryComponent())
         {
-            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Pistol)));
-            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Rifle)));
-            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Shotgun)));
-            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Special)));         
+            if (IsLocallyControlled())
+            {
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Pistol)));
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Rifle)));
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Shotgun)));
+                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComp->GetAmmo(EAmmoType::Special)));
+            }         
         }
-        
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));
+        }
         ShowDebugMovementState(DeltaTime);
     }
 }
@@ -941,19 +966,34 @@ void AFPSCharacter::ShowDebugMovementState(const float DeltaTime)
     switch (MovementState)
     {
     case EMovementState::State_Walk:
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("WalkState")));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("WalkState")));
+        }
         break;
     case EMovementState::State_Sprint:
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SprintState")));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SprintState")));
+        }
         break;
     case EMovementState::State_Crouch:
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("CrouchState")));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("CrouchState")));
+        }
         break;
     case EMovementState::State_Slide:
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SlidState")));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("SlidState")));
+        }
         break;
     case EMovementState::State_Vault:
-        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("State")));
+        if (IsLocallyControlled())
+        {
+            GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("State")));
+        }
         break;
     case EMovementState::State_Mantle:
         break;
