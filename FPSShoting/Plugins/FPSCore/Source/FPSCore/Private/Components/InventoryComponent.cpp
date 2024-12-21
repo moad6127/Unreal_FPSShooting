@@ -521,6 +521,11 @@ void UInventoryComponent::ReloadFinish()
 	}
 }
 
+ECharacterState UInventoryComponent::GetCharcterState()
+{
+	return CharacterState;
+}
+
 void UInventoryComponent::SetAmmo(EAmmoType AmmoType, int32 Amount)
 {
 	int32 SetAmmoValue = FMath::Clamp(Amount, 0, Amount);

@@ -111,6 +111,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReloadFinish();
 
+	UFUNCTION(BlueprintCallable)
+	ECharacterState GetCharcterState();
+
 	void SetAmmo(EAmmoType AmmoType, int32 Amount);
 	void AddAmmo(EAmmoType AmmoType, int32 Amount);
 
