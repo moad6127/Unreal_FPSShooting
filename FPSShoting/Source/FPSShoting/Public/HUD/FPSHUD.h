@@ -50,11 +50,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBasicWidget>InventoryWidgetClass;
 
+	UPROPERTY()
 	TObjectPtr<UBasicWidgetController> WidgetController;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBasicWidgetController> WidgetControllerClass;
 
+	UPROPERTY()
 	TObjectPtr<UBasicWidget> InteractWidget;
 
 	UPROPERTY(EditDefaultsOnly)

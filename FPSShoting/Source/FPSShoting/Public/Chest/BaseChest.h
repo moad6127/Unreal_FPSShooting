@@ -12,6 +12,7 @@
 
 class UEquipInventoryComponent;
 class UBasicWidgetController;
+class UBasicWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisplayChest);
 
@@ -32,6 +33,21 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TObjectPtr<UEquipInventoryComponent> InventoryComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UBasicWidget> ChestWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UBasicWidget> ChestWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UBasicWidgetController> WidgetControllerClass;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UBasicWidgetController> CharcterWidgetController;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UBasicWidgetController> ChestWidgetController;
 
 	UPROPERTY(BlueprintAssignable, Category = "Chest")
 	FDisplayChest DisplayChestBox;

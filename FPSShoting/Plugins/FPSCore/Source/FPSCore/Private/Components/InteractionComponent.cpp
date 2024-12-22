@@ -50,7 +50,10 @@ void UInteractionComponent::WorldInteract()
             if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
             {
                 // Calling the Interact function within our hit actor via the interface
-                InteractionHit.GetActor()->SetOwner(GetOwner());
+                if (GetOwner()->HasAuthority())
+                {
+                    InteractionHit.GetActor()->SetOwner(GetOwner());
+                }
                 Cast<IInteractInterface>(InteractionHit.GetActor())->Interact();
             }
         }
