@@ -19,6 +19,9 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	void SaveGame();
+
+	UFUNCTION(BlueprintCallable)
+	AFPSHUD* GetHUD() const;
 protected:
 	ASInvenFPSCharacter();
 

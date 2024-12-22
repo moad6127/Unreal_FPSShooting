@@ -114,6 +114,15 @@ void ASInvenFPSCharacter::SaveGame()
 	}
 }
 
+AFPSHUD* ASInvenFPSCharacter::GetHUD() const
+{
+	if (HUD)
+	{
+		return HUD;
+	}
+	return nullptr;
+}
+
 void ASInvenFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();

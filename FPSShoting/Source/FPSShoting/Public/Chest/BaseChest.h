@@ -12,6 +12,9 @@
 
 class UEquipInventoryComponent;
 class UBasicWidgetController;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisplayChest);
+
 UCLASS()
 class FPSSHOTING_API ABaseChest : public AInteractionBase
 {
@@ -29,6 +32,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TObjectPtr<UEquipInventoryComponent> InventoryComponent;
+
+	UPROPERTY(BlueprintAssignable, Category = "Chest")
+	FDisplayChest DisplayChestBox;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisplayChest();
