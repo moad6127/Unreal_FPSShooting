@@ -19,20 +19,18 @@ ABaseChest::ABaseChest()
 
 void ABaseChest::Interact()
 {
-	if (!ChestWidgetClass)
-	{
-		return;
-	}
-	UE_LOG(LogTemp, Warning, TEXT("ChestInteract"));
-
 	//TODO : 사운드, 문열림 하기
-	// BlueprintImplementableEvent로 Interact하게되면 블루프린트로 화면에 보이도록 만들기
+	UE_LOG(LogTemp, Warning, TEXT("ChestInteract"));
+	if (HasAuthority())
+	{
+		ClientDisplayChest();
+	}
+}
+
+void ABaseChest::ClientDisplayChest_Implementation()
+{
 	ASInvenFPSCharacter* Character = Cast<ASInvenFPSCharacter>(GetOwner());
 	if (!Character)
-	{
-		return;	
-	}
-	if (!Character->IsLocallyControlled())
 	{
 		return;
 	}
@@ -41,29 +39,33 @@ void ABaseChest::Interact()
 	{
 		return;
 	}
-	ChestWidget = Cast<UBasicWidget>(CreateWidget(GetWorld(), ChestWidgetClass));
-	FWidgetControllerParams CharcterWidgetControllerParams(PC, Character->GetEquipInventoryComponent());
-	FWidgetControllerParams ChestWidgetControllerParams(PC, InventoryComponent);
-
-	if (WidgetControllerClass == nullptr)
+	if (ChestWidgetClass)
 	{
-		return;
-	}
-	CharcterWidgetController = NewObject<UBasicWidgetController>(this, WidgetControllerClass);
-	if (!CharcterWidgetController)
-	{
-		return;
-	}
-	CharcterWidgetController->SetWidgetControllerParams(CharcterWidgetControllerParams);
+		ChestWidget = Cast<UBasicWidget>(CreateWidget(GetWorld(), ChestWidgetClass));
 
+		// 캐릭터와 상자의 인벤토리 컴포넌트를 위한 파라미터 설정
+		FWidgetControllerParams CharacterWidgetControllerParams(PC, Character->GetEquipInventoryComponent());
+		FWidgetControllerParams ChestWidgetControllerParams(PC, InventoryComponent);
 
-	ChestWidgetController = NewObject<UBasicWidgetController>(this, WidgetControllerClass);
-	if (!ChestWidgetController)
-	{
-		return;
+		// 위젯 컨트롤러 생성 및 설정
+		if (WidgetControllerClass)
+		{
+			// 캐릭터 인벤토리 컨트롤러 설정
+			CharcterWidgetController = NewObject<UBasicWidgetController>(this, WidgetControllerClass);
+			if (CharcterWidgetController)
+			{
+				CharcterWidgetController->SetWidgetControllerParams(CharacterWidgetControllerParams);
+			}
+
+			// 상자 인벤토리 컨트롤러 설정
+			ChestWidgetController = NewObject<UBasicWidgetController>(this, WidgetControllerClass);
+			if (ChestWidgetController)
+			{
+				ChestWidgetController->SetWidgetControllerParams(ChestWidgetControllerParams);
+			}
+		}
+
+		DisplayChestBox.Broadcast();
+
 	}
-	ChestWidgetController->SetWidgetControllerParams(ChestWidgetControllerParams);
-
-	DisplayChestBox.Broadcast();
-	//DisplayChest();
 }

@@ -57,6 +57,7 @@ private:
 	/** Interaction with the world using SInteractInterface */
 	void WorldInteract();
 
+
 	void InteractButtonPressed();
 
 	UFUNCTION(Server, Reliable)

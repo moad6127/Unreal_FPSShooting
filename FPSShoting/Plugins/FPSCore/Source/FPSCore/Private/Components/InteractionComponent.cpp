@@ -52,13 +52,16 @@ void UInteractionComponent::WorldInteract()
                 // Calling the Interact function within our hit actor via the interface
                 if (GetOwner()->HasAuthority())
                 {
-                    InteractionHit.GetActor()->SetOwner(GetOwner());
+
                 }
+                InteractionHit.GetActor()->SetOwner(GetOwner());
                 Cast<IInteractInterface>(InteractionHit.GetActor())->Interact();
             }
         }
     }
 }
+
+
 
 void UInteractionComponent::InteractButtonPressed()
 {

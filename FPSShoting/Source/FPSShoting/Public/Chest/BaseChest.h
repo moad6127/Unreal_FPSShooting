@@ -30,6 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 protected:
+	UFUNCTION(Client, Reliable)
+	void ClientDisplayChest();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TObjectPtr<UEquipInventoryComponent> InventoryComponent;
