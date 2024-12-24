@@ -21,9 +21,9 @@ AItemBase::AItemBase()
 	Sphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 }
 
-void AItemBase::Interact()
+void AItemBase::Interact(APawn* InstigatorPawn)
 {
-	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
+	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(InstigatorPawn);
 	if (PlayerCharacter->GetEquipInventoryComponent())
 	{
 		if (PlayerCharacter->GetEquipInventoryComponent()->TryAddItem(ItemObject))

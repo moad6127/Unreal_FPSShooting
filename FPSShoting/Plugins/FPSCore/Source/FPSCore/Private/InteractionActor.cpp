@@ -5,7 +5,7 @@
 #include "Engine/World.h"
 
 // Implementing the function from our interface
-void AInteractionActor::Interact()
+void AInteractionActor::Interact(APawn* InstigatorPawn)
 {
 	// Calling Interacted() on all of the interacted actors
 	for (AInteractedActor* InteractedActor : InteractedActors)

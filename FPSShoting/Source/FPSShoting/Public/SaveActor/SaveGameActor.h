@@ -16,5 +16,5 @@ class FPSSHOTING_API ASaveGameActor : public AInteractionBase
 	
 public:
 	ASaveGameActor();
-	virtual void Interact() override;
+	virtual void Interact(APawn* InstigatorPawn) override;
 };

@@ -597,7 +597,10 @@ void UEquipInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeInventory();
-	StarterItem();
+	if (GetOwner()->HasAuthority())
+	{
+		StarterItem();
+	}
 }
 
 void UEquipInventoryComponent::StarterItem()

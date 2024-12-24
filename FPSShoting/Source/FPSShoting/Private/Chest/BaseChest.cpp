@@ -17,19 +17,20 @@ ABaseChest::ABaseChest()
 	InventoryComponent->SetIsReplicated(true);
 }
 
-void ABaseChest::Interact()
+void ABaseChest::Interact(APawn* InstigatorPawn)
 {
 	//TODO : 사운드, 문열림 하기
 	UE_LOG(LogTemp, Warning, TEXT("ChestInteract"));
 	if (HasAuthority())
 	{
-		ClientDisplayChest();
+		ClientDisplayChest(InstigatorPawn);
 	}
 }
 
-void ABaseChest::ClientDisplayChest_Implementation()
+void ABaseChest::ClientDisplayChest_Implementation(APawn* InstigatorPawn)
 {
-	ASInvenFPSCharacter* Character = Cast<ASInvenFPSCharacter>(GetOwner());
+
+	ASInvenFPSCharacter* Character = Cast<ASInvenFPSCharacter>(InstigatorPawn);
 	if (!Character)
 	{
 		return;

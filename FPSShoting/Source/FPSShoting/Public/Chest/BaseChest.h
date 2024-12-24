@@ -25,13 +25,13 @@ public:
 
 	ABaseChest();
 
-	virtual void Interact() override;
+	virtual void Interact(APawn* InstigatorPawn) override;
 
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 protected:
 	UFUNCTION(Client, Reliable)
-	void ClientDisplayChest();
+	void ClientDisplayChest(APawn* InstigatorPawn);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TObjectPtr<UEquipInventoryComponent> InventoryComponent;

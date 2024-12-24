@@ -48,11 +48,12 @@ void AAmmoPickup::BeginPlay()
 	}
 }
 
-void AAmmoPickup::Interact()
+void AAmmoPickup::Interact(APawn* InstigatorPawn)
 {
 	if (!bIsEmpty)
 	{
-		const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(InstigatorPawn);
+
 		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
 
 

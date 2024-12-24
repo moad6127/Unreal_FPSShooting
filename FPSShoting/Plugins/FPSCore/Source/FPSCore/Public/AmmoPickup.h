@@ -59,7 +59,7 @@ protected:
 private:
 	
 	/** Interact function from Interact Interface */
-	virtual void Interact() override;
+	virtual void Interact(APawn* InstigatorPawn) override;
 	
 	/** Sets default values for this actor's properties */
 	AAmmoPickup();

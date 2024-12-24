@@ -26,7 +26,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void UpdateInteractionPopupText(const FText NewInteractionText) { InteractionText = NewInteractionText; }
 
-	virtual void Interact() override;
+	virtual void Interact(APawn* InstigatorPawn) override;
 
 	void InitializeDrop(UItemObject* ItemToDrop);
 

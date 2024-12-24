@@ -9,9 +9,9 @@ ASaveGameActor::ASaveGameActor()
 	InteractionText = FText::FromString(FString("SaveActor"));
 }
 
-void ASaveGameActor::Interact()
+void ASaveGameActor::Interact(APawn* InstigatorPawn)
 {
-	ASInvenFPSCharacter* PlayerCharacter = Cast<ASInvenFPSCharacter>(GetOwner());
+	ASInvenFPSCharacter* PlayerCharacter = Cast<ASInvenFPSCharacter>(InstigatorPawn);
 	if (PlayerCharacter)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SaveGame!"));

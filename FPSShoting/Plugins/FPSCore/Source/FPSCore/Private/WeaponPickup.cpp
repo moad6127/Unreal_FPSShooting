@@ -124,10 +124,10 @@ void AWeaponPickup::SpawnAttachmentMesh()
 	}
 }
 
-void AWeaponPickup::Interact()
+void AWeaponPickup::Interact(APawn* InstigatorPawn)
 {
 	// Getting a reference to the Character Controller
-	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(GetOwner());
+	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(InstigatorPawn);
 
 	if (PlayerCharacter->GetInventoryComponent())
 	{

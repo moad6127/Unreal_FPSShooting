@@ -19,7 +19,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void UpdateInteractionPopupText(const FText NewInteractionText) { InteractionText = NewInteractionText; }
 	
-	virtual void Interact() override;
+	virtual void Interact(APawn* InstigatorPawn) override;
 
 	// The actors to which we cast upon receiving an interaction
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Interacted Actor")
