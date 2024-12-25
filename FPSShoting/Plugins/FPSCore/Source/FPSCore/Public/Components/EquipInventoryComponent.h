@@ -95,6 +95,9 @@ public:
 	*/
 	bool RemoveItems(UItemObject* InItem);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRemoveItems(UItemObject* InItem);
+
 	/*
 	* 아이템을 Drop할때 사용되는 함수
 	*/
@@ -107,6 +110,11 @@ public:
 	* 아이템을 인벤토리의 다른 공간으로 이동시키는 함수
 	*/
 	bool ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation);
+
+	bool HandleReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation);
+
+	UFUNCTION(Server, Reliable)
+	void ServerReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation);
 
 	/*
 	*  아이템을 회전시키는 함수

@@ -255,6 +255,11 @@ void UEquipInventoryComponent::OnRep_EquipmentItems(FEquipmentItems LastItems)
 
 bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerRemoveItems(InItem);
+		return true;
+	}
 	if (!IsValid(InItem))
 	{
 		return false;
@@ -268,6 +273,11 @@ bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 		return true;
 	}
 	return false;
+}
+
+void UEquipInventoryComponent::ServerRemoveItems_Implementation(UItemObject* InItem)
+{
+	RemoveItems(InItem);
 }
 
 void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)
@@ -305,6 +315,17 @@ void UEquipInventoryComponent::ServerDropItem_Implementation(UItemObject* ItemTo
 
 bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerReplaceItem(ItemToReplace, InLocation);
+		return true;
+	}
+
+	return HandleReplaceItem(ItemToReplace, InLocation);
+}
+
+bool UEquipInventoryComponent::HandleReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation)
+{
 	if (!IsValid(ItemToReplace))
 	{
 		return false;
@@ -323,6 +344,13 @@ bool UEquipInventoryComponent::ReplaceItem(UItemObject* ItemToReplace, FIntPoint
 	}
 	return false;
 }
+
+void UEquipInventoryComponent::ServerReplaceItem_Implementation(UItemObject* ItemToReplace, FIntPoint InLocation)
+{
+	bool bWasSuccessful = HandleReplaceItem(ItemToReplace,InLocation);
+
+}
+
 
 void UEquipInventoryComponent::RotateItem(UItemObject* ItemToRotate)
 {
