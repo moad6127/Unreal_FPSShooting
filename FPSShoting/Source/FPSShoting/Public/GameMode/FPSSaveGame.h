@@ -30,6 +30,9 @@ struct FItemSaveData {
 
 	UPROPERTY()
 	FRuntimeWeaponData DataStruct = FRuntimeWeaponData();
+
+	UPROPERTY()
+	bool bEquipped = false;
 };
 
 UCLASS()

@@ -69,9 +69,17 @@ void ASInvenFPSCharacter::LoadGame()
 				ItemObject->DataStruct = Data.DataStruct;
 				ItemObject->SetItemItemLocation(Data.ItemLocation);
 
-				if (!GetEquipInventoryComponent()->AddItem(ItemObject))
+				//장착된 상태였으면 장착하도록 만들기
+				if (Data.bEquipped)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("LoadFail!!!!"));
+					GetEquipInventoryComponent()->EquipItem(ItemObject);
+				}
+				else
+				{
+					if (!GetEquipInventoryComponent()->AddItem(ItemObject))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("LoadFail!!!!"));
+					}
 				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));
@@ -98,6 +106,7 @@ void ASInvenFPSCharacter::SaveGame()
 		//TODO : ItemObject를 Copy해서 만들어도 인벤토리에 이상하게 들어간다,
 		// 구조체를 만들어서 아이템의 정보를 저장해 사용해야 할것같다.
 
+		// Inventory아이템 저장하기
 		for (UItemObject* Item : GetEquipInventoryComponent()->GetInventoryItems())
 		{
 			FItemSaveData ItemData;
@@ -108,6 +117,10 @@ void ASInvenFPSCharacter::SaveGame()
 
 			SaveData->InventoryItems.Add(ItemData);
 		}
+
+		//TODO : 장착된 아이템 저장하기
+		FEquipmentItems CharacterEquipmentItems = GetEquipInventoryComponent()->GetEquipmentItems();
+
 
 		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));
 		GameMode->SaveGame(SaveData);

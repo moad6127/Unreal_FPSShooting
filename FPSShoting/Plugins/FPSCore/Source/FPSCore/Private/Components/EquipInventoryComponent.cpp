@@ -473,10 +473,8 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 			InItem->SetSlotType(ItemSlot);
 			const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
 			const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
-			
-			
+					
 			FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, InventorySlot);
-
 		}
 
 	}
