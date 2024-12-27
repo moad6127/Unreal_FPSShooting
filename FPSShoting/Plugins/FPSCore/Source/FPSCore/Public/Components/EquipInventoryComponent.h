@@ -80,6 +80,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags);
 
+	void AddStarterEquipItem(UItemObject* InItem);
 	/*
 	* Item을 추가시키기 위한 함수
 	*/
@@ -185,6 +186,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void StarterItem();
+
+	void StarterEquipItems();
 private:
 
 	/*
@@ -247,5 +250,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Items")
 	TArray<FStarterItemData> StartItems;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UItemObject>> StartEquipItems;
 
 };

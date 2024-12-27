@@ -72,7 +72,7 @@ void ASInvenFPSCharacter::LoadGame()
 				//장착된 상태였으면 장착하도록 만들기
 				if (Data.bEquipped)
 				{
-					GetEquipInventoryComponent()->EquipItem(ItemObject);
+					GetEquipInventoryComponent()->AddStarterEquipItem(ItemObject);
 				}
 				else
 				{
