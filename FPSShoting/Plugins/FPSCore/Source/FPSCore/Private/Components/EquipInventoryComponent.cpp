@@ -479,6 +479,14 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 
 	}
 		break;
+	case EEquipmentSlotType::EEST_Weapon1 :
+	{
+		FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 0);
+	}
+	case EEquipmentSlotType::EEST_Weapon2 :
+	{
+		FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 1);
+	}
 	default:
 		break;
 	}

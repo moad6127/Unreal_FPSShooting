@@ -88,6 +88,50 @@ void ASInvenFPSCharacter::LoadGame()
 	}
 }
 
+void ASInvenFPSCharacter::EquipItemSave(UFPSSaveGame* SaveData)
+{
+	FEquipmentItems CharacterEquipmentItems = GetEquipInventoryComponent()->GetEquipmentItems();
+
+	if (CharacterEquipmentItems.Head)
+	{
+		FItemSaveData HeadItemData;
+		HeadItemData.bEquipped = true;
+		HeadItemData.ItemID = CharacterEquipmentItems.Head->ID;
+		SaveData->InventoryItems.Add(HeadItemData);
+	}
+	if (CharacterEquipmentItems.Body)
+	{
+		FItemSaveData BodyItemData;
+		BodyItemData.bEquipped = true;
+		BodyItemData.ItemID = CharacterEquipmentItems.Body->ID;
+		SaveData->InventoryItems.Add(BodyItemData);
+	}
+	if (CharacterEquipmentItems.BackPack)
+	{
+		FItemSaveData BackPackItemData;
+		BackPackItemData.bEquipped = true;
+		BackPackItemData.ItemID = CharacterEquipmentItems.BackPack->ID;
+		SaveData->InventoryItems.Add(BackPackItemData);
+	}
+	if (CharacterEquipmentItems.Weapon1)
+	{
+		FItemSaveData Weapon1ItemData;
+		Weapon1ItemData.bEquipped = true;
+		Weapon1ItemData.ItemID = CharacterEquipmentItems.Weapon1->ID;
+		Weapon1ItemData.DataStruct = CharacterEquipmentItems.Weapon1->DataStruct;
+		SaveData->InventoryItems.Add(Weapon1ItemData);
+	}
+	if (CharacterEquipmentItems.Weapon2)
+	{
+		FItemSaveData Weapon2ItemData;
+		Weapon2ItemData.bEquipped = true;
+		Weapon2ItemData.ItemID = CharacterEquipmentItems.Weapon2->ID;
+		Weapon2ItemData.DataStruct = CharacterEquipmentItems.Weapon2->DataStruct;
+		SaveData->InventoryItems.Add(Weapon2ItemData);
+	}
+
+}
+
 void ASInvenFPSCharacter::SaveGame()
 {
 	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
@@ -114,13 +158,13 @@ void ASInvenFPSCharacter::SaveGame()
 			ItemData.ItemQuantity = Item->ItemQuantity;
 			ItemData.DataStruct = Item->DataStruct;
 			ItemData.ItemLocation = Item->GetItemItemLocation();
+			ItemData.bEquipped = false;
 
 			SaveData->InventoryItems.Add(ItemData);
 		}
 
 		//TODO : 장착된 아이템 저장하기
-		FEquipmentItems CharacterEquipmentItems = GetEquipInventoryComponent()->GetEquipmentItems();
-
+		EquipItemSave(SaveData);
 
 		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));
 		GameMode->SaveGame(SaveData);

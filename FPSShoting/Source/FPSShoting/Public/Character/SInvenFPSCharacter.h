@@ -10,6 +10,7 @@
  * 
  */
 class AFPSHUD;
+class UFPSSaveGame;
 
 UCLASS()
 class FPSSHOTING_API ASInvenFPSCharacter : public AFPSCharacter
@@ -39,6 +40,8 @@ protected:
 
 	// 게임 load하기
 	void LoadGame();
+
+	void EquipItemSave(UFPSSaveGame* SaveData);
 
 	UPROPERTY()
 	AFPSHUD* HUD;
