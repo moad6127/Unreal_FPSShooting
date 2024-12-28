@@ -72,14 +72,11 @@ void ASInvenFPSCharacter::LoadGame()
 				//장착된 상태였으면 장착하도록 만들기
 				if (Data.bEquipped)
 				{
-					GetEquipInventoryComponent()->AddStarterEquipItem(ItemObject);
+					GetEquipInventoryComponent()->AddLoadedEquipItem(ItemObject);
 				}
 				else
 				{
-					if (!GetEquipInventoryComponent()->AddItem(ItemObject))
-					{
-						UE_LOG(LogTemp, Warning, TEXT("LoadFail!!!!"));
-					}
+					GetEquipInventoryComponent()->AddLoadedInventoryItem(ItemObject);
 				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));

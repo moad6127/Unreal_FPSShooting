@@ -41,9 +41,14 @@ bool UEquipInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutB
 	return bWroteSomething;
 }
 
-void UEquipInventoryComponent::AddStarterEquipItem(UItemObject* InItem)
+void UEquipInventoryComponent::AddLoadedEquipItem(UItemObject* InItem)
 {
-	StartEquipItems.Add(InItem);
+	LoadedEquipItems.Add(InItem);
+}
+
+void UEquipInventoryComponent::AddLoadedInventoryItem(UItemObject* InItem)
+{
+	LoadedInventoryItems.Add(InItem);
 }
 
 bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
@@ -639,7 +644,8 @@ void UEquipInventoryComponent::BeginPlay()
 	if (GetOwner()->HasAuthority())
 	{
 		StarterItem();
-		StarterEquipItems();
+		LoadedItemEquip();
+		LoadedInventoryItem();
 	}
 }
 
@@ -672,11 +678,19 @@ void UEquipInventoryComponent::StarterItem()
 	}
 }
 
-void UEquipInventoryComponent::StarterEquipItems()
+void UEquipInventoryComponent::LoadedItemEquip()
 {
-	for (auto Item : StartEquipItems)
+	for (auto Item : LoadedEquipItems)
 	{
 		EquipItem(Item);
+	}
+}
+
+void UEquipInventoryComponent::LoadedInventoryItem()
+{
+	for (auto Item : LoadedInventoryItems)
+	{
+		AddItem(Item);
 	}
 }
 
