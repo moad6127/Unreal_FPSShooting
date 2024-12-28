@@ -91,11 +91,11 @@ bool UEquipInventoryComponent::AddItem(UItemObject* InItem)
 		PlaceItem(InItem, InItem->GetItemItemLocation());
 		InItem->InInventorys = true;
 		InItem->bIsCopy = false;
+		InventoryItems.Add(InItem);
 		if (InItem->SlotType == EEquipmentSlotType::EEST_Ammo)
 		{
 			CheckAmmo(InItem);
 		}
-		InventoryItems.Add(InItem);
 		InventoryChanged.Broadcast();
 		return true;
 	}
@@ -215,7 +215,7 @@ void UEquipInventoryComponent::CheckAmmo(UItemObject* InItem)
 			int32 CheckAmmoValue = 0;
 			for (auto Item : InventoryItems)
 			{
-				if (Item->WeaponData.AmmoType == AmmoType)
+				if (Item->SlotType == EEquipmentSlotType::EEST_Ammo && Item->WeaponData.AmmoType == AmmoType)
 				{
 					CheckAmmoValue += Item->ItemQuantity;
 				}
