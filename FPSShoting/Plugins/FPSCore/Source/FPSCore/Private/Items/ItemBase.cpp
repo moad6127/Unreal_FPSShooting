@@ -14,6 +14,9 @@ AItemBase::AItemBase()
 {
 	bAlwaysRelevant = true;
 
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
 	Sphere = CreateDefaultSubobject<USphereComponent>("ItemCollision");
 	Sphere->SetupAttachment(MeshComp);	
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
