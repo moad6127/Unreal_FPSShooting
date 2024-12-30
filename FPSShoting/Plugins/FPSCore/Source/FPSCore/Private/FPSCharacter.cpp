@@ -49,8 +49,11 @@ AFPSCharacter::AFPSCharacter()
     HandsMeshComp->bOwnerNoSee = false;
     HandsMeshComp->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
     
+
     GetMesh()->bOwnerNoSee = true;
     GetMesh()->bOnlyOwnerSee = false;
+
+
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
     if (HandsMeshComp)
@@ -73,6 +76,14 @@ AFPSCharacter::AFPSCharacter()
 void AFPSCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+    if (PlayerController)
+    {
+        PlayerController->PlayerCameraManager->ViewPitchMax = 85.f;
+        PlayerController->PlayerCameraManager->ViewPitchMin = -85.f;
+    }
+
 
     if (MovementDataMap.Contains(EMovementState::State_Walk))
     {
@@ -154,6 +165,7 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
     // Storing look vectors for animation manipulation
     MouseX = Value[1];
     MouseY = Value[0];
+    
 
     // Looking around
     AddControllerPitchInput(Value[1] * -1);
