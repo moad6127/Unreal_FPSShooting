@@ -39,7 +39,7 @@ AFPSCharacter::AFPSCharacter()
     
     // Spawning the spring arm component
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-    SpringArmComponent->bUsePawnControlRotation = true;
+    SpringArmComponent->bUsePawnControlRotation = false;
     SpringArmComponent->SetupAttachment(RootComponent);
     
     // Spawning the FPS hands mesh component and attaching it to the spring arm component
@@ -52,7 +52,6 @@ AFPSCharacter::AFPSCharacter()
 
     GetMesh()->bOwnerNoSee = true;
     GetMesh()->bOnlyOwnerSee = false;
-
 
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
@@ -69,6 +68,9 @@ AFPSCharacter::AFPSCharacter()
 
     Health = DefaultHealth;
     GetMovementComponent()->SetIsReplicated(true);
+
+    bUseControllerRotationYaw = true;
+    GetCharacterMovement()->bOrientRotationToMovement = false;
     
 }
 
