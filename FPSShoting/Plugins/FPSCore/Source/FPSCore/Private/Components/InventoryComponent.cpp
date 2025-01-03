@@ -115,6 +115,26 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	ServerSwapWeapon(SlotId);	
 }
 
+void UInventoryComponent::AttachWeaponBack(AWeaponBase* InWeapon)
+{
+	AFPSCharacter* Character = Cast<AFPSCharacter>(GetOwner());
+	if (Character && InWeapon)
+	{
+		InWeapon->GetTPPMeshComp()->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("SOCKET_Back_Weapon"));
+		InWeapon->GetMainMeshComp()->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("SOCKET_Back_Weapon"));
+	}
+}
+
+void UInventoryComponent::AttackWeaponHand(AWeaponBase* InWeapon)
+{
+	AFPSCharacter* Character = Cast<AFPSCharacter>(GetOwner());
+	if (Character && InWeapon)
+	{
+		InWeapon->GetMainMeshComp()->AttachToComponent(Character->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, InWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+		InWeapon->GetTPPMeshComp()->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, InWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+	}
+}
+
 void UInventoryComponent::ServerSwapWeapon_Implementation(int SlotId)
 {
 	// Clearing the weapon swap timer in case it's still active
@@ -150,7 +170,8 @@ void UInventoryComponent::CompleteWeaponSwap(int SlotId)
 	{
 		CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
 		//TODO : 등에 부착하기
-		CurrentWeapon->SetActorHiddenInGame(true);
+		//CurrentWeapon->SetActorHiddenInGame(true);
+		AttachWeaponBack(CurrentWeapon);
 		CurrentWeapon->SetCanFire(false);
 		CurrentWeapon->StopFire();
 	}
@@ -164,7 +185,8 @@ void UInventoryComponent::CompleteWeaponSwap(int SlotId)
 	{
 		CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
 		//TODO : 손에 부착하기
-		CurrentWeapon->SetActorHiddenInGame(false);
+		//CurrentWeapon->SetActorHiddenInGame(false);
+		AttackWeaponHand(CurrentWeapon);
 		CurrentWeapon->SetCanFire(true);
 	}
 	bPerformingWeaponSwap = false;
@@ -279,11 +301,7 @@ void UInventoryComponent::EquipWeapon(UItemObject* ItemObject, int InventoryPosi
 	{
 		// Placing the new weapon at the correct location and finishing up it's initialisation
 		SpawnedWeapon->SetOwner(GetOwner());
-		if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
-		{
-			SpawnedWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-			SpawnedWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-		}
+		AttackWeaponHand(SpawnedWeapon);
 
 		SpawnedWeapon->SetRuntimeWeaponData(ItemObject->DataStruct);
 		SpawnedWeapon->SpawnAttachments();
@@ -303,11 +321,12 @@ void UInventoryComponent::EquipWeapon(UItemObject* ItemObject, int InventoryPosi
 		// Disabling the currently equipped weapon, if it exists
 		if (CurrentWeapon)
 		{
+			//기존의 무기가 있을경우 등에 부착시키도록 만들기
 			CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
-			CurrentWeapon->SetActorHiddenInGame(true);
+			//CurrentWeapon->SetActorHiddenInGame(true);
+			AttachWeaponBack(CurrentWeapon);
 			CurrentWeapon->StopFire();
 		}
-
 
 		// Swapping to the new weapon, enabling it and playing it's equip animation
 		
@@ -554,6 +573,15 @@ int32 UInventoryComponent::GetAmmo(EAmmoType AmmoType)
 	return int32();
 }
 
+bool UInventoryComponent::GetUseFABRIK()
+{
+	if (!bPerformingWeaponSwap && CharacterState == ECharacterState::ECS_Unoccupied)
+	{
+		return true;
+	}
+	return false;
+}
+
 void UInventoryComponent::UpdateWeaponAmmo()
 {
 	if (CurrentWeapon)
@@ -672,27 +700,30 @@ void UInventoryComponent::PlayReloadAnimation()
 }
 
 
-void UInventoryComponent::OnRep_CurrentWeapon()
+void UInventoryComponent::OnRep_CurrentWeapon(AWeaponBase* PrevCurrentWeapon)
 {
 	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	{
 		FPSCharacter->SetWeaponEquip(true);
+		if (PrevCurrentWeapon)
+		{
+			AttachWeaponBack(PrevCurrentWeapon);
+		}
 
 		if (CurrentWeapon)
 		{
 			CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
-			CurrentWeapon->SetActorHiddenInGame(false);
+			//CurrentWeapon->SetActorHiddenInGame(false);
 			CurrentWeapon->SetCanFire(true);
-			CurrentWeapon->GetMainMeshComp()->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
-			CurrentWeapon->GetTPPMeshComp()->AttachToComponent(FPSCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, CurrentWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+			AttackWeaponHand(CurrentWeapon);
 			if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
 			{
 				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
 			}
 			FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
-			UpdateCarriedAmmo();
 		}
 	}
+	UpdateCarriedAmmo();
 }
 
 void UInventoryComponent::OnRep_PerformingWeaponSwap()

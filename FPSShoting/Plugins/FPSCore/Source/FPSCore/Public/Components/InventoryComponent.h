@@ -31,6 +31,7 @@ enum class ECharacterState : uint8
 {
 	ECS_Unoccupied	UMETA(DisplayName = "Unoccupied"),
 	ECS_Reloading	UMETA(DisplayName = "Reloading"),
+	ECS_Swaping 	UMETA(DisplayName = "Swaping"),
 
 	ECS_MAX UMETA(DisplayName = "DefaultMAX")
 };
@@ -118,6 +119,9 @@ public:
 	void AddAmmo(EAmmoType AmmoType, int32 Amount);
 
 	int32 GetAmmo(EAmmoType AmmoType);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetUseFABRIK();
 
 	/** Returns the map of currently equipped weapons */
 	//UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -211,6 +215,9 @@ private:
 	void PlaySwapAnimation();
 	void SwapWeapon(int SlotId);
 
+	void AttachWeaponBack(AWeaponBase* InWeapon);
+	void AttackWeaponHand(AWeaponBase* InWeapon);
+
 	void CompleteWeaponSwap(int SlotId);
 
 	UFUNCTION(Server,Reliable)
@@ -279,7 +286,7 @@ private:
 	void PlayReloadAnimation();
 	
 	UFUNCTION()
-	void OnRep_CurrentWeapon();
+	void OnRep_CurrentWeapon(AWeaponBase* PrevCurrentWeapon);
 
 	UFUNCTION()
 	void OnRep_PerformingWeaponSwap();
