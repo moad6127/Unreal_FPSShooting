@@ -15,7 +15,7 @@ class AItemBase;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventorySizeChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemEquipChanged, EEquipmentSlotType, EquipSlot);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTryAddItem, UItemObject*, AddItem);
 USTRUCT()
 struct FStarterItemData 
 {
@@ -71,6 +71,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
 	FItemEquipChanged ItemEquipChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "SInventoryComponent")
+	FTryAddItem OnTryAddItem;
+
 	UFUNCTION(BlueprintCallable, Category = "SInventoryComponent")
 	TArray<UItemObject*> GetInventoryItems() const { return InventoryItems; }
 
@@ -119,6 +122,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerReplaceItem(UItemObject* ItemToReplace, FIntPoint InLocation);
 
+	UFUNCTION(Client, Reliable)
+	void ClientReplaceItemRespons(UItemObject* ItemToReplace, bool bWasSuccessful);
 	/*
 	*  아이템을 회전시키는 함수
 	*/

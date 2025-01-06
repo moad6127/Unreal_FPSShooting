@@ -358,9 +358,17 @@ bool UEquipInventoryComponent::HandleReplaceItem(UItemObject* ItemToReplace, FIn
 void UEquipInventoryComponent::ServerReplaceItem_Implementation(UItemObject* ItemToReplace, FIntPoint InLocation)
 {
 	bool bWasSuccessful = HandleReplaceItem(ItemToReplace,InLocation);
-
+	ClientReplaceItemRespons(ItemToReplace, bWasSuccessful);
 }
 
+
+void UEquipInventoryComponent::ClientReplaceItemRespons_Implementation(UItemObject* ItemToReplace, bool bWasSuccessful)
+{
+	if (!bWasSuccessful)
+	{
+		OnTryAddItem.Broadcast(ItemToReplace);
+	}
+}
 
 void UEquipInventoryComponent::RotateItem(UItemObject* ItemToRotate)
 {
