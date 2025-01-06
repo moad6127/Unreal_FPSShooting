@@ -166,6 +166,12 @@ public:
 	*/
 	void SplitItem(UItemObject* InItem);
 
+	void HandleSplitItem(UItemObject* InItem, int32 OriginalQuantity);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSplitItem(UItemObject* InItem, int32 OriginalQuantity);
+
+
 	/*
 	* 인벤토리Grid초기화
 	*/

@@ -67,6 +67,7 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 			{
 				if (HandleAddItem(InItem))
 				{
+					InventoryChanged.Broadcast();
 					return true;
 				}
 				PlaceItem(InItem, Location);
@@ -146,6 +147,7 @@ bool UEquipInventoryComponent::HandleAddItem(UItemObject* InItem)
 		* 만약 MaxStack을 넘기지 않을경우 인벤토리창에 추가하지 않도록 만든다.
 		*/
 		Flag = HandleStackableItem(InItem);
+		UE_LOG(LogTemp, Log, TEXT("Handling item add: %s, Quantity: %d"), *InItem->GetName(), InItem->ItemQuantity);
 	}
 	return Flag;
 }
@@ -623,6 +625,18 @@ int32 UEquipInventoryComponent::AddItemAmount(UItemObject* InItem, int32 AddAmou
 
 void UEquipInventoryComponent::SplitItem(UItemObject* InItem)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerSplitItem(InItem,InItem->ItemQuantity);
+	}
+	else
+	{
+		HandleSplitItem(InItem, InItem->ItemQuantity);
+	}
+}
+
+void UEquipInventoryComponent::HandleSplitItem(UItemObject* InItem, int32 OriginalQuantity)
+{
 	if (InItem->ItemNumbericData.bIsStackable)
 	{
 		int32 SplitAmount = InItem->ItemQuantity / 2;
@@ -641,7 +655,11 @@ void UEquipInventoryComponent::SplitItem(UItemObject* InItem)
 			}
 		}
 	}
+}
 
+void UEquipInventoryComponent::ServerSplitItem_Implementation(UItemObject* InItem, int32 OriginalQuantity)
+{
+	HandleSplitItem(InItem, OriginalQuantity);
 }
 
 
