@@ -14,9 +14,7 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 
   * [FPSCorePlugin](#FPSCorePlugin)
   
-  * [InventorySystem](#InventorySystem)
-    
-  * [EquipmentSystem](#EquipmentSystem)
+  * [InventorySystem && EquipmentSystem](#InventorySystem&&EquipmentSystem)
     
   * [AI](#AI)
   
@@ -37,10 +35,8 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 > Character의 이동과 달리기, 슬라이드등이 구성되어 있고, 총의 발사와 재장전, 총마다의 반동을 추가하여 사용할수 있도록 만들어져 있다.
 > 기본 플러그인은 멀티플레이를 지원하지 않기 때문에 멀티플레이 기능을 위해 직접 멀티플레이에 사용되는 Replicate와 RPC등의 코드를 추가해서 멀티플레이에서의 캐릭터의 움직임과 총의 발사등을 구현 하였다.
 
-# *InventorySystem*
+# *InventorySystem && EquipmentSystem*
 
-
-# *EquipmentSystem*
 
 
 # *AI*
