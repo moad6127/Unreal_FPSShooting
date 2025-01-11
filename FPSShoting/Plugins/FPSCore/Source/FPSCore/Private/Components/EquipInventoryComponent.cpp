@@ -290,6 +290,7 @@ bool UEquipInventoryComponent::RemoveItems(UItemObject* InItem)
 void UEquipInventoryComponent::ServerRemoveItems_Implementation(UItemObject* InItem)
 {
 	RemoveItems(InItem);
+	InventoryChanged.Broadcast();
 }
 
 void UEquipInventoryComponent::DropItem(UItemObject* ItemToDrop)

@@ -31,6 +31,10 @@ void AItemBase::Interact(APawn* InstigatorPawn)
 	{
 		if (PlayerCharacter->GetEquipInventoryComponent()->TryAddItem(ItemObject))
 		{
+			if (PlayerCharacter->HasAuthority())
+			{
+				SetOwner(InstigatorPawn);
+			}
 			Destroy();
 		}
 	}
