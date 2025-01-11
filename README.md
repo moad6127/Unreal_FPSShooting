@@ -37,6 +37,18 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 
 # *InventorySystem*
 
+![EquipmentInventory](https://github.com/user-attachments/assets/02b4fe7c-a96d-4e63-8d1c-542a66488970)
+
+
+[Component헤더](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Public/Components/EquipInventoryComponent.h)
+
+[ComponentC++](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Private/Components/EquipInventoryComponent.cpp)
+
+> Inventory와 Equipment를 담당하는 Component로 아이템의 획득, 장착, Drop등을 담당하는 기능을 하고 있다.
+> 멀티플레이환경에서도 사용이 가능하도록 RPC와 Replicate를 활용해 장착과 획득이 가능하다.
+
+> UI와 MVC모델을 사용해서 WidgetController를 사용해서 Widget의 기능을 담당하고 있다.
+
 
 
 # *AI*
