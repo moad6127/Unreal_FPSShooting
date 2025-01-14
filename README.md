@@ -44,14 +44,29 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 
 [ComponentC++](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Private/Components/EquipInventoryComponent.cpp)
 
-> Inventory와 Equipment를 담당하는 Component로 아이템의 획득, 장착, Drop등을 담당하는 기능을 하고 있다.
+> Inventory와 Equipment를 담당하는 Component로 Character의 아이템의 획득, 장착, Drop등을 담당하는 기능을 하고 있다.
 > 멀티플레이환경에서도 사용이 가능하도록 RPC와 Replicate를 활용해 장착과 획득이 가능하다.
+
 
 > UI와 MVC모델을 사용해서 WidgetController를 사용해서 Widget의 기능을 담당하고 있다.
 
 
 
 # *AI*
+[AI h](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Public/Enemy)
+
+[AI cpp](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Private/Enemy)
+
+
+![FPSShooting_AIBehavior](https://github.com/user-attachments/assets/f29e6b34-0727-4e3d-a1a1-ca19f3e8de04)
+
+>AIPerception의 기능들을 사용해서 시야에 플레이어가 보일경우 반응하도록 만들어 사용한다.
+>반응할시 AI에 Target이 설정되며 Target의 반경으로 이동한후 일정 반경이 되면 공격을 준비한다.
+>공격을 진행할때 EQS를 사용해 공격할시 위치를 잡고 Target을 향해 공격한다.
+
+![FPSShooting_TakeDamage](https://github.com/user-attachments/assets/b40ba171-16aa-46a4-9892-3f63177d0c99)
+> 플레이어가 AI를 향해 공격해서 적중하였을 경우 공격한 플레이어를 Target으로 설정한후 BehaviorTree를 진행하게 만든다.
+
 
 # *SaveData*
 
