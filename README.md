@@ -26,9 +26,8 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 
 # *FPSCorePlugin*
 
-[FPSCorePlugin Fap사이트](https://www.fab.com/ko/listings/8df23fcb-04a1-4dac-8e1a-c0ed4cf56e98)
-
-[FPSCorePlugins](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Plugins/FPSCore)
+- [FPSCorePlugin Fap사이트](https://www.fab.com/ko/listings/8df23fcb-04a1-4dac-8e1a-c0ed4cf56e98)
+- [FPSCorePlugins](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Plugins/FPSCore)
 
 > 게임의 기본적인 Base로 삼은 플러그인으로 FAB에서 얻은 플러그인을 사용해서 게임을 제작하는 경험을 위해 플러그인을 게임에 넣었다.
 > 기본적으로 BaseWeapon, FPSChracter, Ammo등이 존재하며 Interact기능을 담당하여 사용해서 Actor들의 기능을 사용할수 있고, InventoryComponent를 통해 총의 장착과 발사를 담당하고 있다.
@@ -40,22 +39,26 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 ![EquipmentInventory](https://github.com/user-attachments/assets/02b4fe7c-a96d-4e63-8d1c-542a66488970)
 
 
-[Component헤더](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Public/Components/EquipInventoryComponent.h)
-
-[ComponentC++](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Private/Components/EquipInventoryComponent.cpp)
+- [Component헤더](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Public/Components/EquipInventoryComponent.h)      
+- [ComponentC++](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Plugins/FPSCore/Source/FPSCore/Private/Components/EquipInventoryComponent.cpp)
 
 > Inventory와 Equipment를 담당하는 Component로 Character의 아이템의 획득, 장착, Drop등을 담당하는 기능을 하고 있다.
 > 멀티플레이환경에서도 사용이 가능하도록 RPC와 Replicate를 활용해 장착과 획득이 가능하다.
 
 
+- [Widgets 헤더](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Public/Widget)
+- [Widgets CPP](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Private/Widget)
+
 > UI와 MVC모델을 사용해서 WidgetController를 사용해서 Widget의 기능을 담당하고 있다.
+> Widget의 CPP에는 기능은 존재하지 않고 단순히 Controller가 지정되면 블루프린트로 이벤트를 보내는 기능이 되어있다.
+> Widget에서 사용될 기능들은 WidgetController에서 사용 되며 UI적인 부분은 블루프린트로 설정되며 내부의 기능들은 Controller의 CPP로 만들어 두었다.
+
 
 
 
 # *AI*
-[AI h](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Public/Enemy)
-
-[AI cpp](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Private/Enemy)
+- [AI h](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Public/Enemy)    
+- [AI cpp](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Private/Enemy)
 
 
 ![FPSShooting_AIBehavior](https://github.com/user-attachments/assets/f29e6b34-0727-4e3d-a1a1-ca19f3e8de04)
