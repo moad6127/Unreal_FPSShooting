@@ -46,6 +46,9 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 > 멀티플레이환경에서도 사용이 가능하도록 RPC와 Replicate를 활용해 장착과 획득이 가능하다.
 
 
+
+![FPSShooting_InventoryWidget](https://github.com/user-attachments/assets/0fd787a8-a934-47c9-adeb-b04630b4693e)
+
 - [Widgets 헤더](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Public/Widget)
 - [Widgets CPP](https://github.com/moad6127/Unreal_FPSShooting/tree/master/FPSShoting/Source/FPSShoting/Private/Widget)
 
