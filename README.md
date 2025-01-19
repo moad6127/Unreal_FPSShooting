@@ -77,4 +77,129 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
 # *SaveData*
 
 
+ - [SaveGame H](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Source/FPSShoting/Public/GameMode/FPSSaveGame.h)
+
+
+> Character의 SaveGame함수
+``` C++
+void ASInvenFPSCharacter::SaveGame()
+{
+
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+
+	if (GameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InGameMode!"));
+		UFPSSaveGame* SaveData = GameMode->GetSaveData();
+		UE_LOG(LogTemp, Warning, TEXT("SaveDataGet!"));
+		if (SaveData == nullptr)
+		{
+			return;
+		}
+		//TODO : Character의 인벤, 장비창 세이브 하기
+		SaveData->InventoryItems.Empty();
+		//TODO : ItemObject를 Copy해서 만들어도 인벤토리에 이상하게 들어간다,
+		// 구조체를 만들어서 아이템의 정보를 저장해 사용해야 할것같다.
+
+		// Inventory아이템 저장하기
+		for (UItemObject* Item : GetEquipInventoryComponent()->GetInventoryItems())
+		{
+			FItemSaveData ItemData;
+			ItemData.ItemID = Item->ID;
+			ItemData.ItemQuantity = Item->ItemQuantity;
+			ItemData.DataStruct = Item->DataStruct;
+			ItemData.ItemLocation = Item->GetItemItemLocation();
+			ItemData.bEquipped = false;
+
+			SaveData->InventoryItems.Add(ItemData);
+		}
+
+		//TODO : 장착된 아이템 저장하기
+		EquipItemSave(SaveData);
+
+		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));
+		GameMode->SaveGame(SaveData);
+	}
+}
+
+```
+
+> GameMode에서 Save함수
+``` C++
+void AFPSGameModeBase::SaveGame(UFPSSaveGame* SaveGame)
+{
+	DeleteSlot(SaveGame);
+	UGameplayStatics::SaveGameToSlot(SaveGame, SaveGame->SlotName, SaveGame->SlotIndex);
+}
+
+```
+> SaveGame 파일을 사용해서 플레이어의 인벤토리와 장착아이템들을 저장한다.
+> Save를 담당하는 Actor에서 Save 시퀀스를 진행하면 Character에서 Save함수를 진행한다.
+> Character의 인벤토리와 장착 아이템들을 확인한후 Load할때 필요한 정보들을 담아둔 Struct인 FSaveStruct 구조체에 정보들을 담아둔후 GameMode에서 저장하도록 만든다.
+
+
+> Load 함수
+``` C++
+void ASInvenFPSCharacter::LoadGame()
+{
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	{
+		if (GameMode)
+		{
+			UFPSSaveGame* SaveData = GameMode->GetSaveData();
+			if (SaveData == nullptr)
+			{
+				return;
+			}
+			UDataTable* ItemDataTable = GameMode->ItemDataTable;
+			if (!ItemDataTable)
+			{
+				return;
+			}
+			//TODO : Character의 인벤, 장비창 로드하기
+			for (FItemSaveData Data : SaveData->InventoryItems)
+			{
+				const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(Data.ItemID, Data.ItemID.ToString());
+				if (!ItemData)
+				{
+					return;
+				}
+				UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
+				//TODO : ItemValueSet
+				ItemObject->ID = ItemData->ID;
+				ItemObject->SlotType = ItemData->SlotType;
+				ItemObject->ItemQuantity = Data.ItemQuantity;
+				ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
+				ItemObject->Asset = ItemData->Asset;
+				ItemObject->ItemName = ItemData->ItemName;
+				ItemObject->WeaponData = ItemData->WeaponData;
+				ItemObject->SetItemSizeX(ItemData->SizeX);
+				ItemObject->SetItemSizeY(ItemData->SizeY);
+				ItemObject->DataStruct = Data.DataStruct;
+				ItemObject->SetItemItemLocation(Data.ItemLocation);
+
+				//장착된 상태였으면 장착하도록 만들기
+				if (Data.bEquipped)
+				{
+					GetEquipInventoryComponent()->AddLoadedEquipItem(ItemObject);
+				}
+				else
+				{
+					GetEquipInventoryComponent()->AddLoadedInventoryItem(ItemObject);
+				}
+			}
+			UE_LOG(LogTemp, Warning, TEXT("PlayerLoadGameFunc!"));
+
+		}
+	}
+}
+```
+> Load는 Save된 Data를 바탕으로 새로운 ItemObject를 생성해서 Data의 값들을 주입해 아이템들을 Load한다.
+> 이때, Load로 생성된 아이템들을 바로 Inventory에 추가하지 않고 Component에 따로 저장해둔 다음 Component의 초기화가 모두 진행된후 Component의 Beginpaly함수에서 Load아이템을 추가한느 함수를 호출해 아이템들을 Load하게 된다.
+>  
 
