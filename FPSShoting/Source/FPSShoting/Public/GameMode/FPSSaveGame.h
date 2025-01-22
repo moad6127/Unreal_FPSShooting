@@ -50,4 +50,7 @@ public:
 
 	UPROPERTY()
 	TArray<FItemSaveData> InventoryItems;
+
+	UPROPERTY()
+	TArray<FItemSaveData>ContainerItems;
 };

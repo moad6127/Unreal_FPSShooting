@@ -817,7 +817,7 @@ bool AFPSCharacter::IsAlive() const
 
 // Called every frame
 void AFPSCharacter::Tick(const float DeltaTime)
-{
+{ 
 	Super::Tick(DeltaTime);
 
     // Timeline tick
@@ -924,8 +924,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
 
     if (bDrawDebug)
     {
+        APlayerController* PC = Cast<APlayerController>(GetController());
         FString Name = FString::Printf(TEXT("PlayerName : %s"), *GetName());
-        if (IsLocallyControlled())
+        if (PC && PC->IsLocalController())
         {
             GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, Name);
         }
