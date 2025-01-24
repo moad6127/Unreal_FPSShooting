@@ -25,8 +25,8 @@ void AContainerController::OnPossess(APawn* aPawn)
 void AContainerController::BeginPlay()
 {
 	Super::BeginPlay();
-	FWidgetControllerParams ControllerParams(this, ContainerInventoryComponent);
 	FWidgetControllerParams PlayerControllerParams(this, PlayerInventoryComponent);
+	FWidgetControllerParams ContainerControllerParams(this, ContainerInventoryComponent);
 
 	if (ContainerWidgetControllerClass)
 	{
@@ -34,7 +34,7 @@ void AContainerController::BeginPlay()
 		PlayerInventoryWidgetController = NewObject<UBasicWidgetController>(this, ContainerWidgetControllerClass);
 		if (ContainerWidgetController)
 		{
-			ContainerWidgetController->SetWidgetControllerParams(ControllerParams);
+			ContainerWidgetController->SetWidgetControllerParams(ContainerControllerParams);
 			PlayerInventoryWidgetController->SetWidgetControllerParams(PlayerControllerParams);
 			if (ContainerWidgetClass)
 			{

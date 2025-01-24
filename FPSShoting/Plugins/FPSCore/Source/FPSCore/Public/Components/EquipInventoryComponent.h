@@ -141,8 +141,6 @@ public:
 	void ServerEquipItem(UItemObject* InItem);
 
 	void EquipItem(UItemObject* InItem);
-
-
 	/*
 	* 아이템 장착 해제 함수
 	*/

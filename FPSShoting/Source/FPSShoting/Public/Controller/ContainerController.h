@@ -25,6 +25,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetPlayerInventoryComponent() { return PlayerInventoryComponent; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UBasicWidgetController* GetPlayerInventoryWidgetController() { return PlayerInventoryWidgetController; }
 protected:
 	
 	virtual void OnPossess(APawn* aPawn) override;
