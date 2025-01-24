@@ -26,9 +26,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetPlayerInventoryComponent() { return PlayerInventoryComponent; }
 protected:
-
+	
+	virtual void OnPossess(APawn* aPawn) override;
 	virtual void BeginPlay() override;
 
+	void LoadData();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UBasicWidget> ContainerWidgetClass;
 
@@ -40,6 +42,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UBasicWidgetController> ContainerWidgetController;
+
+	UPROPERTY()
+	TObjectPtr<UBasicWidgetController> PlayerInventoryWidgetController;
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
