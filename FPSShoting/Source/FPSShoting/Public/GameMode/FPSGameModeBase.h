@@ -13,6 +13,8 @@
 class UFPSSaveGame;
 class USaveGame;
 class UDataTable;
+class UItemObject;
+struct FItemSaveData;
 
 UCLASS()
 class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
@@ -21,6 +23,9 @@ class FPSSHOTING_API AFPSGameModeBase : public AGameModeBase
 	
 
 public:
+	AFPSGameModeBase();
+
+	UItemObject* GetSaveItemFromItemData(FItemSaveData Data);
 
 	void SaveGame(UFPSSaveGame* SaveGame);
 	void DeleteSlot(UFPSSaveGame* SaveGame);

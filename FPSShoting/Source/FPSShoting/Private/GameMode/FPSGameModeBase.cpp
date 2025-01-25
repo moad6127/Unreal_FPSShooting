@@ -4,6 +4,36 @@
 #include "GameMode/FPSGameModeBase.h"
 #include "GameMode/FPSSaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "Items/ItemObject.h"
+
+AFPSGameModeBase::AFPSGameModeBase()
+{
+	bUseSeamlessTravel = true;
+}
+
+UItemObject* AFPSGameModeBase::GetSaveItemFromItemData(FItemSaveData Data)
+{
+	const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(Data.ItemID, Data.ItemID.ToString());
+	if (!ItemData)
+	{
+		return nullptr;
+	}
+	UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
+	//TODO : ItemValueSet
+	ItemObject->ID = ItemData->ID;
+	ItemObject->SlotType = ItemData->SlotType;
+	ItemObject->ItemQuantity = Data.ItemQuantity;
+	ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
+	ItemObject->Asset = ItemData->Asset;
+	ItemObject->ItemName = ItemData->ItemName;
+	ItemObject->WeaponData = ItemData->WeaponData;
+	ItemObject->SetItemSizeX(ItemData->SizeX);
+	ItemObject->SetItemSizeY(ItemData->SizeY);
+	ItemObject->DataStruct = Data.DataStruct;
+	ItemObject->SetItemItemLocation(Data.ItemLocation);
+
+	return ItemObject;
+}
 
 void AFPSGameModeBase::SaveGame(UFPSSaveGame* SaveGame)
 {
