@@ -434,10 +434,6 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 {
 	EEquipmentSlotType ItemSlot = InItem->SlotType;
 	AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-	if (FPSCharacter == nullptr)
-	{
-		return;
-	}
 	switch (ItemSlot)
 	{
 	case EEquipmentSlotType::EEST_Head:
@@ -494,19 +490,29 @@ void UEquipInventoryComponent::HandleEquip(UItemObject* InItem)
 			InItem->SetSlotType(ItemSlot);
 			const FVector SpawnLocation{ GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * 50.f) };
 			const FTransform SpawnTransform(GetOwner()->GetActorRotation(), SpawnLocation);
-					
-			FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, InventorySlot);
+			
+			if (FPSCharacter)
+			{
+				FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, InventorySlot);
+			}
+
 		}
 
 	}
 		break;
 	case EEquipmentSlotType::EEST_Weapon1 :
 	{
-		FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 0);
+		if (FPSCharacter)
+		{
+			FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 0);
+		}
 	}
 	case EEquipmentSlotType::EEST_Weapon2 :
 	{
-		FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 1);
+		if (FPSCharacter)
+		{
+			FPSCharacter->GetInventoryComponent()->EquipWeapon(InItem, 1);
+		}
 	}
 	default:
 		break;
