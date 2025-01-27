@@ -17,7 +17,9 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
   * [InventorySystem](#InventorySystem)
     
   * [AI](#AI)
-  
+
+  * [MainMenu](#MainMenu)
+    
   * [SaveData](#SaveData)
     
 </p>
@@ -125,6 +127,11 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 >AIPerception의 기능들을 사용해서 시야에 플레이어가 보일경우 반응하도록 만들어 사용한다.
 >반응할시 AI에 Target이 설정되며 Target의 반경으로 이동한후 일정 반경이 되면 공격을 준비한다.
 >공격을 진행할때 EQS를 사용해 공격할시 위치를 잡고 Target을 향해 공격한다.
+
+
+# *MainMenu*
+
+
 
 
 # *SaveData*
