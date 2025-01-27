@@ -13,6 +13,7 @@
 class UBasicWidget;
 class UBasicWidgetController;
 class UEquipInventoryComponent;
+class UFPSSaveGame;
 
 UCLASS()
 class FPSSHOTING_API AContainerController : public APlayerController
@@ -22,6 +23,14 @@ class FPSSHOTING_API AContainerController : public APlayerController
 public:
 
 	AContainerController();
+
+	UFUNCTION(BlueprintCallable)
+	void SaveItems();
+
+	void SaveCharacterItems(UFPSSaveGame* SaveData);
+	void SaveCharacterEquips(UFPSSaveGame* SaveData);
+
+	void SaveContainerItems(UFPSSaveGame* SaveData);
 
 	UFUNCTION(BlueprintCallable)
 	UEquipInventoryComponent* GetPlayerInventoryComponent() { return PlayerInventoryComponent; }

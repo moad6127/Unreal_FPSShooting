@@ -16,6 +16,107 @@ AContainerController::AContainerController()
 	PlayerInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("PlayerEquipInventory");
 }
 
+void AContainerController::SaveItems()
+{
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		UFPSSaveGame* SaveData = GameMode->GetSaveData();
+		if (SaveData == nullptr)
+		{
+			return;
+		}
+		SaveCharacterItems(SaveData);
+		SaveCharacterEquips(SaveData);
+		SaveContainerItems(SaveData);
+
+		GameMode->SaveGame(SaveData);
+	}
+}
+
+void AContainerController::SaveCharacterItems(UFPSSaveGame* SaveData)
+{
+	SaveData->InventoryItems.Empty();
+	//TODO : ItemObject를 Copy해서 만들어도 인벤토리에 이상하게 들어간다,
+	// 구조체를 만들어서 아이템의 정보를 저장해 사용해야 할것같다.
+
+	// Inventory아이템 저장하기
+	for (UItemObject* Item : PlayerInventoryComponent->GetInventoryItems())
+	{
+		FItemSaveData ItemData;
+		ItemData.ItemID = Item->ID;
+		ItemData.ItemQuantity = Item->ItemQuantity;
+		ItemData.DataStruct = Item->DataStruct;
+		ItemData.ItemLocation = Item->GetItemItemLocation();
+		ItemData.bEquipped = false;
+
+		SaveData->InventoryItems.Add(ItemData);
+	}
+}
+
+void AContainerController::SaveCharacterEquips(UFPSSaveGame* SaveData)
+{
+	FEquipmentItems CharacterEquipmentItems = PlayerInventoryComponent->GetEquipmentItems();
+
+	if (CharacterEquipmentItems.Head)
+	{
+		FItemSaveData HeadItemData;
+		HeadItemData.bEquipped = true;
+		HeadItemData.ItemID = CharacterEquipmentItems.Head->ID;
+		SaveData->InventoryItems.Add(HeadItemData);
+	}
+	if (CharacterEquipmentItems.Body)
+	{
+		FItemSaveData BodyItemData;
+		BodyItemData.bEquipped = true;
+		BodyItemData.ItemID = CharacterEquipmentItems.Body->ID;
+		SaveData->InventoryItems.Add(BodyItemData);
+	}
+	if (CharacterEquipmentItems.BackPack)
+	{
+		FItemSaveData BackPackItemData;
+		BackPackItemData.bEquipped = true;
+		BackPackItemData.ItemID = CharacterEquipmentItems.BackPack->ID;
+		SaveData->InventoryItems.Add(BackPackItemData);
+	}
+	if (CharacterEquipmentItems.Weapon1)
+	{
+		FItemSaveData Weapon1ItemData;
+		Weapon1ItemData.bEquipped = true;
+		Weapon1ItemData.ItemID = CharacterEquipmentItems.Weapon1->ID;
+		Weapon1ItemData.DataStruct = CharacterEquipmentItems.Weapon1->DataStruct;
+		SaveData->InventoryItems.Add(Weapon1ItemData);
+	}
+	if (CharacterEquipmentItems.Weapon2)
+	{
+		FItemSaveData Weapon2ItemData;
+		Weapon2ItemData.bEquipped = true;
+		Weapon2ItemData.ItemID = CharacterEquipmentItems.Weapon2->ID;
+		Weapon2ItemData.DataStruct = CharacterEquipmentItems.Weapon2->DataStruct;
+		SaveData->InventoryItems.Add(Weapon2ItemData);
+	}
+}
+
+void AContainerController::SaveContainerItems(UFPSSaveGame* SaveData)
+{
+	SaveData->ContainerItems.Empty();
+	//TODO : ItemObject를 Copy해서 만들어도 인벤토리에 이상하게 들어간다,
+	// 구조체를 만들어서 아이템의 정보를 저장해 사용해야 할것같다.
+
+	// Inventory아이템 저장하기
+	for (UItemObject* Item : ContainerInventoryComponent->GetInventoryItems())
+	{
+		FItemSaveData ItemData;
+		ItemData.ItemID = Item->ID;
+		ItemData.ItemQuantity = Item->ItemQuantity;
+		ItemData.DataStruct = Item->DataStruct;
+		ItemData.ItemLocation = Item->GetItemItemLocation();
+		ItemData.bEquipped = false;
+
+		SaveData->ContainerItems.Add(ItemData);
+	}
+}
+
 void AContainerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
