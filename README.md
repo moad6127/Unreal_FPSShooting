@@ -17,11 +17,10 @@ Inventory에 아이템과 무기들이 들어가며 장착이 가능한것들은
   * [InventorySystem](#InventorySystem)
     
   * [AI](#AI)
-
-  * [MainMenu](#MainMenu)
     
   * [SaveData](#SaveData)
-    
+
+  * [MainMenu](#MainMenu)
 </p>
 </details>
 <br/> <br>
@@ -127,11 +126,6 @@ void AEnemyAIController::UpdatePercention(const TArray<AActor*>& UpdatedActors)
 >AIPerception의 기능들을 사용해서 시야에 플레이어가 보일경우 반응하도록 만들어 사용한다.
 >반응할시 AI에 Target이 설정되며 Target의 반경으로 이동한후 일정 반경이 되면 공격을 준비한다.
 >공격을 진행할때 EQS를 사용해 공격할시 위치를 잡고 Target을 향해 공격한다.
-
-
-# *MainMenu*
-
-
 
 
 # *SaveData*
@@ -263,3 +257,8 @@ void ASInvenFPSCharacter::LoadGame()
 > 이때, Load로 생성된 아이템들을 바로 Inventory에 추가하지 않고 Component에 따로 저장해둔 다음 Component의 초기화가 모두 진행된후 Component의 Beginpaly함수에서 Load아이템을 추가한느 함수를 호출해 아이템들을 Load하게 된다.
 >  
 
+
+
+# *MainMenu*
+
+> ContainerMap을 통해서 창고와 플레이어의 인벤토리를 저장한후 초기 장비들을 설정한다.
