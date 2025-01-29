@@ -16,5 +16,12 @@ void ASaveGameActor::Interact(APawn* InstigatorPawn)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SaveGame!"));
 		PlayerCharacter->SaveGame();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			World->ServerTravel("/Game/Map/ContainerMap?listen");
+		}
+
 	}
 }

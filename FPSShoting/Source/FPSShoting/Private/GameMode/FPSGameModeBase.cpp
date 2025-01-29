@@ -8,7 +8,7 @@
 
 AFPSGameModeBase::AFPSGameModeBase()
 {
-	bUseSeamlessTravel = true;
+	//bUseSeamlessTravel = true;
 }
 
 UItemObject* AFPSGameModeBase::GetSaveItemFromItemData(FItemSaveData Data)
