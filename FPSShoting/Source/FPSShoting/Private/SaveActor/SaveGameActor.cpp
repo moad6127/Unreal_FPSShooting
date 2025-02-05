@@ -17,11 +17,20 @@ void ASaveGameActor::Interact(APawn* InstigatorPawn)
 		UE_LOG(LogTemp, Warning, TEXT("SaveGame!"));
 		PlayerCharacter->SaveGame();
 
-		UWorld* World = GetWorld();
-		if (World)
+		APlayerController* PC = Cast<APlayerController>(PlayerCharacter->GetController());
+		if (PC)
 		{
-			World->ServerTravel("/Game/Map/ContainerMap?listen");
+			if (PC->IsLocalPlayerController())
+			{
+				PC->ClientTravel("/Game/Map/ContainerMap", TRAVEL_Absolute);
+			}
 		}
+		//UWorld* World = GetWorld();
+		//if (World)
+		//{	
+		//	World->ServerTravel("/Game/Map/ContainerMap?listen");
+		//	
+		//}
 
 	}
 }

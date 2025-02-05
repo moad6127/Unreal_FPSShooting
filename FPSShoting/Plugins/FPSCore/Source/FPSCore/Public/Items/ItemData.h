@@ -66,6 +66,9 @@ struct FItemAssetData
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* Mesh;
+
+	UPROPERTY(EditAnywhere)
+	FName AttachName;
 };
 
 USTRUCT(BlueprintType)

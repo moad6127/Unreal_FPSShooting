@@ -240,6 +240,7 @@ void UEquipInventoryComponent::OnRep_InventoryItems()
 
 void UEquipInventoryComponent::OnRep_EquipmentItems(FEquipmentItems LastItems)
 {
+	AFPSCharacter* Character = Cast<AFPSCharacter>(GetOwner());
 	if (EquipmentItems.Head != LastItems.Head)
 	{
 		ItemEquipChanged.Broadcast(EEquipmentSlotType::EEST_Head);
@@ -804,7 +805,6 @@ UItemObject* UEquipInventoryComponent::GetEquipItemToSlot(EEquipmentSlotType Slo
 void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 {
 	EEquipmentSlotType SlotType = InItem->SlotType;
-
 	switch (SlotType)
 	{
 
@@ -812,6 +812,7 @@ void UEquipInventoryComponent::SetEquipmentItem(UItemObject* InItem)
 		EquipmentItems.Head = InItem;
 		break;
 	case EEquipmentSlotType::EEST_Chest:
+
 		EquipmentItems.Body = InItem;
 		break;
 	case EEquipmentSlotType::EEST_Backpack:
