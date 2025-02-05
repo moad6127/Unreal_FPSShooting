@@ -261,4 +261,13 @@ void ASInvenFPSCharacter::LoadGame()
 
 # *MainMenu*
 
+
+![Image](https://github.com/user-attachments/assets/378352d9-490a-44df-ad0c-c442995de5da)
+
+
 > ContainerMap을 통해서 창고와 플레이어의 인벤토리를 저장한후 초기 장비들을 설정한다.
+> ContainerMap에서 사용할 GameMode와 Controller클래스를 생성하고 Controller를 사용해 UI를 구축해 화면에 표시하도록 만든다.
+> UI들은 기존의 Inventory와 Equipment 위젯들을 사용해서 만들어 사용한후 Save파일을 이용해서 레벨이 변경되도 유지하도록 만든다.
+> 탈출 Actor를 Interact할경우 Charcter의 인벤토리와 장착아이템들을 저장한후 ContainerMap이나 MainMenu로 이동하도록 만들도록 한다.
+
+
