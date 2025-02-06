@@ -261,6 +261,9 @@ void ASInvenFPSCharacter::LoadGame()
 
 # *MainMenu*
 
+![Image](https://github.com/user-attachments/assets/e90df953-39dd-4411-a4b1-f62d7e9416b0)
+
+> MainMenu를 통해서 창고맵으로 이동할수 있고 창고맵에서 게임에서 사용할 인벤토리와 장비아이템을 저장한후 Map을 선택해 들어갈수 있도록 만들었다.
 
 ![Image](https://github.com/user-attachments/assets/378352d9-490a-44df-ad0c-c442995de5da)
 
