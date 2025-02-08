@@ -267,6 +267,109 @@ void ASInvenFPSCharacter::LoadGame()
 
 ![Image](https://github.com/user-attachments/assets/378352d9-490a-44df-ad0c-c442995de5da)
 
+ - [ContainerMapController h](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Source/FPSShoting/Public/Controller/ContainerController.h)
+ - [ContainerMapController CPP](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Source/FPSShoting/Private/Controller/ContainerController.cpp)
+
+
+> Player와 같이 ContainerMap에서 사용할 Controller에서도 Save함수와 Load함수가 존재한다.
+```C++
+void AContainerController::SaveItems()
+{
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		UFPSSaveGame* SaveData = GameMode->GetSaveData();
+		if (SaveData == nullptr)
+		{
+			return;
+		}
+		SaveCharacterItems(SaveData);
+		SaveCharacterEquips(SaveData);
+		SaveContainerItems(SaveData);
+
+		GameMode->SaveGame(SaveData);
+	}
+}
+
+
+void AContainerController::LoadData()
+{
+
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	{
+		if (GameMode)
+		{
+			UFPSSaveGame* SaveData = GameMode->GetSaveData();
+			if (SaveData == nullptr)
+			{
+				return;
+			}
+			UDataTable* ItemDataTable = GameMode->ItemDataTable;
+			if (!ItemDataTable)
+			{
+				return;
+			}
+			//인벤토리, 장비창 아이템
+			for (FItemSaveData Data : SaveData->InventoryItems)
+			{
+				UItemObject* ItemObject = GameMode->GetSaveItemFromItemData(Data);
+
+				//장착된 상태였으면 장착하도록 만들기
+				if (Data.bEquipped)
+				{
+					PlayerInventoryComponent->AddLoadedEquipItem(ItemObject);
+				}
+				else
+				{
+					PlayerInventoryComponent->AddLoadedInventoryItem(ItemObject);
+				}
+			}
+			// 창고 아이템
+			for (FItemSaveData Data : SaveData->ContainerItems)
+			{
+				UItemObject* ItemObject = GameMode->GetSaveItemFromItemData(Data);
+
+				ContainerInventoryComponent->AddLoadedInventoryItem(ItemObject);
+			}
+		}
+	}
+}
+```
+
+
+> Beginpaly에서 화면에 표시할 위젯에 필요한 정보들을 생성한후 저장하며 위젯블루프린트에서 Controller에 저장된 데이터를 바탕으로 위젯을 구성한다.
+
+``` C++
+
+void AContainerController::BeginPlay()
+{
+	Super::BeginPlay();
+	FWidgetControllerParams PlayerControllerParams(this, PlayerInventoryComponent);
+	FWidgetControllerParams ContainerControllerParams(this, ContainerInventoryComponent);
+
+	if (ContainerWidgetControllerClass)
+	{
+		ContainerWidgetController = NewObject<UBasicWidgetController>(this, ContainerWidgetControllerClass);
+		PlayerInventoryWidgetController = NewObject<UBasicWidgetController>(this, ContainerWidgetControllerClass);
+		if (ContainerWidgetController)
+		{
+			ContainerWidgetController->SetWidgetControllerParams(ContainerControllerParams);
+			PlayerInventoryWidgetController->SetWidgetControllerParams(PlayerControllerParams);
+			if (ContainerWidgetClass)
+			{
+				ContainerWidget = CreateWidget<UBasicWidget>(this, ContainerWidgetClass);
+				if (ContainerWidget)
+				{
+					ContainerWidget->SetWidgetController(ContainerWidgetController);
+					ContainerWidget->AddToViewport();
+					bShowMouseCursor = true;
+				}
+			}
+		}
+	}
+}
+```
+
 
 > ContainerMap을 통해서 창고와 플레이어의 인벤토리를 저장한후 초기 장비들을 설정한다.
 > ContainerMap에서 사용할 GameMode와 Controller클래스를 생성하고 Controller를 사용해 UI를 구축해 화면에 표시하도록 만든다.
