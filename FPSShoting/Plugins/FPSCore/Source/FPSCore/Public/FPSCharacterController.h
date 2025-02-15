@@ -14,11 +14,12 @@ class AFPSCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 	
-	public:
+public:
 		
 	virtual void OnPossess(APawn* aPawn) override;
 
 	/** The amount of ammunition boxes that the player has */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int AmmoBoxCount;
+
 };

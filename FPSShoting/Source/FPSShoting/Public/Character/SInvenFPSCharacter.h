@@ -11,6 +11,7 @@
  */
 class AFPSHUD;
 class UFPSSaveGame;
+class UUserWidget;
 
 UCLASS()
 class FPSSHOTING_API ASInvenFPSCharacter : public AFPSCharacter
@@ -32,6 +33,8 @@ protected:
 
 	void ShowInventory();
 
+	void GamePause();
+
 	/* Crosshair Texture Set */
 	void SetHUDCrosshair(float DeltaTime);
 
@@ -48,4 +51,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* InventoryAction;
+
+	UPROPERTY(EditAnywhere, Category = HUD)
+	TSubclassOf<UUserWidget> GamePauseWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* GamePauseWidget;
+
 };

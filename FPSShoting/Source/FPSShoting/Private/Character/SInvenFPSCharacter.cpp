@@ -14,7 +14,7 @@
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
 #include "Items/ItemBase.h"
-
+#include "Blueprint/UserWidget.h"
 
 ASInvenFPSCharacter::ASInvenFPSCharacter()
 {
@@ -180,7 +180,15 @@ void ASInvenFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		PlayerEnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Completed, this, &ASInvenFPSCharacter::ShowInventory);
+		if (InventoryAction)
+		{
+			PlayerEnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Completed, this, &ASInvenFPSCharacter::ShowInventory);
+
+		}
+		if (PauseAction)
+		{
+			PlayerEnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ASInvenFPSCharacter::GamePause);
+		}
 	}
 }
 
@@ -189,6 +197,25 @@ void ASInvenFPSCharacter::ShowInventory()
 	if (HUD)
 	{
 		HUD->ShowInventory();
+	}
+}
+
+void ASInvenFPSCharacter::GamePause()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		if (GamePauseWidgetClass)
+		{
+			GamePauseWidget = CreateWidget<UUserWidget>(PlayerController, GamePauseWidgetClass);
+			if (GamePauseWidget)
+			{
+				GamePauseWidget->AddToViewport();
+				const FInputModeUIOnly InputMode;
+				PlayerController->SetShowMouseCursor(true);
+				PlayerController->SetInputMode(InputMode);
+			}
+		}
 	}
 }
 
