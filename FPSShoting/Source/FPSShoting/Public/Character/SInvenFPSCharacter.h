@@ -24,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AFPSHUD* GetHUD() const;
+
+	UFUNCTION(BlueprintCallable)
+	void GamePause();
 protected:
 	ASInvenFPSCharacter();
 
@@ -32,8 +35,6 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void ShowInventory();
-
-	void GamePause();
 
 	/* Crosshair Texture Set */
 	void SetHUDCrosshair(float DeltaTime);
@@ -52,10 +53,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* InventoryAction;
 
-	UPROPERTY(EditAnywhere, Category = HUD)
-	TSubclassOf<UUserWidget> GamePauseWidgetClass;
 
-	UPROPERTY()
-	UUserWidget* GamePauseWidget;
 
 };

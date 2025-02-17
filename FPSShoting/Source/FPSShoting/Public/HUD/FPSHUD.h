@@ -41,6 +41,8 @@ public:
 	void InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventoryComponent);
 
 	void ShowInventory();
+	void ShowGamePause();
+
 	virtual void DrawHUD() override;
 	void SetHUDPackage(const FHUDPackage& InHUDPackage) { HUDPackage = InHUDPackage; }
 protected:
@@ -49,6 +51,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBasicWidget>InventoryWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> GamePauseWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* GamePauseWidget;
 
 	UPROPERTY()
 	TObjectPtr<UBasicWidgetController> WidgetController;
@@ -66,8 +74,13 @@ protected:
 
 	bool bIsInventoryVisible;
 
+	bool bIsPauseVisible;
+
 	void DisplayInventory();
 	void HideInventory();
+
+	void DisplayGamePause();
+	void HideGamePause();
 
 	void DrawCrosshair(UTexture2D* CrosshairTexture, FVector2D ViewportCenter);
 };

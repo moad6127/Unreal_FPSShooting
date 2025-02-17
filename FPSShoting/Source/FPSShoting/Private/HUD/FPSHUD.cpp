@@ -32,22 +32,26 @@ void AFPSHUD::InitHUD(APlayerController* PC, UEquipInventoryComponent* SInventor
     checkf(InventoryWidgetClass, TEXT("Inventory Widget Class uninitialized, fill out BP_FPSHUD"));
     checkf(WidgetControllerClass, TEXT("Inventory Widget Controller Class uninitialized, fill out BP_FPSHUD"));
     checkf(InteractWidgetClass, TEXT("Interact Widget Class uninitialized, fill out BP_FPSHUD"));
-
+    checkf(GamePauseWidgetClass, TEXT("GamePause Widget Class uninitialized, fill out BP_FPSHUD"));
     const FWidgetControllerParams WidgetControllerParmas(PC, SInventoryComponent);
 
     UBasicWidgetController* BWidgetController = GetWidgetController(WidgetControllerParmas);
 
     InventoryWidget = CreateWidget<UBasicWidget>(GetWorld(), InventoryWidgetClass);
     InteractWidget = CreateWidget<UBasicWidget>(GetWorld(), InteractWidgetClass);
+    GamePauseWidget = CreateWidget<UUserWidget>(GetWorld(), GamePauseWidgetClass);
 
     InventoryWidget->SetWidgetController(BWidgetController);
     InteractWidget->SetWidgetController(WidgetController);
 
     InventoryWidget->AddToViewport();
     InteractWidget->AddToViewport();
+    GamePauseWidget->AddToViewport();
 
     InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+    GamePauseWidget->SetVisibility(ESlateVisibility::Hidden);
     bIsInventoryVisible = false;
+    bIsPauseVisible = false;
 }
 
 void AFPSHUD::ShowInventory()
@@ -59,6 +63,18 @@ void AFPSHUD::ShowInventory()
     else
     {
         DisplayInventory();
+    }
+}
+
+void AFPSHUD::ShowGamePause()
+{
+    if (bIsPauseVisible)
+    {
+        HideGamePause();
+    }
+    else
+    {
+        DisplayGamePause();
     }
 }
 
@@ -115,6 +131,30 @@ void AFPSHUD::HideInventory()
     {
         bIsInventoryVisible = false;
         InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+        const FInputModeGameOnly InputMode;
+        GetOwningPlayerController()->SetInputMode(InputMode);
+        GetOwningPlayerController()->SetShowMouseCursor(false);
+    }
+}
+
+void AFPSHUD::DisplayGamePause()
+{
+    if (GamePauseWidget)
+    {
+        bIsPauseVisible = true;
+        GamePauseWidget->SetVisibility(ESlateVisibility::Visible);
+        const FInputModeGameAndUI InputMode;
+        GetOwningPlayerController()->SetInputMode(InputMode);
+        GetOwningPlayerController()->SetShowMouseCursor(true);
+    }
+}
+
+void AFPSHUD::HideGamePause()
+{
+    if (GamePauseWidget)
+    {
+        bIsPauseVisible = false;
+        GamePauseWidget->SetVisibility(ESlateVisibility::Hidden);
         const FInputModeGameOnly InputMode;
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(false);

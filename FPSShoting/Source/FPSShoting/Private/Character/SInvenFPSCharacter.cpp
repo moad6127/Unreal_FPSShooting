@@ -187,7 +187,7 @@ void ASInvenFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		}
 		if (PauseAction)
 		{
-			PlayerEnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ASInvenFPSCharacter::GamePause);
+			PlayerEnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Completed, this, &ASInvenFPSCharacter::GamePause);
 		}
 	}
 }
@@ -202,20 +202,9 @@ void ASInvenFPSCharacter::ShowInventory()
 
 void ASInvenFPSCharacter::GamePause()
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController)
+	if (HUD)
 	{
-		if (GamePauseWidgetClass)
-		{
-			GamePauseWidget = CreateWidget<UUserWidget>(PlayerController, GamePauseWidgetClass);
-			if (GamePauseWidget)
-			{
-				GamePauseWidget->AddToViewport();
-				const FInputModeUIOnly InputMode;
-				PlayerController->SetShowMouseCursor(true);
-				PlayerController->SetInputMode(InputMode);
-			}
-		}
+		HUD->ShowGamePause();
 	}
 }
 
