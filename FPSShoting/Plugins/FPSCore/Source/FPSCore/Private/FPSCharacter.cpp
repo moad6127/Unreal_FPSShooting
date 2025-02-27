@@ -40,7 +40,9 @@ AFPSCharacter::AFPSCharacter()
     // Spawning the spring arm component
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
     SpringArmComponent->bUsePawnControlRotation = false;
-    SpringArmComponent->SetupAttachment(RootComponent);
+    SpringArmComponent->SetupAttachment(GetRootComponent());
+
+
     
     // Spawning the FPS hands mesh component and attaching it to the spring arm component
     HandsMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
@@ -59,6 +61,7 @@ AFPSCharacter::AFPSCharacter()
     {
         CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
     }
+    CameraComponent->bUsePawnControlRotation = false;
     CameraComponent->SetIsReplicated(true);
 
     SInventoryComponent = CreateDefaultSubobject<UEquipInventoryComponent>("EquipInventory");
