@@ -47,11 +47,32 @@ protected:
 
 	void EquipItemSave(UFPSSaveGame* SaveData);
 
+	void InitializeHandsLag();
+	void UpdateHandsLag(float DeltaTime);
+	void CalculateTargetHandsRotation(const FRotator& RotationDelta);
+	void ApplyHandsLagRotation();
+
 	UPROPERTY()
 	AFPSHUD* HUD;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* InventoryAction;
+
+	/* hand sway*/
+	UPROPERTY(EditDefaultsOnly, Category = "Hand Sway")
+	float HandsLagSpeed = 10.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hand Sway")
+	float HandsmaxLagAngle = 20.f;
+
+	UPROPERTY()
+	FRotator CurrentHandsRotation;
+
+	UPROPERTY()
+	FRotator TargetHandRataion;
+
+	UPROPERTY()
+	FRotator PreviousCameraRatation;
 
 
 

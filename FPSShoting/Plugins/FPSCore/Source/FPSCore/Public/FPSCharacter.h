@@ -449,6 +449,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Team")
 	uint8 TeamID = 1;
 
+
 	/** A reference to the player's Inventory Component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryComponent> InventoryComponent;

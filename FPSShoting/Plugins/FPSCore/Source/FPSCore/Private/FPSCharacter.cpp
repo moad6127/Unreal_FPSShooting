@@ -57,6 +57,7 @@ AFPSCharacter::AFPSCharacter()
 
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+    //CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
     if (HandsMeshComp)
     {
         CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
