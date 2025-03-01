@@ -90,7 +90,6 @@ void AFPSCharacter::BeginPlay()
         PlayerController->PlayerCameraManager->ViewPitchMin = -85.f;
     }
 
-
     if (MovementDataMap.Contains(EMovementState::State_Walk))
     {
         GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed;
@@ -186,6 +185,7 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
             InventoryComponent->GetCurrentWeapon()->GetRecoilRecoveryTimeline()->Stop();
         }
     }
+
 }
 
 void AFPSCharacter::ToggleCrouch()
@@ -828,7 +828,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
 
     // Timeline tick
     VaultTimeline.TickTimeline(DeltaTime);
-
+    
 	// Crouching
 	// Sets the new Target Half Height based on whether the player is crouching or standing
 	const float TargetHalfHeight = (MovementState == EMovementState::State_Crouch || MovementState == EMovementState::State_Slide)? CrouchedCapsuleHalfHeight : DefaultCapsuleHalfHeight;
@@ -927,7 +927,6 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // Checks the floor angle to determine whether we should keep sliding or not
     CheckGroundAngle(DeltaTime);
 
-
     if (bDrawDebug)
     {
         APlayerController* PC = Cast<APlayerController>(GetController());
@@ -981,6 +980,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
         ShowDebugMovementState(DeltaTime);
     }
 }
+
 
 void AFPSCharacter::ShowDebugMovementState(const float DeltaTime)
 {

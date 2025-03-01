@@ -571,6 +571,7 @@ protected:
 
 	/** The current active health */
 	float Health = 100.0f;
+
 	
 	/** The target location of a vault or mantle */
 	FTransform VaultTargetLocation;

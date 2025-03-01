@@ -113,83 +113,6 @@ void ASInvenFPSCharacter::EquipItemSave(UFPSSaveGame* SaveData)
 
 }
 
-void ASInvenFPSCharacter::InitializeHandsLag()
-{
-	if (CameraComponent)
-	{
-		PreviousCameraRatation = CameraComponent->GetComponentRotation();
-	}
-
-	TargetHandRataion = FRotator::ZeroRotator;
-	CurrentHandsRotation = FRotator::ZeroRotator;
-}
-
-void ASInvenFPSCharacter::UpdateHandsLag(float DeltaTime)
-{
-	if (!CameraComponent || !GetHandsMesh())
-	{
-		return;
-	}
-	FRotator CurrentCameraRot = CameraComponent->GetComponentRotation();
-	FRotator RotationDelta = CurrentCameraRot - PreviousCameraRatation;
-
-	RotationDelta = RotationDelta * (DeltaTime * HandsLagSpeed);
-
-	CalculateTargetHandsRotation(RotationDelta);
-
-	CurrentHandsRotation = FMath::RInterpTo(
-		CurrentHandsRotation,
-		TargetHandRataion,
-		DeltaTime,
-		HandsLagSpeed);
-
-	ApplyHandsLagRotation();
-
-	PreviousCameraRatation = CurrentCameraRot;
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow,
-			FString::Printf(TEXT("Rotation Delta: P: %.2f, Y: %.2f"),
-				RotationDelta.Pitch, RotationDelta.Yaw));
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Green,
-			FString::Printf(TEXT("Target Rotation: P: %.2f, Y: %.2f"),
-				TargetHandRataion.Pitch, TargetHandRataion.Yaw));
-	}
-}
-
-void ASInvenFPSCharacter::CalculateTargetHandsRotation(const FRotator& RotationDelta)
-{
-	if (!RotationDelta.IsNearlyZero())
-	{
-		TargetHandRataion.Pitch = FMath::Clamp(
-			RotationDelta.Pitch * 2.f,
-			-HandsmaxLagAngle,
-			HandsmaxLagAngle);
-
-		TargetHandRataion.Yaw = FMath::Clamp(
-			RotationDelta.Yaw * 2.0f,
-			-HandsmaxLagAngle,
-			HandsmaxLagAngle);
-	}
-	else
-	{
-		TargetHandRataion = FRotator::ZeroRotator;
-	}
-}
-
-void ASInvenFPSCharacter::ApplyHandsLagRotation()
-{
-	if (GetHandsMesh())
-	{
-		FRotator BaseHandsRotation = GetHandsMesh()->GetRelativeRotation();
-
-		FRotator NewHandRotation = BaseHandsRotation + CurrentHandsRotation;
-
-		GetHandsMesh()->SetRelativeRotation(NewHandRotation);
-	}
-}
-
 void ASInvenFPSCharacter::SaveGame()
 {
 	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
@@ -251,7 +174,6 @@ void ASInvenFPSCharacter::BeginPlay()
 			HUD->InitHUD(PlayerController, SInventoryComponent);
 		}
 	}
-	//InitializeHandsLag();
 }
 
 void ASInvenFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -293,7 +215,6 @@ void ASInvenFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SetHUDCrosshair(DeltaTime);
-	//UpdateHandsLag(DeltaTime);
 }
 
 
