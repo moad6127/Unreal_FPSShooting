@@ -152,5 +152,12 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	int32 SizeY;
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	int32 SellCost;
+
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	int32 BuyCost;
+
 };
 

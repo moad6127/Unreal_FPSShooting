@@ -49,6 +49,9 @@ public:
 	int32 SlotIndex = 0;
 
 	UPROPERTY()
+	int32 Coins;
+
+	UPROPERTY()
 	TArray<FItemSaveData> InventoryItems;
 
 	UPROPERTY()
