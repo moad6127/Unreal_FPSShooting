@@ -31,9 +31,37 @@ UItemObject* AFPSGameModeBase::GetSaveItemFromItemData(FItemSaveData Data)
 	ItemObject->SetItemSizeY(ItemData->SizeY);
 	ItemObject->DataStruct = Data.DataStruct;
 	ItemObject->SetItemItemLocation(Data.ItemLocation);
+	ItemObject->SellCost = ItemData->SellCost;
+	ItemObject->BuyCost = ItemData->BuyCost;
 
 	return ItemObject;
 }
+
+UItemObject* AFPSGameModeBase::GetItemFromItemName(FName ItemName, int32 ItemQuantity)
+{
+	const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemName, ItemName.ToString());
+	if (!ItemData)
+	{
+		return nullptr;
+	}
+	UItemObject* ItemObject = NewObject<UItemObject>(this, UItemObject::StaticClass());
+	//TODO : ItemValueSet
+	ItemObject->ID = ItemData->ID;
+	ItemObject->SlotType = ItemData->SlotType;
+	ItemObject->ItemQuantity =ItemQuantity;
+	ItemObject->ItemNumbericData = ItemData->ItemNumbericData;
+	ItemObject->Asset = ItemData->Asset;
+	ItemObject->ItemName = ItemData->ItemName;
+	ItemObject->WeaponData = ItemData->WeaponData;
+	ItemObject->SetItemSizeX(ItemData->SizeX);
+	ItemObject->SetItemSizeY(ItemData->SizeY);
+	ItemObject->SellCost = ItemData->SellCost;
+	ItemObject->BuyCost = ItemData->BuyCost;
+
+	return ItemObject;
+}
+
+
 
 void AFPSGameModeBase::SaveGame(UFPSSaveGame* SaveGame)
 {

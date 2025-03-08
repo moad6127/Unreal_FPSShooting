@@ -51,6 +51,20 @@ void AStoreController::SaveContainerItems(UFPSSaveGame* SaveData)
 	}
 }
 
+void AStoreController::BuyItem(UItemObject* BuyItem)
+{
+	if (Coins < BuyItem->BuyCost)
+	{
+		return;
+	}
+	Coins -= BuyItem->BuyCost;
+	ContainerInventoryComponent->AddItem(BuyItem);
+}
+
+void AStoreController::SellItem(UItemObject* SellItem)
+{
+}
+
 void AStoreController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
@@ -105,6 +119,13 @@ void AStoreController::LoadData()
 
 				ContainerInventoryComponent->AddLoadedInventoryItem(ItemObject);
 			}
+			for (FName ItemName : StoreItemNames)
+			{
+				UItemObject* ItemObject = GameMode->GetItemFromItemName(ItemName);
+				StoreItems.Add(ItemObject);
+			}
+			Coins = SaveData->Coins;
 		}
 	}
 }
+

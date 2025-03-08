@@ -63,6 +63,13 @@ public:
 
 	bool InInventorys = false;
 
+	/* Store Section*/
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 SellCost;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 BuyCost;
 
 
 #pragma region FUNCTIONS

@@ -13,6 +13,7 @@ class UBasicWidget;
 class UBasicWidgetController;
 class UEquipInventoryComponent;
 class UFPSSaveGame;
+class UItemObject;
 
 UCLASS()
 class FPSSHOTING_API AStoreController : public APlayerController
@@ -26,6 +27,12 @@ public:
 	void SaveItems();
 
 	void SaveContainerItems(UFPSSaveGame* SaveData);
+
+	UFUNCTION(BlueprintCallable)
+	void BuyItem(UItemObject* BuyItem);
+
+	UFUNCTION(BlueprintCallable)
+	void SellItem(UItemObject* SellItem);
 
 protected:
 
@@ -46,6 +53,15 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UBasicWidgetController> StoreWidgetController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> StoreItemNames;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UItemObject>> StoreItems;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 Coins = 0;
 	
 private:
 

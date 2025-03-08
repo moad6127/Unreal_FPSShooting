@@ -26,7 +26,7 @@ public:
 	AFPSGameModeBase();
 
 	UItemObject* GetSaveItemFromItemData(FItemSaveData Data);
-
+	UItemObject* GetItemFromItemName(FName ItemName, int32 ItemQuantity = 1);
 	void SaveGame(UFPSSaveGame* SaveGame);
 	void DeleteSlot(UFPSSaveGame* SaveGame);
 
