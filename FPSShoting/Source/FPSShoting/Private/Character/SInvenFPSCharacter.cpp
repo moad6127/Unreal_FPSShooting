@@ -147,6 +147,9 @@ void ASInvenFPSCharacter::SaveGame()
 		//TODO : 장착된 아이템 저장하기
 		EquipItemSave(SaveData);
 
+		//임시 코인 세이브
+		SaveData->Coins += 1000;
+
 		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));
 		GameMode->SaveGame(SaveData);
 	}

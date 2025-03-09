@@ -65,7 +65,7 @@ bool UEquipInventoryComponent::TryAddItem(UItemObject* InItem)
 			FIntPoint Location(j, i);
 			if (IsRoomAvailable(InItem, Location))
 			{
-				if (HandleAddItem(InItem))
+				if (!InItem->bBuyItem && HandleAddItem(InItem))
 				{
 					InventoryChanged.Broadcast();
 					return true;

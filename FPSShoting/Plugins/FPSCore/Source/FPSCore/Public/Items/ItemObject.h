@@ -63,6 +63,8 @@ public:
 
 	bool InInventorys = false;
 
+	bool bBuyItem = false;
+
 	/* Store Section*/
 
 	UPROPERTY(BlueprintReadWrite)

@@ -22,6 +22,9 @@ UItemObject* UItemObject::CreateItemCopy()
 	ItemCopy->SetItemSizeX(SizeX);
 	ItemCopy->SetItemSizeY(SizeY);
 	ItemCopy->SetItemItemLocation(ItemLocation);
+	ItemCopy->SellCost = SellCost;
+	ItemCopy->BuyCost = BuyCost;
+
 	ItemCopy->bIsCopy = true;
 
 	return ItemCopy;

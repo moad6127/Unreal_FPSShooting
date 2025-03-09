@@ -58,7 +58,9 @@ void AStoreController::BuyItem(UItemObject* BuyItem)
 		return;
 	}
 	Coins -= BuyItem->BuyCost;
-	ContainerInventoryComponent->AddItem(BuyItem);
+	UItemObject* CopyItems = BuyItem->CreateItemCopy();
+	CopyItems->bBuyItem = true;
+	ContainerInventoryComponent->TryAddItem(CopyItems);
 }
 
 void AStoreController::SellItem(UItemObject* SellItem)

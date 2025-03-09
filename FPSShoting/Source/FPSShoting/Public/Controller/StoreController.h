@@ -34,6 +34,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SellItem(UItemObject* SellItem);
 
+	
+
 protected:
 
 
@@ -54,10 +56,10 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UBasicWidgetController> StoreWidgetController;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	TArray<FName> StoreItemNames;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<TObjectPtr<UItemObject>> StoreItems;
 
 	UPROPERTY(BlueprintReadOnly)
