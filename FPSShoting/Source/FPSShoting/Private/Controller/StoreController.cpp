@@ -26,7 +26,7 @@ void AStoreController::SaveItems()
 			return;
 		}
 		SaveContainerItems(SaveData);
-
+		SaveData->Coins = Coins;
 		GameMode->SaveGame(SaveData);
 	}
 }
@@ -52,7 +52,11 @@ void AStoreController::SaveContainerItems(UFPSSaveGame* SaveData)
 }
 
 void AStoreController::BuyItem(UItemObject* BuyItem)
-{
+{	
+	if (!BuyItem)
+	{
+		return;
+	}
 	if (Coins < BuyItem->BuyCost)
 	{
 		return;
@@ -65,6 +69,7 @@ void AStoreController::BuyItem(UItemObject* BuyItem)
 
 void AStoreController::SellItem(UItemObject* SellItem)
 {
+	Coins += SellItem->SellCost;
 }
 
 void AStoreController::OnPossess(APawn* aPawn)
