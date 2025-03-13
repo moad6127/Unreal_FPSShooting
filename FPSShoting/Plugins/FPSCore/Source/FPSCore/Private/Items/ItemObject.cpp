@@ -58,6 +58,21 @@ void UItemObject::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& Ou
 	DOREPLIFETIME(UItemObject, ItemLocation);
 }
 
+void UItemObject::InitDataStruct()
+{
+	if (WeaponData.bIsWeapon && WeaponData.WeaponDataTable)
+	{
+		if (const FStaticWeaponData* StaticWeaponData = WeaponData.WeaponDataTable->FindRow<FStaticWeaponData>(FName(ItemName.ToString()), ItemName.ToString()))
+		{
+			DataStruct.AmmoType = StaticWeaponData->AmmoToUse;
+			DataStruct.ClipCapacity = StaticWeaponData->ClipCapacity;
+			DataStruct.ClipSize = StaticWeaponData->ClipSize;
+			DataStruct.WeaponAttachments = WeaponData.AttachmentArrayOverride;
+			DataStruct.WeaponHealth = 100.0f;
+		}
+	}
+}
+
 void UItemObject::SetItemItemLocation(FIntPoint InItemLocation)
 {
 	ItemLocation = InItemLocation;

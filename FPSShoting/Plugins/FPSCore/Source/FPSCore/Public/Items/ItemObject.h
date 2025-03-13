@@ -85,6 +85,8 @@ public:
 	virtual bool IsSupportedForNetworking() const { return true; }
 	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const;
 
+	void InitDataStruct();
+
 	FIntPoint GetItemItemLocation() const { return ItemLocation; }
 	int32 GetSizeX() const { return SizeX; }
 	int32 GetSizeY() const { return SizeY; };

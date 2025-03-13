@@ -57,7 +57,7 @@ void AItemBase::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeItemObject(UItemObject::StaticClass());
-	Init();
+	//Init();
 }
 
 void AItemBase::OnRep_ItemObject()
@@ -84,6 +84,10 @@ void AItemBase::InitializeItemObject(const TSubclassOf<UItemObject> BaseItem)
 		ItemObject->SetItemSizeX(ItemData->SizeX);
 		ItemObject->SetItemSizeY(ItemData->SizeY);
 
+		if (!bRuntimeSpawned)
+		{
+			ItemObject->InitDataStruct();
+		}
 		if (ItemData->Asset.Mesh)
 		{
 			MeshComp->SetStaticMesh(ItemData->Asset.Mesh);

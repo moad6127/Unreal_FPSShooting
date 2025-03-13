@@ -58,6 +58,8 @@ UItemObject* AFPSGameModeBase::GetItemFromItemName(FName ItemName, int32 ItemQua
 	ItemObject->SellCost = ItemData->SellCost;
 	ItemObject->BuyCost = ItemData->BuyCost;
 
+	ItemObject->InitDataStruct();
+
 	return ItemObject;
 }
 
