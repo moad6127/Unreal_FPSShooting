@@ -351,7 +351,7 @@ void AWeaponBase::Fire(int32 RandomSeed)
 
         // Subtracting from the ammunition count of the weapon
         GeneralWeaponData.ClipSize -= 1;
-
+        
         const int NumberOfShots = WeaponData.bIsShotgun? WeaponData.ShotgunPellets : 1;
         // We run this for the number of bullets/projectiles per shot, in order to support shotguns
         for (int i = 0; i < NumberOfShots; i++)

@@ -99,7 +99,7 @@ void ASInvenFPSCharacter::EquipItemSave(UFPSSaveGame* SaveData)
 		FItemSaveData Weapon1ItemData;
 		Weapon1ItemData.bEquipped = true;
 		Weapon1ItemData.ItemID = CharacterEquipmentItems.Weapon1->ID;
-		Weapon1ItemData.DataStruct = CharacterEquipmentItems.Weapon1->DataStruct;
+		Weapon1ItemData.DataStruct = *GetInventoryComponent()->GetWeaponByID(0)->GetRuntimeWeaponData();
 		SaveData->InventoryItems.Add(Weapon1ItemData);
 	}
 	if (CharacterEquipmentItems.Weapon2)
@@ -107,7 +107,7 @@ void ASInvenFPSCharacter::EquipItemSave(UFPSSaveGame* SaveData)
 		FItemSaveData Weapon2ItemData;
 		Weapon2ItemData.bEquipped = true;
 		Weapon2ItemData.ItemID = CharacterEquipmentItems.Weapon2->ID;
-		Weapon2ItemData.DataStruct = CharacterEquipmentItems.Weapon2->DataStruct;
+		Weapon2ItemData.DataStruct = *GetInventoryComponent()->GetWeaponByID(1)->GetRuntimeWeaponData();
 		SaveData->InventoryItems.Add(Weapon2ItemData);
 	}
 
@@ -147,7 +147,7 @@ void ASInvenFPSCharacter::SaveGame()
 		//TODO : 장착된 아이템 저장하기
 		EquipItemSave(SaveData);
 
-		//임시 코인 세이브
+		//탈출 보너스 코인들
 		SaveData->Coins += 1000;
 
 		UE_LOG(LogTemp, Warning, TEXT("PlayerSaveGameFunc!"));
