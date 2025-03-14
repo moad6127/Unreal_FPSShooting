@@ -63,6 +63,10 @@ void AStoreController::BuyItem(UItemObject* BuyItem)
 	}
 	Coins -= BuyItem->BuyCost;
 	UItemObject* CopyItems = BuyItem->CreateItemCopy();
+	if (CopyItems->ItemNumbericData.bIsStackable)
+	{
+		CopyItems->ItemQuantity = CopyItems->ItemNumbericData.MaxStackSize;
+	}
 	CopyItems->bBuyItem = true;
 	ContainerInventoryComponent->TryAddItem(CopyItems);
 }
