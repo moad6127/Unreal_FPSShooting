@@ -378,3 +378,84 @@ void AContainerController::BeginPlay()
 > 기본 적인 Setting메뉴를 만들어서 해상도와 스크린 모드를 변경할수 있도록 만들었다.
 
 
+## 상점창
+
+
+![ScreenShot00001](https://github.com/user-attachments/assets/14ae1914-5f04-4987-8184-0f1e242bd39b)         
+
+> 상점창을 만들어서 게임에서 획득한 아이템을 팔거나 필요한 아이템을 구매할수 있도록 만들었다.
+
+[StoreController.h](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Source/FPSShoting/Public/Controller/StoreController.h)
+[StoreController.cpp](https://github.com/moad6127/Unreal_FPSShooting/blob/master/FPSShoting/Source/FPSShoting/Private/Controller/StoreController.cpp)
+
+
+```C++
+void AStoreController::LoadData()
+{
+	AFPSGameModeBase* GameMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(this));
+	{
+		if (GameMode)
+		{
+			UFPSSaveGame* SaveData = GameMode->GetSaveData();
+			if (SaveData == nullptr)
+			{
+				return;
+			}
+			UDataTable* ItemDataTable = GameMode->ItemDataTable;
+			if (!ItemDataTable)
+			{
+				return;
+			}
+			// 창고 아이템
+			for (FItemSaveData Data : SaveData->ContainerItems)
+			{
+				UItemObject* ItemObject = GameMode->GetSaveItemFromItemData(Data);
+
+				ContainerInventoryComponent->AddLoadedInventoryItem(ItemObject);
+			}
+			for (FName ItemName : StoreItemNames)
+			{
+				UItemObject* ItemObject = GameMode->GetItemFromItemName(ItemName);
+				StoreItems.Add(ItemObject);
+			}
+			Coins = SaveData->Coins;
+		}
+	}
+}
+
+```
+> 상점창에 들어가면 컨트롤러에 저장된 아이템의 이름으로 아이템 오브젝트를 생성한후 Buy위젯에 넘겨 위젯들을 생성하게 된다.
+
+
+
+```C++
+
+void AStoreController::BuyItem(UItemObject* BuyItem)
+{	
+	if (!BuyItem)
+	{
+		return;
+	}
+	if (Coins < BuyItem->BuyCost)
+	{
+		return;
+	}
+	Coins -= BuyItem->BuyCost;
+	UItemObject* CopyItems = BuyItem->CreateItemCopy();
+	if (CopyItems->ItemNumbericData.bIsStackable)
+	{
+		CopyItems->ItemQuantity = CopyItems->ItemNumbericData.MaxStackSize;
+	}
+	CopyItems->bBuyItem = true;
+	ContainerInventoryComponent->TryAddItem(CopyItems);
+}
+
+void AStoreController::SellItem(UItemObject* SellItem)
+{
+	Coins += SellItem->SellCost;
+}
+
+```
+> 컨트롤러의 Buy함수와 Sell함수이다. 만들어진 오브젝트를 Copy해서 플레이어의 창고에 추가하도록 만들었다.
+> Sell함수에서는 단순히 코인에 sell가격만큼 더해준다.
+
