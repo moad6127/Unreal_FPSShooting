@@ -20,6 +20,7 @@
 #include "Components/EquipInventoryComponent.h"
 #include "Items/ItemObject.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/DecalComponent.h"
 
 
 // Sets default values
@@ -551,10 +552,15 @@ void AWeaponBase::Fire(int32 RandomSeed)
                     FRotator RandomDecalRotation = Hit.ImpactNormal.Rotation();
                     RandomDecalRotation.Roll = FMath::FRandRange(-180.0f, 180.0f);
 
-                    UGameplayStatics::SpawnDecalAttached(WeaponData.DecalMaterial, FVector(1.0f, WeaponData.DecalSize, WeaponData.DecalSize),
+                    
+                    UDecalComponent* BulletDecal = UGameplayStatics::SpawnDecalAttached(WeaponData.DecalMaterial, FVector(1.0f, WeaponData.DecalSize, WeaponData.DecalSize),
                         Hit.Component.Get(), Hit.BoneName,
                         Hit.ImpactPoint, RandomDecalRotation, EAttachLocation::KeepWorldPosition,
                         WeaponData.LifeSpan);
+                    if (BulletDecal)
+                    {
+                        BulletDecal->SetFadeScreenSize(0.001f);
+                    }
                 }
             }
         }
