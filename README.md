@@ -261,9 +261,13 @@ void ASInvenFPSCharacter::LoadGame()
 
 # *MainMenu*
 
-![Image](https://github.com/user-attachments/assets/e90df953-39dd-4411-a4b1-f62d7e9416b0)
+![ScreenShot00002](https://github.com/user-attachments/assets/ce4e1131-e406-4fe7-8d38-037d09033e5b)
 
-> MainMenu를 통해서 창고맵으로 이동할수 있고 창고맵에서 게임에서 사용할 인벤토리와 장비아이템을 저장한후 Map을 선택해 들어갈수 있도록 만들었다.
+
+> MainTitle화면을 만들어서 상점창이나, 창고, 세팅을 변경할수 있도록 만들었다.
+
+
+## *창고*
 
 ![Image](https://github.com/user-attachments/assets/378352d9-490a-44df-ad0c-c442995de5da)
 
@@ -371,14 +375,14 @@ void AContainerController::BeginPlay()
 ```
 
 
-> ContainerMap을 통해서 창고와 플레이어의 인벤토리를 저장한후 초기 장비들을 설정한다.
-> ContainerMap에서 사용할 GameMode와 Controller클래스를 생성하고 Controller를 사용해 UI를 구축해 화면에 표시하도록 만든다.
-> UI들은 기존의 Inventory와 Equipment 위젯들을 사용해서 만들어 사용한후 Save파일을 이용해서 레벨이 변경되도 유지하도록 만든다.
-> 탈출 Actor를 Interact할경우 Charcter의 인벤토리와 장착아이템들을 저장한후 ContainerMap이나 MainMenu로 이동하도록 만들도록 한다.
-> 기본 적인 Setting메뉴를 만들어서 해상도와 스크린 모드를 변경할수 있도록 만들었다.
+> ContainerMap을 통해서 창고와 플레이어의 인벤토리를 저장한후 초기 장비들을 설정한다.        
+> ContainerMap에서 사용할 GameMode와 Controller클래스를 생성하고 Controller를 사용해 UI를 구축해 화면에 표시하도록 만든다.      
+> UI들은 기존의 Inventory와 Equipment 위젯들을 사용해서 만들어 사용한후 Save파일을 이용해서 레벨이 변경되도 유지하도록 만든다.       
+> 탈출 Actor를 Interact할경우 Charcter의 인벤토리와 장착아이템들을 저장한후 ContainerMap이나 MainMenu로 이동하도록 만들도록 한다.      
+> 기본 적인 Setting메뉴를 만들어서 해상도와 스크린 모드를 변경할수 있도록 만들었다.      
 
 
-## 상점창
+## *상점창*
 
 
 ![ScreenShot00001](https://github.com/user-attachments/assets/14ae1914-5f04-4987-8184-0f1e242bd39b)         
@@ -456,6 +460,6 @@ void AStoreController::SellItem(UItemObject* SellItem)
 }
 
 ```
-> 컨트롤러의 Buy함수와 Sell함수이다. 만들어진 오브젝트를 Copy해서 플레이어의 창고에 추가하도록 만들었다.
+> 컨트롤러의 Buy함수와 Sell함수이다. 만들어진 오브젝트를 Copy해서 플레이어의 창고에 추가하도록 만들었다.        
 > Sell함수에서는 단순히 코인에 sell가격만큼 더해준다.
 
